@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>سلاسل أسماء - DAHAP</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXX"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XXXX');
+</script>
+
+<style>
+body {
+    margin:0;
+    font-family: 'Cairo', sans-serif;
+    background:#fff;
+    color:#111;
+}
+.container {
+    padding:20px;
+    text-align:center;
+}
+.hero {
+    background:#111;
+    color:#fff;
+    padding:60px 20px;
+}
+h1 {
+    color:#D4AF37;
+}
+.btn {
+    background:#0F7B65;
+    color:#fff;
+    padding:15px 25px;
+    border-radius:8px;
+    display:inline-block;
+    margin-top:20px;
+    text-decoration:none;
+}
+.offer {
+    background:#F5F5F5;
+    padding:40px;
+}
+.timer {
+    font-size:24px;
+    color:#D4AF37;
+}
+.whatsapp {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#25D366;
+    color:#fff;
+    padding:15px;
+    border-radius:50%;
+    text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+    <h1>DAHAP</h1>
+    <h2>سلسلة باسمك بتصميم مميز</h2>
+    <p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
+
+    <a class="btn" href="https://wa.me/201106018685?text=%D8%B9%D8%A7%D9%8A%D8%B2%D8%A9%20%D8%A7%D8%B7%D9%84%D8%A8%20%D8%B3%D9%84%D8%B3%D9%84%D8%A9%20%D8%A8%D8%A7%D8%B3%D9%85">
+        اطلبي الآن
+    </a>
+</section>
+
+<section class="container">
+    <h2>ليه تختارينا؟</h2>
+    <p>تصميم مخصص – جودة عالية – هدية مثالية</p>
+</section>
+
+<section class="offer">
+    <h2>عرض خاص</h2>
+    <p><del>350 جنيه</del> <strong>199 جنيه</strong></p>
+
+    <div class="timer" id="countdown"></div>
+</section>
+
+<section class="container">
+    <h2>آراء العملاء</h2>
+    <p>“السلسلة رائعة جدًا”</p>
+</section>
+
+<section class="container">
+    <h2>اطلبي الآن</h2>
+
+    <a class="btn" href="https://wa.me/201106018685">
+        اطلبي عبر واتساب
+    </a>
+</section>
+
+<!-- زر واتساب -->
+<a href="https://wa.me/201106018685" class="whatsapp">💬</a>
+
+<script>
+// Countdown
+var countDownDate = new Date().getTime() + (2 * 60 * 60 * 1000);
+
+setInterval(function() {
+  var now = new Date().getTime();
+  var distance = countDownDate - now;
+
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+  document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
+}, 1000);
+</script>
+
+</body>
+</html>
