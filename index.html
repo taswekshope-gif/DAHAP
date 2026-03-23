@@ -121,5 +121,73 @@ setInterval(function() {
 }, 1000);
 </script>
 
-</body>
+    </body>
+<section style="padding:40px;text-align:center;background:#F5F5F5;">
+    <h2>اطلبي سلسلتك الآن</h2>
+
+    <form id="orderForm" style="max-width:400px;margin:auto;display:flex;flex-direction:column;gap:10px;">
+
+        <input type="text" id="name" placeholder="الاسم المطلوب على السلسلة" required>
+
+        <input type="text" id="address" placeholder="العنوان" required>
+
+        <input type="tel" id="phone" placeholder="رقم التليفون" required>
+
+        <select id="design" required>
+            <option value="">اختاري نوع التصميم</option>
+            <option>عادي</option>
+            <option>قلب ❤️</option>
+            <option>تاج 👑</option>
+            <option>مزدوج</option>
+        </select>
+
+        <select id="font" required>
+            <option value="">نوع الكتابة</option>
+            <option>عربي</option>
+            <option>إنجليزي</option>
+        </select>
+
+        <button type="submit" style="background:#0F7B65;color:#fff;padding:15px;border:none;border-radius:8px;">
+            تأكيد الطلب عبر واتساب
+        </button>
+
+    </form>
+</section>
+
+<script>
+document.getElementById("orderForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    var name = document.getElementById("name").value;
+    var address = document.getElementById("address").value;
+    var phone = document.getElementById("phone").value;
+    var design = document.getElementById("design").value;
+    var font = document.getElementById("font").value;
+
+    fetch("PUT_YOUR_API_LINK_HERE", {
+        method: "POST",
+        body: JSON.stringify({
+            name: name,
+            address: address,
+            phone: phone,
+            design: design,
+            font: font
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        var message = "طلب جديد من DAHAP%0A"
+        + "كود الطلب: " + data.orderID + "%0A"
+        + "--------------------%0A"
+        + "الاسم: " + name + "%0A"
+        + "العنوان: " + address + "%0A"
+        + "رقم الهاتف: " + phone + "%0A"
+        + "نوع التصميم: " + design + "%0A"
+        + "نوع الكتابة: " + font;
+
+        window.open("https://wa.me/201106018685?text=" + message, "_blank");
+    });
+});
+</script>
 </html>
