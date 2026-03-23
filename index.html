@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -63,6 +63,9 @@ h1 {
     border-radius:50%;
     text-decoration:none;
 }
+form input, form select, form button {
+    font-family: 'Cairo', sans-serif;
+}
 </style>
 </head>
 
@@ -106,13 +109,19 @@ h1 {
 <!-- زر واتساب -->
 <a href="https://wa.me/201106018685" class="whatsapp">💬</a>
 
+<!-- Countdown Script -->
 <script>
-// Countdown
 var countDownDate = new Date().getTime() + (2 * 60 * 60 * 1000);
 
-setInterval(function() {
+var timerInterval = setInterval(function() {
   var now = new Date().getTime();
   var distance = countDownDate - now;
+
+  if(distance < 0){
+    clearInterval(timerInterval);
+    document.getElementById("countdown").innerHTML = "انتهى العرض";
+    return;
+  }
 
   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -121,18 +130,15 @@ setInterval(function() {
 }, 1000);
 </script>
 
-    </body>
+<!-- Order Form -->
 <section style="padding:40px;text-align:center;background:#F5F5F5;">
     <h2>اطلبي سلسلتك الآن</h2>
 
     <form id="orderForm" style="max-width:400px;margin:auto;display:flex;flex-direction:column;gap:10px;">
 
         <input type="text" id="name" placeholder="الاسم المطلوب على السلسلة" required>
-
         <input type="text" id="address" placeholder="العنوان" required>
-
         <input type="tel" id="phone" placeholder="رقم التليفون" required>
-
         <select id="design" required>
             <option value="">اختاري نوع التصميم</option>
             <option>عادي</option>
@@ -140,13 +146,11 @@ setInterval(function() {
             <option>تاج 👑</option>
             <option>مزدوج</option>
         </select>
-
         <select id="font" required>
             <option value="">نوع الكتابة</option>
             <option>عربي</option>
             <option>إنجليزي</option>
         </select>
-
         <button type="submit" style="background:#0F7B65;color:#fff;padding:15px;border:none;border-radius:8px;">
             تأكيد الطلب عبر واتساب
         </button>
@@ -154,6 +158,7 @@ setInterval(function() {
     </form>
 </section>
 
+<!-- Order Form Script -->
 <script>
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
@@ -164,30 +169,46 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     var design = document.getElementById("design").value;
     var font = document.getElementById("font").value;
 
+    // التحقق من رقم الهاتف المصري
+    var phonePattern = /^01[0-9]{9}$/;
+    if(!phonePattern.test(phone)) { 
+        alert("أدخل رقم هاتف مصري صالح");
+        return; 
+    }
+
+    // توليد كود الطلب
+    var today = new Date();
+    var orderID = today.getFullYear().toString().slice(-2) + 
+                  (today.getMonth()+1).toString().padStart(2,'0') + 
+                  today.getDate().toString().padStart(2,'0') + 
+                  Math.floor(Math.random()*900+100); // 3 أرقام عشوائية
+
+    // إرسال البيانات إلى Google Sheet
     fetch("PUT_YOUR_API_LINK_HERE", {
         method: "POST",
-        body: JSON.stringify({
-            name: name,
-            address: address,
-            phone: phone,
-            design: design,
-            font: font
-        })
+        body: JSON.stringify({name, address, phone, design, font}),
+        headers: {'Content-Type':'application/json'}
     })
     .then(res => res.json())
     .then(data => {
-
+        // فتح واتساب برسالة الطلب
         var message = "طلب جديد من DAHAP%0A"
-        + "كود الطلب: " + data.orderID + "%0A"
-        + "--------------------%0A"
-        + "الاسم: " + name + "%0A"
-        + "العنوان: " + address + "%0A"
-        + "رقم الهاتف: " + phone + "%0A"
-        + "نوع التصميم: " + design + "%0A"
-        + "نوع الكتابة: " + font;
+                    + "كود الطلب: " + orderID + "%0A"
+                    + "--------------------%0A"
+                    + "الاسم: " + name + "%0A"
+                    + "العنوان: " + address + "%0A"
+                    + "رقم الهاتف: " + phone + "%0A"
+                    + "نوع التصميم: " + design + "%0A"
+                    + "نوع الكتابة: " + font;
 
         window.open("https://wa.me/201106018685?text=" + message, "_blank");
+    })
+    .catch(err => {
+        alert("حدث خطأ، حاول مرة أخرى");
+        console.error(err);
     });
 });
 </script>
+
+</body>
 </html>
