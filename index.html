@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -6,16 +6,7 @@
 
 <title>سلاسل باسمك - DAHAP</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XXXX');
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 
 <style>
 body {
@@ -34,45 +25,30 @@ body {
     padding:80px 20px;
     position:relative;
 }
-
 .hero::before {
     content:'';
     position:absolute;
-    top:0;
-    left:0;
     width:100%;
     height:100%;
     background:rgba(0,0,0,0.5);
+    top:0;
+    left:0;
 }
-
 .hero * {
     position:relative;
 }
-
-<section class="container">
-    <h2>أشكال من شغلنا</h2>
-
-    <div class="gallery">
-        <img src="images/1.jpg">
-        <img src="images/2.jpg">
-        <img src="images/3.jpg">
-        <img src="images/4.jpg">
-    </div>
-</section>
-    .gallery {
+.gallery {
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:10px;
     margin-top:20px;
 }
-
 .gallery img {
     width:100%;
     border-radius:10px;
 }
-h1 {
-    color:#D4AF37;
-}
+h1 { color:#D4AF37; }
+
 .btn {
     background:#0F7B65;
     color:#fff;
@@ -82,6 +58,7 @@ h1 {
     margin-top:20px;
     text-decoration:none;
 }
+
 .offer {
     background:#F5F5F5;
     padding:40px;
@@ -90,165 +67,160 @@ h1 {
     font-size:24px;
     color:#D4AF37;
 }
-.whatsapp {
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    background:#25D366;
-    color:#fff;
-    padding:15px;
-    border-radius:50%;
-    text-decoration:none;
+
+form {
+    max-width:400px;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
 }
-form input, form select, form button {
-    font-family: 'Cairo', sans-serif;
+input, select, button {
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+button {
+    background:#0F7B65;
+    color:#fff;
+    border:none;
+}
+.note {
+    font-size:14px;
+    color:#555;
 }
 </style>
 </head>
 
 <body>
 
+<!-- HERO -->
 <section class="hero">
     <h1>DAHAP</h1>
     <h2>سلسلة باسمك بتصميم مميز</h2>
     <p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
 
-    <section id="order">
-    <a class="btn" href="#order">
-    اطلبي الآن
-</a>
+    <a class="btn" href="#order">اطلبي الآن</a>
 </section>
 
+<!-- صور -->
+<section class="container">
+    <h2>أشكال من شغلنا</h2>
+    <div class="gallery">
+        <img src="images/1.jpg">
+        <img src="images/2.jpg">
+        <img src="images/3.jpg">
+        <img src="images/4.jpg">
+    </div>
+</section>
+
+<!-- مميزات -->
 <section class="container">
     <h2>ليه تختارينا؟</h2>
-    <p>تصميم مخصص – جودة عالية – هدية مثالية</p>
+    <p>✔ تصميم مخصص – ✔ جودة عالية – ✔ هدية مثالية</p>
 </section>
 
+<!-- عرض -->
 <section class="offer">
     <h2>عرض خاص</h2>
     <p><del>350 جنيه</del> <strong>199 جنيه</strong></p>
-
     <div class="timer" id="countdown"></div>
 </section>
 
-<section class="container">
-    <h2>آراء العملاء</h2>
-    <p>“السلسلة رائعة جدًا”</p>
+<!-- فورم -->
+<section id="order" class="container">
+    <h2>اطلبي سلسلتك الآن</h2>
+
+    <form id="orderForm">
+
+        <input type="text" id="customerName" placeholder="اسمك" required>
+        <input type="tel" id="phone" placeholder="رقم التليفون" required>
+
+        <select id="governorate" required>
+            <option value="">اختاري المحافظة</option>
+            <option>القاهرة</option>
+            <option>الجيزة</option>
+            <option>الإسكندرية</option>
+        </select>
+
+        <input type="text" id="city" placeholder="المنطقة / المركز" required>
+        <input type="text" id="street" placeholder="اسم الشارع" required>
+        <input type="text" id="landmark" placeholder="علامة مميزة" required>
+
+        <select id="design" required>
+            <option value="">نوع التصميم</option>
+            <option>عادي</option>
+            <option>قلب ❤️</option>
+            <option>تاج 👑</option>
+        </select>
+
+        <select id="font" required>
+            <option value="">نوع الكتابة</option>
+            <option>عربي</option>
+            <option>إنجليزي</option>
+        </select>
+
+        <input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
+
+        <p class="note">
+        ⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
+        </p>
+
+        <button type="submit">تأكيد الطلب</button>
+
+    </form>
 </section>
 
-<section class="container">
-    <h2>اطلبي الآن</h2>
-
-</section>
-
-<!-- زر واتساب -->
-<a href="https://wa.me/201106018685" class="whatsapp">💬</a>
-
-<!-- Countdown Script -->
+<!-- Countdown -->
 <script>
-var countDownDate = new Date().getTime() + (2 * 60 * 60 * 1000);
+var countDownDate = new Date();
+countDownDate.setHours(23,59,59,999);
 
-var timerInterval = setInterval(function() {
+setInterval(function() {
   var now = new Date().getTime();
   var distance = countDownDate - now;
 
-  if(distance < 0){
-    clearInterval(timerInterval);
-    document.getElementById("countdown").innerHTML = "انتهى العرض";
-    return;
-  }
-
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var hours = Math.floor((distance / (1000 * 60 * 60)));
   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
   document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
 }, 1000);
 </script>
 
-<!-- Order Form -->
-<form id="orderForm">
-
-<input type="text" id="customerName" placeholder="اسمك" required>
-
-<input type="tel" id="phone" placeholder="رقم التليفون" required>
-
-<select id="governorate" required>
-    <option value="">اختاري المحافظة</option>
-    <option>القاهرة</option>
-    <option>الجيزة</option>
-    <option>الإسكندرية</option>
-</select>
-
-<input type="text" id="city" placeholder="المنطقة / المركز" required>
-
-<input type="text" id="street" placeholder="اسم الشارع" required>
-
-<input type="text" id="landmark" placeholder="علامة مميزة" required>
-
-<select id="design" required>
-    <option value="">نوع التصميم</option>
-    <option>عادي</option>
-    <option>قلب ❤️</option>
-    <option>تاج 👑</option>
-</select>
-
-<select id="font" required>
-    <option value="">نوع الكتابة</option>
-    <option>عربي</option>
-    <option>إنجليزي</option>
-</select>
-
-<input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
-
-        </select>
-        <button type="submit" style="background:#0F7B65;color:#fff;padding:15px;border:none;border-radius:8px;">
-            تأكيد الطلب عبر واتساب
-        </button>
-
-    </form>
-</section>
-<p style="font-size:14px;color:#555;">
-⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
-</p>
-<!-- Order Form Script -->
+<!-- Script -->
 <script>
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
 
-var customerName = document.getElementById("customerName").value;
-var phone = document.getElementById("phone").value;
-var gov = document.getElementById("governorate").value;
-var city = document.getElementById("city").value;
-var street = document.getElementById("street").value;
-var landmark = document.getElementById("landmark").value;
-var design = document.getElementById("design").value;
-var font = document.getElementById("font").value;
-var chainName = document.getElementById("chainName").value;
+    var customerName = document.getElementById("customerName").value;
+    var phone = document.getElementById("phone").value;
+    var gov = document.getElementById("governorate").value;
+    var city = document.getElementById("city").value;
+    var street = document.getElementById("street").value;
+    var landmark = document.getElementById("landmark").value;
+    var design = document.getElementById("design").value;
+    var font = document.getElementById("font").value;
+    var chainName = document.getElementById("chainName").value;
 
-    // التحقق من رقم الهاتف المصري
     var phonePattern = /^01[0-9]{9}$/;
-    if(!phonePattern.test(phone)) { 
+    if(!phonePattern.test(phone)) {
         alert("أدخل رقم هاتف مصري صالح");
-        return; 
+        return;
     }
 
-    // توليد كود الطلب
     var today = new Date();
-    var orderID = today.getFullYear().toString().slice(-2) + 
-                  (today.getMonth()+1).toString().padStart(2,'0') + 
-                  today.getDate().toString().padStart(2,'0') + 
-                  Math.floor(Math.random()*900+100); // 3 أرقام عشوائية
+    var orderID = today.getFullYear().toString().slice(-2) +
+                  (today.getMonth()+1).toString().padStart(2,'0') +
+                  today.getDate().toString().padStart(2,'0') +
+                  Math.floor(Math.random()*900+100);
 
-    // إرسال البيانات إلى Google Sheet
-   fetch("https://script.google.com/macros/s/AKfycbwDZjxJEWSJoJx3Ey2iKhhgi19JRPVDZ1Hz7KtS9pxAtEBh1ptxfiM5KVBngF9uljuy2w/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwDZjxJEWSJoJx3Ey2iKhhgi19JRPVDZ1Hz7KtS9pxAtEBh1ptxfiM5KVBngF9uljuy2w/exec", {
         method: "POST",
-        body: JSON.stringify({name, address, phone, design, font}),
+        body: JSON.stringify({customerName, phone, gov, city, street, landmark, design, font, chainName}),
         headers: {'Content-Type':'application/json'}
-    })
-    .then(res => res.json())
-    .then(data => {
-        // فتح واتساب برسالة الطلب
-       var message = `طلب جديد من DAHAP
+    });
+
+    var message = `طلب جديد من DAHAP
 كود الطلب: ${orderID}
 --------------------
 اسم العميل: ${customerName}
@@ -264,12 +236,7 @@ ${street}
 الكتابة: ${font}`;
 
     var url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-window.open(url, "_blank");
-    })
-    .catch(err => {
-        alert("حدث خطأ، حاول مرة أخرى");
-        console.error(err);
-    });
+    window.open(url, "_blank");
 });
 </script>
 
