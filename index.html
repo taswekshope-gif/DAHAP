@@ -29,9 +29,46 @@ body {
     text-align:center;
 }
 .hero {
-    background:#111;
+    background: url('images/header.jpg') center/cover no-repeat;
     color:#fff;
-    padding:60px 20px;
+    padding:80px 20px;
+    position:relative;
+}
+
+.hero::before {
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+}
+
+.hero * {
+    position:relative;
+}
+
+<section class="container">
+    <h2>أشكال من شغلنا</h2>
+
+    <div class="gallery">
+        <img src="images/1.jpg">
+        <img src="images/2.jpg">
+        <img src="images/3.jpg">
+        <img src="images/4.jpg">
+    </div>
+</section>
+    .gallery {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:20px;
+}
+
+.gallery img {
+    width:100%;
+    border-radius:10px;
 }
 h1 {
     color:#D4AF37;
@@ -76,9 +113,10 @@ form input, form select, form button {
     <h2>سلسلة باسمك بتصميم مميز</h2>
     <p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
 
-    <a class="btn" href="https://wa.me/201106018685?text=%D8%B9%D8%A7%D9%8A%D8%B2%D8%A9%20%D8%A7%D8%B7%D9%84%D8%A8%20%D8%B3%D9%84%D8%B3%D9%84%D8%A9%20%D8%A8%D8%A7%D8%B3%D9%85">
-        اطلبي الآن
-    </a>
+    <section id="order">
+    <a class="btn" href="#order">
+    اطلبي الآن
+</a>
 </section>
 
 <section class="container">
@@ -101,9 +139,6 @@ form input, form select, form button {
 <section class="container">
     <h2>اطلبي الآن</h2>
 
-    <a class="btn" href="https://wa.me/201106018685">
-        اطلبي عبر واتساب
-    </a>
 </section>
 
 <!-- زر واتساب -->
@@ -131,25 +166,40 @@ var timerInterval = setInterval(function() {
 </script>
 
 <!-- Order Form -->
-<section style="padding:40px;text-align:center;background:#F5F5F5;">
-    <h2>اطلبي سلسلتك الآن</h2>
+<form id="orderForm">
 
-    <form id="orderForm" style="max-width:400px;margin:auto;display:flex;flex-direction:column;gap:10px;">
+<input type="text" id="customerName" placeholder="اسمك" required>
 
-        <input type="text" id="name" placeholder="الاسم المطلوب على السلسلة" required>
-        <input type="text" id="address" placeholder="العنوان" required>
-        <input type="tel" id="phone" placeholder="رقم التليفون" required>
-        <select id="design" required>
-            <option value="">اختاري نوع التصميم</option>
-            <option>عادي</option>
-            <option>قلب ❤️</option>
-            <option>تاج 👑</option>
-            <option>مزدوج</option>
-        </select>
-        <select id="font" required>
-            <option value="">نوع الكتابة</option>
-            <option>عربي</option>
-            <option>إنجليزي</option>
+<input type="tel" id="phone" placeholder="رقم التليفون" required>
+
+<select id="governorate" required>
+    <option value="">اختاري المحافظة</option>
+    <option>القاهرة</option>
+    <option>الجيزة</option>
+    <option>الإسكندرية</option>
+</select>
+
+<input type="text" id="city" placeholder="المنطقة / المركز" required>
+
+<input type="text" id="street" placeholder="اسم الشارع" required>
+
+<input type="text" id="landmark" placeholder="علامة مميزة" required>
+
+<select id="design" required>
+    <option value="">نوع التصميم</option>
+    <option>عادي</option>
+    <option>قلب ❤️</option>
+    <option>تاج 👑</option>
+</select>
+
+<select id="font" required>
+    <option value="">نوع الكتابة</option>
+    <option>عربي</option>
+    <option>إنجليزي</option>
+</select>
+
+<input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
+
         </select>
         <button type="submit" style="background:#0F7B65;color:#fff;padding:15px;border:none;border-radius:8px;">
             تأكيد الطلب عبر واتساب
@@ -157,17 +207,23 @@ var timerInterval = setInterval(function() {
 
     </form>
 </section>
-
+<p style="font-size:14px;color:#555;">
+⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
+</p>
 <!-- Order Form Script -->
 <script>
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
 
-    var name = document.getElementById("name").value;
-    var address = document.getElementById("address").value;
-    var phone = document.getElementById("phone").value;
-    var design = document.getElementById("design").value;
-    var font = document.getElementById("font").value;
+var customerName = document.getElementById("customerName").value;
+var phone = document.getElementById("phone").value;
+var gov = document.getElementById("governorate").value;
+var city = document.getElementById("city").value;
+var street = document.getElementById("street").value;
+var landmark = document.getElementById("landmark").value;
+var design = document.getElementById("design").value;
+var font = document.getElementById("font").value;
+var chainName = document.getElementById("chainName").value;
 
     // التحقق من رقم الهاتف المصري
     var phonePattern = /^01[0-9]{9}$/;
@@ -192,16 +248,23 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     .then(res => res.json())
     .then(data => {
         // فتح واتساب برسالة الطلب
-        var message = "طلب جديد من DAHAP%0A"
-                    + "كود الطلب: " + orderID + "%0A"
-                    + "--------------------%0A"
-                    + "الاسم: " + name + "%0A"
-                    + "العنوان: " + address + "%0A"
-                    + "رقم الهاتف: " + phone + "%0A"
-                    + "نوع التصميم: " + design + "%0A"
-                    + "نوع الكتابة: " + font;
+       var message = `طلب جديد من DAHAP
+كود الطلب: ${orderID}
+--------------------
+اسم العميل: ${customerName}
+رقم الهاتف: ${phone}
 
-        window.open("https://wa.me/201106018685?text=" + message, "_blank");
+العنوان:
+${gov} - ${city}
+${street}
+علامة مميزة: ${landmark}
+
+الاسم على السلسلة: ${chainName}
+التصميم: ${design}
+الكتابة: ${font}`;
+
+    var url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+window.open(url, "_blank");
     })
     .catch(err => {
         alert("حدث خطأ، حاول مرة أخرى");
