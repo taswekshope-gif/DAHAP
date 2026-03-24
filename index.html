@@ -4,51 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>سلسلة باسمك - DAHAP</title>
+<title>DAHAP</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 
 <style>
+html {
+  scroll-behavior: smooth;
+}
+
 body {
     margin:0;
     font-family: 'Cairo', sans-serif;
     background:#fff;
-    color:#111;
 }
-.container {
-    padding:20px;
-    text-align:center;
-}
+
+/* HERO */
 .hero {
-    background: url('images/header.jpg') center/cover no-repeat;
-    color:#fff;
-    padding:80px 20px;
-    position:relative;
+    text-align:center;
+    padding:40px 20px;
 }
-.hero::before {
-    content:'';
-    position:absolute;
+
+.hero img {
     width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.5);
-    top:0;
-    left:0;
-}
-.hero * {
-    position:relative;
-}
-.gallery {
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    margin-top:20px;
-}
-.gallery img {
-    width:100%;
+    max-height:300px;
+    object-fit:cover;
     border-radius:10px;
 }
+
 h1 { color:#D4AF37; }
 
+/* زر */
 .btn {
     background:#0F7B65;
     color:#fff;
@@ -59,15 +45,26 @@ h1 { color:#D4AF37; }
     text-decoration:none;
 }
 
-.offer {
-    background:#F5F5F5;
-    padding:40px;
+/* Gallery */
+.gallery {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
 }
+
+.gallery img {
+    width:100%;
+    border-radius:10px;
+}
+
+/* Timer */
 .timer {
-    font-size:24px;
+    font-size:28px;
+    font-weight:bold;
     color:#D4AF37;
 }
 
+/* Form */
 form {
     max-width:400px;
     margin:auto;
@@ -75,19 +72,22 @@ form {
     flex-direction:column;
     gap:10px;
 }
+
 input, select, button {
     padding:12px;
     border-radius:8px;
     border:1px solid #ccc;
 }
+
 button {
     background:#0F7B65;
     color:#fff;
     border:none;
+    cursor:pointer;
 }
-.note {
-    font-size:14px;
-    color:#555;
+
+button:hover {
+    background:#095c4d;
 }
 </style>
 </head>
@@ -96,188 +96,131 @@ button {
 
 <!-- HERO -->
 <section class="hero">
+    <img src="images/header.jpg">
+
     <h1>DAHAP</h1>
     <h2>سلسلة باسمك بتصميم مميز</h2>
-    <p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
 
     <a class="btn" href="#order">اطلبي الآن</a>
 </section>
 
 <!-- صور -->
-<section class="container">
-    <h2>أشكال من شغلنا</h2>
+<section>
     <div class="gallery">
         <img src="images/1.jpg">
         <img src="images/2.jpg">
         <img src="images/3.jpg">
         <img src="images/4.jpg">
+        <img src="images/5.jpg">
     </div>
 </section>
 
-<!-- مميزات -->
-<section class="container">
-    <h2>ليه تختارينا؟</h2>
-    <p>✔ تصميم مخصوص – ✔ جودة عالية – ✔ هدية مثالية</p>
-</section>
-
 <!-- عرض -->
-<section class="offer">
-    <h2>عرض خاص</h2>
-    <p><del>349 جنيه</del> <strong>249 جنيه</strong></p>
+<section>
+    <h2>العرض بينتهي خلال</h2>
     <div class="timer" id="countdown"></div>
 </section>
 
 <!-- فورم -->
-<section id="order" class="container">
-    <h2>اطلبي سلسلتك الآن</h2>
-
-  <form id="orderForm">
+<section id="order">
+<form id="orderForm">
 
 <input type="text" id="customerName" placeholder="اسمك" required>
-
 <input type="tel" id="phone" placeholder="رقم التليفون" required>
 
-<!-- المحافظة -->
-<input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
-<datalist id="governorates">
-<option value="القاهرة">
-<option value="الجيزة">
-<option value="الإسكندرية">
-<option value="الدقهلية">
-<option value="البحيرة">
-<option value="الشرقية">
-<option value="القليوبية">
-<option value="المنوفية">
-<option value="الغربية">
-<option value="كفر الشيخ">
-<option value="دمياط">
-<option value="بورسعيد">
-<option value="الإسماعيلية">
-<option value="السويس">
-<option value="بني سويف">
-<option value="الفيوم">
-<option value="المنيا">
-<option value="أسيوط">
-<option value="سوهاج">
-<option value="قنا">
-<option value="الأقصر">
-<option value="أسوان">
-<option value="البحر الأحمر">
-<option value="الوادي الجديد">
-<option value="مطروح">
-<option value="شمال سيناء">
-<option value="جنوب سيناء">
-</datalist>
+<select id="governorate" required>
+<option value="">اختار المحافظة</option>
+<option>القاهرة</option>
+<option>الجيزة</option>
+<option>الإسكندرية</option>
+</select>
 
-<!-- المدينة / المركز -->
-<input list="cities" id="city" placeholder="المدينة / المركز" required>
-<datalist id="cities">
-<option value="مدينة نصر">
-<option value="مصر الجديدة">
-<option value="الهرم">
-<option value="فيصل">
-<option value="المهندسين">
-<option value="طنطا">
-<option value="الزقازيق">
-<option value="المنصورة">
-<option value="دمنهور">
-<option value="أسيوط">
-<option value="سوهاج">
-</datalist>
+<select id="city" required>
+<option value="">اختار المدينة</option>
+</select>
 
-<!-- العنوان -->
-<input type="text" id="address" placeholder="اسم الشارع ورقم الـ(عماره-دور-شقه) + علامة مميزة" required>
+<input type="text" id="address" placeholder="العنوان بالكامل" required>
 
-<!-- التصميم -->
 <select id="design">
-    <option selected>عادي</option>
-    <option>قلب ❤️</option>
-    <option>فراشة 🦋</option>
-    <option>تاج 👑</option>
-    <option>مزدوج</option>
+<option>عادي</option>
+<option>قلب ❤️</option>
+<option>فراشة 🦋</option>
+<option>تاج 👑</option>
+<option>مزدوج</option>
 </select>
 
-<!-- نوع الكتابة -->
 <select id="font">
-    <option selected>عربي</option>
-    <option>إنجليزي</option>
+<option>عربي</option>
+<option>إنجليزي</option>
 </select>
 
-<input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
-
-<p class="note">
-⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
-</p>
+<input type="text" id="chainName" placeholder="الاسم على السلسلة" required>
 
 <button type="submit">تأكيد الطلب</button>
 
 </form>
 </section>
 
-<!-- Countdown -->
 <script>
-var countDownDate = new Date();
-countDownDate.setHours(23,59,59,999);
+// المحافظات والمراكز
+const cities = {
+  "القاهرة": ["مدينة نصر","مصر الجديدة","المعادي"],
+  "الجيزة": ["الهرم","فيصل","المهندسين"],
+  "الإسكندرية": ["سموحة","العجمي","سيدي جابر"]
+};
 
-setInterval(function() {
+document.getElementById("governorate").addEventListener("change", function(){
+  let citySelect = document.getElementById("city");
+  citySelect.innerHTML = "<option>اختار المدينة</option>";
+
+  cities[this.value].forEach(function(c){
+    let option = document.createElement("option");
+    option.text = c;
+    citySelect.add(option);
+  });
+});
+
+
+// تايمر احترافي
+var end = new Date().getTime() + (24 * 60 * 60 * 1000);
+
+setInterval(function(){
   var now = new Date().getTime();
-  var distance = countDownDate - now;
+  var t = end - now;
 
-  var hours = Math.floor((distance / (1000 * 60 * 60)));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var h = Math.floor((t/(1000*60*60)));
+  var m = Math.floor((t%(1000*60*60))/(1000*60));
+  var s = Math.floor((t%(1000*60))/1000);
 
-  document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
-}, 1000);
-</script>
+  document.getElementById("countdown").innerHTML =
+  h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
+},1000);
 
-<!-- Script -->
-<script>
+
+// فورم
 document.getElementById("orderForm").addEventListener("submit", function(e){
-    e.preventDefault();
+e.preventDefault();
 
-    var customerName = document.getElementById("customerName").value;
-    var phone = document.getElementById("phone").value;
-    var gov = document.getElementById("governorate").value;
-    var city = document.getElementById("city").value;
-    var address = document.getElementById("address").value;
-    var design = document.getElementById("design").value;
-    var font = document.getElementById("font").value;
-    var chainName = document.getElementById("chainName").value;
+let name = customerName.value;
+let phone = phone.value;
+let gov = governorate.value;
+let city = city.value;
+let address = address.value;
+let design = design.value;
+let font = font.value;
+let chain = chainName.value;
 
-    var phonePattern = /^01[0-9]{9}$/;
-    if(!phonePattern.test(phone)) {
-        alert("أدخل رقم هاتف مصري صالح");
-        return;
-    }
-
-    var today = new Date();
-    var orderID = today.getFullYear().toString().slice(-2) +
-                  (today.getMonth()+1).toString().padStart(2,'0') +
-                  today.getDate().toString().padStart(2,'0') +
-                  Math.floor(Math.random()*900+100);
-
-    fetch("https://script.google.com/macros/s/AKfycbwDZjxJEWSJoJx3Ey2iKhhgi19JRPVDZ1Hz7KtS9pxAtEBh1ptxfiM5KVBngF9uljuy2w/exec", {
-        method: "POST",
-        body: JSON.stringify({customerName, phone, gov, city, street, landmark, design, font, chainName}),
-        headers: {'Content-Type':'application/json'}
-    });
-
-   var message = `طلب جديد من DAHAP
-كود الطلب: ${orderID}
---------------------
-اسم العميل: ${customerName}
+let message = `طلب جديد
+الاسم: ${name}
 رقم الهاتف: ${phone}
-
-العنوان:
-${gov} - ${city}
-${address}
-
-الاسم على السلسلة: ${chainName}
+العنوان: ${gov} - ${city} - ${address}
+الاسم على السلسلة: ${chain}
 التصميم: ${design}
 الكتابة: ${font}`;
 
-    var url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
+let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+
+window.open(url);
 });
 </script>
 
