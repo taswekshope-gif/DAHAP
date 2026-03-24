@@ -9,21 +9,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 
 <style>
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
     margin:0;
     font-family: 'Cairo', sans-serif;
     background:#fff;
     color:#111;
 }
+
+/* Container */
 .container {
     padding:20px;
     text-align:center;
+    max-width:900px;
+    margin:auto;
 }
+
+/* HERO */
 .hero {
     background: url('images/header.jpg') center/cover no-repeat;
+    min-height: 90vh;
     color:#fff;
     padding:80px 20px;
     position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    border-radius:10px;
 }
 .hero::before {
     content:'';
@@ -33,10 +50,37 @@ body {
     background:rgba(0,0,0,0.5);
     top:0;
     left:0;
+    border-radius:10px;
 }
 .hero * {
     position:relative;
 }
+.hero h1 {
+    color:#D4AF37;
+    font-size:3rem;
+    margin-bottom:10px;
+}
+.hero h2 {
+    font-size:2rem;
+    margin-bottom:10px;
+}
+
+/* Buttons */
+.btn {
+    background:#0F7B65;
+    color:#fff;
+    padding:15px 25px;
+    border-radius:8px;
+    display:inline-block;
+    margin-top:20px;
+    text-decoration:none;
+    font-weight:bold;
+}
+.btn:hover {
+    background:#095c4d;
+}
+
+/* Gallery */
 .gallery {
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -46,28 +90,31 @@ body {
 .gallery img {
     width:100%;
     border-radius:10px;
+    transition:0.3s;
 }
-h1 { color:#D4AF37; }
-
-.btn {
-    background:#0F7B65;
-    color:#fff;
-    padding:15px 25px;
-    border-radius:8px;
-    display:inline-block;
-    margin-top:20px;
-    text-decoration:none;
+.gallery img:hover {
+    transform:scale(1.05);
 }
 
+/* Offer */
 .offer {
     background:#F5F5F5;
     padding:40px;
+    border-radius:15px;
+    margin-top:20px;
+}
+.offer del {
+    color:#888;
+    margin-right:10px;
 }
 .timer {
-    font-size:24px;
+    font-size:28px;
+    font-weight:bold;
     color:#D4AF37;
+    margin-top:15px;
 }
 
+/* Form */
 form {
     max-width:400px;
     margin:auto;
@@ -84,6 +131,11 @@ button {
     background:#0F7B65;
     color:#fff;
     border:none;
+    cursor:pointer;
+    font-weight:bold;
+}
+button:hover {
+    background:#095c4d;
 }
 .note {
     font-size:14px;
@@ -91,7 +143,6 @@ button {
 }
 </style>
 </head>
-
 <body>
 
 <!-- HERO -->
@@ -99,7 +150,6 @@ button {
     <h1>DAHAP</h1>
     <h2>سلسلة باسمك بتصميم مميز</h2>
     <p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
-
     <a class="btn" href="#order">اطلبي الآن</a>
 </section>
 
@@ -111,6 +161,7 @@ button {
         <img src="images/2.jpg">
         <img src="images/3.jpg">
         <img src="images/4.jpg">
+        <img src="images/5.jpg">
     </div>
 </section>
 
@@ -130,108 +181,141 @@ button {
 <!-- فورم -->
 <section id="order" class="container">
     <h2>اطلبي سلسلتك الآن</h2>
-
   <form id="orderForm">
+    <input type="text" id="customerName" placeholder="اسمك" required>
+    <input type="tel" id="phone" placeholder="رقم التليفون" required>
 
-<input type="text" id="customerName" placeholder="اسمك" required>
+    <!-- المحافظة -->
+    <input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
+    <datalist id="governorates">
+        <option value="القاهرة">
+        <option value="الجيزة">
+        <option value="الإسكندرية">
+        <option value="الدقهلية">
+        <option value="البحيرة">
+        <option value="الشرقية">
+        <option value="القليوبية">
+        <option value="المنوفية">
+        <option value="الغربية">
+        <option value="كفر الشيخ">
+        <option value="دمياط">
+        <option value="بورسعيد">
+        <option value="الإسماعيلية">
+        <option value="السويس">
+        <option value="بني سويف">
+        <option value="الفيوم">
+        <option value="المنيا">
+        <option value="أسيوط">
+        <option value="سوهاج">
+        <option value="قنا">
+        <option value="الأقصر">
+        <option value="أسوان">
+        <option value="البحر الأحمر">
+        <option value="الوادي الجديد">
+        <option value="مطروح">
+        <option value="شمال سيناء">
+        <option value="جنوب سيناء">
+    </datalist>
 
-<input type="tel" id="phone" placeholder="رقم التليفون" required>
+    <!-- المدينة / المركز -->
+    <select id="city" required>
+        <option value="">اختار المدينة</option>
+    </select>
 
-<!-- المحافظة -->
-<input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
-<datalist id="governorates">
-<option value="القاهرة">
-<option value="الجيزة">
-<option value="الإسكندرية">
-<option value="الدقهلية">
-<option value="البحيرة">
-<option value="الشرقية">
-<option value="القليوبية">
-<option value="المنوفية">
-<option value="الغربية">
-<option value="كفر الشيخ">
-<option value="دمياط">
-<option value="بورسعيد">
-<option value="الإسماعيلية">
-<option value="السويس">
-<option value="بني سويف">
-<option value="الفيوم">
-<option value="المنيا">
-<option value="أسيوط">
-<option value="سوهاج">
-<option value="قنا">
-<option value="الأقصر">
-<option value="أسوان">
-<option value="البحر الأحمر">
-<option value="الوادي الجديد">
-<option value="مطروح">
-<option value="شمال سيناء">
-<option value="جنوب سيناء">
-</datalist>
+    <input type="text" id="address" placeholder="اسم الشارع ورقم الـ(عماره-دور-شقه) + علامة مميزة" required>
 
-<!-- المدينة / المركز -->
-<input list="cities" id="city" placeholder="المدينة / المركز" required>
-<datalist id="cities">
-<option value="مدينة نصر">
-<option value="مصر الجديدة">
-<option value="الهرم">
-<option value="فيصل">
-<option value="المهندسين">
-<option value="طنطا">
-<option value="الزقازيق">
-<option value="المنصورة">
-<option value="دمنهور">
-<option value="أسيوط">
-<option value="سوهاج">
-</datalist>
+    <!-- التصميم -->
+    <select id="design">
+        <option selected>عادي</option>
+        <option>قلب ❤️</option>
+        <option>فراشة 🦋</option>
+        <option>تاج 👑</option>
+        <option>مزدوج</option>
+    </select>
 
-<!-- العنوان -->
-<input type="text" id="address" placeholder="اسم الشارع ورقم الـ(عماره-دور-شقه) + علامة مميزة" required>
+    <!-- نوع الكتابة -->
+    <select id="font">
+        <option selected>عربي</option>
+        <option>إنجليزي</option>
+    </select>
 
-<!-- التصميم -->
-<select id="design">
-    <option selected>عادي</option>
-    <option>قلب ❤️</option>
-    <option>فراشة 🦋</option>
-    <option>تاج 👑</option>
-    <option>مزدوج</option>
-</select>
+    <input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
 
-<!-- نوع الكتابة -->
-<select id="font">
-    <option selected>عربي</option>
-    <option>إنجليزي</option>
-</select>
+    <p class="note">
+        ⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
+    </p>
 
-<input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
-
-<p class="note">
-⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
-</p>
-
-<button type="submit">تأكيد الطلب</button>
-
-</form>
+    <button type="submit">تأكيد الطلب</button>
+  </form>
 </section>
 
 <!-- Countdown -->
 <script>
-var countDownDate = new Date();
-countDownDate.setHours(23,59,59,999);
+// تايمر احترافي
+var end = new Date();
+end.setHours(23,59,59,999);
 
 setInterval(function() {
   var now = new Date().getTime();
-  var distance = countDownDate - now;
+  var distance = end - now;
 
-  var hours = Math.floor((distance / (1000 * 60 * 60)));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var h = Math.floor(distance / (1000 * 60 * 60));
+  var m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var s = Math.floor((distance % (1000 * 60)) / 1000);
 
-  document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
+  document.getElementById("countdown").innerHTML =
+  h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
 }, 1000);
 </script>
 
 <!-- Script -->
 <script>
+// المحافظات والمراكز
+const govData = {
+"القاهرة": ["مدينة نصر","مصر الجديدة","المعادي","حلوان","عين شمس","المطرية","التجمع"],
+"الجيزة": ["الهرم","فيصل","المهندسين","6 أكتوبر","الشيخ زايد","العجوزة"],
+"الإسكندرية": ["سموحة","سيدي جابر","العجمي","محرم بك","المنتزه"],
+"الدقهلية": ["المنصورة","ميت غمر","دكرنس","بلقاس"],
+"البحيرة": ["دمنهور","كفر الدوار","رشيد"],
+"الشرقية": ["الزقازيق","العاشر من رمضان","بلبيس"],
+"القليوبية": ["بنها","شبرا الخيمة","قليوب"],
+"المنوفية": ["شبين الكوم","منوف"],
+"الغربية": ["طنطا","المحلة الكبرى"],
+"كفر الشيخ": ["كفر الشيخ","دسوق"],
+"دمياط": ["دمياط","دمياط الجديدة"],
+"بورسعيد": ["بورسعيد"],
+"الإسماعيلية": ["الإسماعيلية"],
+"السويس": ["السويس"],
+"بني سويف": ["بني سويف","ناصر"],
+"الفيوم": ["الفيوم","سنورس"],
+"المنيا": ["المنيا","العدوة"],
+"أسيوط": ["أسيوط","ديروط"],
+"سوهاج": ["سوهاج","جرجا"],
+"قنا": ["قنا","نجع حمادي"],
+"الأقصر": ["الأقصر","إسنا"],
+"أسوان": ["أسوان","كوم أمبو"],
+"البحر الأحمر": ["الغردقة","سفاجا"],
+"الوادي الجديد": ["الخارجة","باريس"],
+"مطروح": ["مرسى مطروح","الحمام"],
+"شمال سيناء": ["العريش","رفح"],
+"جنوب سيناء": ["دهب","شرم الشيخ","نويبع"]
+};
+
+document.getElementById("governorate").addEventListener("input", function(){
+  let city = document.getElementById("city");
+  city.innerHTML = "<option>اختار المدينة</option>";
+
+  if(govData[this.value]){
+    govData[this.value].forEach(function(c){
+      let option = document.createElement("option");
+      option.value = c;
+      option.text = c;
+      city.appendChild(option);
+    });
+  }
+});
+
+// فورم وواتساب
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
 
@@ -244,25 +328,29 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     var font = document.getElementById("font").value;
     var chainName = document.getElementById("chainName").value;
 
+    // رقم مصري
     var phonePattern = /^01[0-9]{9}$/;
     if(!phonePattern.test(phone)) {
         alert("أدخل رقم هاتف مصري صالح");
         return;
     }
 
+    // كود الطلب
     var today = new Date();
     var orderID = today.getFullYear().toString().slice(-2) +
                   (today.getMonth()+1).toString().padStart(2,'0') +
                   today.getDate().toString().padStart(2,'0') +
                   Math.floor(Math.random()*900+100);
 
+    // إرسال للـ Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbwDZjxJEWSJoJx3Ey2iKhhgi19JRPVDZ1Hz7KtS9pxAtEBh1ptxfiM5KVBngF9uljuy2w/exec", {
         method: "POST",
-        body: JSON.stringify({customerName, phone, gov, city, street, landmark, design, font, chainName}),
+        body: JSON.stringify({customerName, phone, gov, city, address, design, font, chainName}),
         headers: {'Content-Type':'application/json'}
     });
 
-   var message = `طلب جديد من DAHAP
+    // رسالة واتساب
+    var message = `طلب جديد من DAHAP
 كود الطلب: ${orderID}
 --------------------
 اسم العميل: ${customerName}
@@ -276,8 +364,12 @@ ${address}
 التصميم: ${design}
 الكتابة: ${font}`;
 
-    var url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
+    alert("تم تجهيز طلبك ✔ سيتم تحويلك للواتساب");
+
+    setTimeout(()=>{
+        var url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+        window.open(url, "_blank");
+    },1000);
 });
 </script>
 
