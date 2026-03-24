@@ -131,44 +131,87 @@ button {
 <section id="order" class="container">
     <h2>اطلبي سلسلتك الآن</h2>
 
-    <form id="orderForm">
+  <form id="orderForm">
 
-        <input type="text" id="customerName" placeholder="اسمك" required>
-        <input type="tel" id="phone" placeholder="رقم التليفون" required>
+<input type="text" id="customerName" placeholder="اسمك" required>
 
-        <select id="governorate" required>
-            <option value="">اختاري المحافظة</option>
-            <option>القاهرة</option>
-            <option>الجيزة</option>
-            <option>الإسكندرية</option>
-        </select>
+<input type="tel" id="phone" placeholder="رقم التليفون" required>
 
-        <input type="text" id="city" placeholder="المنطقة / المركز" required>
-        <input type="text" id="street" placeholder="اسم الشارع" required>
-        <input type="text" id="landmark" placeholder="علامة مميزة" required>
+<!-- المحافظة -->
+<input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
+<datalist id="governorates">
+<option value="القاهرة">
+<option value="الجيزة">
+<option value="الإسكندرية">
+<option value="الدقهلية">
+<option value="البحيرة">
+<option value="الشرقية">
+<option value="القليوبية">
+<option value="المنوفية">
+<option value="الغربية">
+<option value="كفر الشيخ">
+<option value="دمياط">
+<option value="بورسعيد">
+<option value="الإسماعيلية">
+<option value="السويس">
+<option value="بني سويف">
+<option value="الفيوم">
+<option value="المنيا">
+<option value="أسيوط">
+<option value="سوهاج">
+<option value="قنا">
+<option value="الأقصر">
+<option value="أسوان">
+<option value="البحر الأحمر">
+<option value="الوادي الجديد">
+<option value="مطروح">
+<option value="شمال سيناء">
+<option value="جنوب سيناء">
+</datalist>
 
-        <select id="design" required>
-            <option value="">نوع التصميم</option>
-            <option>عادي</option>
-            <option>قلب ❤️</option>
-            <option>تاج 👑</option>
-        </select>
+<!-- المدينة / المركز -->
+<input list="cities" id="city" placeholder="المدينة / المركز" required>
+<datalist id="cities">
+<option value="مدينة نصر">
+<option value="مصر الجديدة">
+<option value="الهرم">
+<option value="فيصل">
+<option value="المهندسين">
+<option value="طنطا">
+<option value="الزقازيق">
+<option value="المنصورة">
+<option value="دمنهور">
+<option value="أسيوط">
+<option value="سوهاج">
+</datalist>
 
-        <select id="font" required>
-            <option value="">نوع الكتابة</option>
-            <option>عربي</option>
-            <option>إنجليزي</option>
-        </select>
+<!-- العنوان -->
+<input type="text" id="address" placeholder="اسم الشارع + علامة مميزة" required>
 
-        <input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
+<!-- التصميم -->
+<select id="design">
+    <option selected>عادي</option>
+    <option>قلب ❤️</option>
+    <option>فراشة 🦋</option>
+    <option>تاج 👑</option>
+    <option>مزدوج</option>
+</select>
 
-        <p class="note">
-        ⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
-        </p>
+<!-- نوع الكتابة -->
+<select id="font">
+    <option selected>عربي</option>
+    <option>إنجليزي</option>
+</select>
 
-        <button type="submit">تأكيد الطلب</button>
+<input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
 
-    </form>
+<p class="note">
+⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
+</p>
+
+<button type="submit">تأكيد الطلب</button>
+
+</form>
 </section>
 
 <!-- Countdown -->
@@ -196,8 +239,7 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     var phone = document.getElementById("phone").value;
     var gov = document.getElementById("governorate").value;
     var city = document.getElementById("city").value;
-    var street = document.getElementById("street").value;
-    var landmark = document.getElementById("landmark").value;
+    var address = document.getElementById("address").value;
     var design = document.getElementById("design").value;
     var font = document.getElementById("font").value;
     var chainName = document.getElementById("chainName").value;
@@ -220,7 +262,7 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
         headers: {'Content-Type':'application/json'}
     });
 
-    var message = `طلب جديد من DAHAP
+   var message = `طلب جديد من DAHAP
 كود الطلب: ${orderID}
 --------------------
 اسم العميل: ${customerName}
@@ -228,8 +270,7 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
 
 العنوان:
 ${gov} - ${city}
-${street}
-علامة مميزة: ${landmark}
+${address}
 
 الاسم على السلسلة: ${chainName}
 التصميم: ${design}
