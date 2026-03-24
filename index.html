@@ -3,16 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>سلسلة باسمك - DAHAP</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 
 <style>
 /* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
     margin:0;
@@ -52,18 +49,9 @@ body {
     left:0;
     border-radius:10px;
 }
-.hero * {
-    position:relative;
-}
-.hero h1 {
-    color:#D4AF37;
-    font-size:3rem;
-    margin-bottom:10px;
-}
-.hero h2 {
-    font-size:2rem;
-    margin-bottom:10px;
-}
+.hero * { position:relative; }
+.hero h1 { color:#D4AF37; font-size:3rem; margin-bottom:10px; }
+.hero h2 { font-size:2rem; margin-bottom:10px; }
 
 /* Buttons */
 .btn {
@@ -76,9 +64,7 @@ body {
     text-decoration:none;
     font-weight:bold;
 }
-.btn:hover {
-    background:#095c4d;
-}
+.btn:hover { background:#095c4d; }
 
 /* Gallery */
 .gallery {
@@ -92,9 +78,7 @@ body {
     border-radius:10px;
     transition:0.3s;
 }
-.gallery img:hover {
-    transform:scale(1.05);
-}
+.gallery img:hover { transform:scale(1.05); }
 
 /* Offer */
 .offer {
@@ -103,10 +87,7 @@ body {
     border-radius:15px;
     margin-top:20px;
 }
-.offer del {
-    color:#888;
-    margin-right:10px;
-}
+.offer del { color:#888; margin-right:10px; }
 .timer {
     font-size:28px;
     font-weight:bold;
@@ -122,11 +103,7 @@ form {
     flex-direction:column;
     gap:10px;
 }
-input, select, button {
-    padding:12px;
-    border-radius:8px;
-    border:1px solid #ccc;
-}
+input, select, button { padding:12px; border-radius:8px; border:1px solid #ccc; }
 button {
     background:#0F7B65;
     color:#fff;
@@ -134,12 +111,16 @@ button {
     cursor:pointer;
     font-weight:bold;
 }
-button:hover {
-    background:#095c4d;
-}
-.note {
-    font-size:14px;
-    color:#555;
+button:hover { background:#095c4d; }
+.note { font-size:14px; color:#555; }
+
+#successMessage {
+    display:none;
+    background:#0F7B65;
+    color:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-top:20px;
 }
 </style>
 </head>
@@ -181,77 +162,76 @@ button:hover {
 <!-- فورم -->
 <section id="order" class="container">
     <h2>اطلبي سلسلتك الآن</h2>
-  <form id="orderForm">
-    <input type="text" id="customerName" placeholder="اسمك" required>
-    <input type="tel" id="phone" placeholder="رقم التليفون" required>
+    <form id="orderForm">
+        <input type="text" id="customerName" placeholder="اسمك" required>
+        <input type="tel" id="phone" placeholder="رقم التليفون" required>
 
-    <!-- المحافظة -->
-    <input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
-    <datalist id="governorates">
-        <option value="القاهرة">
-        <option value="الجيزة">
-        <option value="الإسكندرية">
-        <option value="الدقهلية">
-        <option value="البحيرة">
-        <option value="الشرقية">
-        <option value="القليوبية">
-        <option value="المنوفية">
-        <option value="الغربية">
-        <option value="كفر الشيخ">
-        <option value="دمياط">
-        <option value="بورسعيد">
-        <option value="الإسماعيلية">
-        <option value="السويس">
-        <option value="بني سويف">
-        <option value="الفيوم">
-        <option value="المنيا">
-        <option value="أسيوط">
-        <option value="سوهاج">
-        <option value="قنا">
-        <option value="الأقصر">
-        <option value="أسوان">
-        <option value="البحر الأحمر">
-        <option value="الوادي الجديد">
-        <option value="مطروح">
-        <option value="شمال سيناء">
-        <option value="جنوب سيناء">
-    </datalist>
+        <!-- المحافظة -->
+        <input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
+        <datalist id="governorates">
+            <option value="القاهرة">
+            <option value="الجيزة">
+            <option value="الإسكندرية">
+            <option value="الدقهلية">
+            <option value="البحيرة">
+            <option value="الشرقية">
+            <option value="القليوبية">
+            <option value="المنوفية">
+            <option value="الغربية">
+            <option value="كفر الشيخ">
+            <option value="دمياط">
+            <option value="بورسعيد">
+            <option value="الإسماعيلية">
+            <option value="السويس">
+            <option value="بني سويف">
+            <option value="الفيوم">
+            <option value="المنيا">
+            <option value="أسيوط">
+            <option value="سوهاج">
+            <option value="قنا">
+            <option value="الأقصر">
+            <option value="أسوان">
+            <option value="البحر الأحمر">
+            <option value="الوادي الجديد">
+            <option value="مطروح">
+            <option value="شمال سيناء">
+            <option value="جنوب سيناء">
+        </datalist>
 
-    <!-- المدينة / المركز -->
-    <select id="city" required>
-        <option value="">اختار المدينة</option>
-    </select>
+        <!-- المدينة / المركز -->
+        <select id="city" required>
+            <option value="">اختار المدينة</option>
+        </select>
 
-    <input type="text" id="address" placeholder="اسم الشارع ورقم الـ(عماره-دور-شقه) + علامة مميزة" required>
+        <input type="text" id="address" placeholder="اسم الشارع ورقم العمارة والدور + علامة مميزة" required>
 
-    <!-- التصميم -->
-    <select id="design">
-        <option selected>عادي</option>
-        <option>قلب ❤️</option>
-        <option>فراشة 🦋</option>
-        <option>تاج 👑</option>
-        <option>مزدوج</option>
-    </select>
+        <!-- التصميم -->
+        <select id="design">
+            <option selected>عادي</option>
+            <option>قلب ❤️</option>
+            <option>فراشة 🦋</option>
+            <option>تاج 👑</option>
+            <option>مزدوج</option>
+        </select>
 
-    <!-- نوع الكتابة -->
-    <select id="font">
-        <option selected>عربي</option>
-        <option>إنجليزي</option>
-    </select>
+        <!-- نوع الكتابة -->
+        <select id="font">
+            <option selected>عربي</option>
+            <option>إنجليزي</option>
+        </select>
 
-    <input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
+        <input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
 
-    <p class="note">
-        ⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب
-    </p>
+        <p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
 
-    <button type="submit">تأكيد الطلب</button>
-  </form>
+        <button type="submit">تأكيد الطلب</button>
+    </form>
+
+    <div id="successMessage">✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.</div>
 </section>
 
-<!-- Countdown -->
+<!-- تايمر -->
 <script>
-// تايمر احترافي
 var end = new Date();
 end.setHours(23,59,59,999);
 
@@ -259,117 +239,105 @@ setInterval(function() {
   var now = new Date().getTime();
   var distance = end - now;
 
-  var h = Math.floor(distance / (1000 * 60 * 60));
-  var m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var s = Math.floor((distance % (1000 * 60)) / 1000);
+  var h = String(Math.floor(distance / (1000 * 60 * 60))).padStart(2,'0');
+  var m = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2,'0');
+  var s = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2,'0');
 
-  document.getElementById("countdown").innerHTML =
-  h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
+  document.getElementById("countdown").innerHTML = h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
 }, 1000);
 </script>
 
-<!-- Script -->
+<!-- المحافظات والمراكز -->
 <script>
-// المحافظات والمراكز
 const govData = {
-"القاهرة": ["مدينة نصر","مصر الجديدة","المعادي","حلوان","عين شمس","المطرية","التجمع"],
-"الجيزة": ["الهرم","فيصل","المهندسين","6 أكتوبر","الشيخ زايد","العجوزة"],
-"الإسكندرية": ["سموحة","سيدي جابر","العجمي","محرم بك","المنتزه"],
-"الدقهلية": ["المنصورة","ميت غمر","دكرنس","بلقاس"],
-"البحيرة": ["دمنهور","كفر الدوار","رشيد"],
-"الشرقية": ["الزقازيق","العاشر من رمضان","بلبيس"],
-"القليوبية": ["بنها","شبرا الخيمة","قليوب"],
-"المنوفية": ["شبين الكوم","منوف"],
-"الغربية": ["طنطا","المحلة الكبرى"],
-"كفر الشيخ": ["كفر الشيخ","دسوق"],
-"دمياط": ["دمياط","دمياط الجديدة"],
-"بورسعيد": ["بورسعيد"],
-"الإسماعيلية": ["الإسماعيلية"],
-"السويس": ["السويس"],
-"بني سويف": ["بني سويف","ناصر"],
-"الفيوم": ["الفيوم","سنورس"],
-"المنيا": ["المنيا","العدوة"],
-"أسيوط": ["أسيوط","ديروط"],
-"سوهاج": ["سوهاج","جرجا"],
-"قنا": ["قنا","نجع حمادي"],
-"الأقصر": ["الأقصر","إسنا"],
-"أسوان": ["أسوان","كوم أمبو"],
-"البحر الأحمر": ["الغردقة","سفاجا"],
-"الوادي الجديد": ["الخارجة","باريس"],
-"مطروح": ["مرسى مطروح","الحمام"],
-"شمال سيناء": ["العريش","رفح"],
-"جنوب سيناء": ["دهب","شرم الشيخ","نويبع"]
+"القاهرة":["الشرابية","الزمالك","النزهة","المعادي","مصر الجديدة","15 مايو","العمرانية","البساتين","أحياء أخرى"],
+"الجيزة":["الهرم","فيصل","المهندسين","6 أكتوبر","الشيخ زايد","البدرشين","الصف","العياط","أوسيم","كرداسة"],
+"الإسكندرية":["سموحة","سيدي جابر","العجمي","محرم بك","المنتزه"],
+"الدقهلية":["المنصورة","ميت غمر","طلخا","دكرنس","بلقاس","السنبلاوين","جمصة"],
+"البحيرة":["دمنهور","كفر الدوار","إدكو","أبو حمص","الدلنجات","حوش عيسى","الرحمانية","المحمودية"],
+"الشرقية":["الزقازيق","العاشر من رمضان","بلبيس","فاقوس","مشتول السوق"],
+"القليوبية":["بنها","شبرا الخيمة","القناطر الخيرية","الخانكة","كفر شكر","طوخ","شبين القناطر"],
+"المنوفية":["شبين الكوم","منوف","أشمون","تلا","بركة السبع"],
+"الغربية":["طنطا","المحلة الكبرى","كفر الزيات","زفتى","سمنود"],
+"كفر الشيخ":["كفر الشيخ","دسوق","برج البرلس","مصيف بلطيم"],
+"دمياط":["دمياط","دمياط الجديدة","رأس البر"],
+"بورسعيد":["بورسعيد","بورفؤاد","العربية"],
+"الإسماعيلية":["الإسماعيلية","فايد","القنطرة شرق","القنطرة غرب"],
+"السويس":["السويس","العين السخنة","جبل قاسم"],
+"بني سويف":["بني سويف","ناصر","ببا","الواسطى"],
+"الفيوم":["الفيوم","سنورس","إطسا","طامية"],
+"المنيا":["المنيا","العدوة","بني مزار","مطاي","مغاغة"],
+"أسيوط":["أسيوط","ديروط","أبوتيج","القوصية"],
+"سوهاج":["سوهاج","جرجا","أخميم","طهطا","ساقلتة"],
+"قنا":["قنا","نجع حمادي","قفط","دشنا","الأقصير"],
+"الأقصر":["الأقصر","إسنا","أرمنت","البياضية","الزينية"],
+"أسوان":["أسوان","كوم أمبو","نصر النوبة","الدبورية","أبو سمبل"],
+"البحر الأحمر":["الغردقة","سفاجا","رأس غارب","القصير","مرسى علم"],
+"الوادي الجديد":["الخارجة","باريس","الفرافرة","موط"],
+"مطروح":["مرسى مطروح","الحمام","الضبعة","النجيلة"],
+"شمال سيناء":["العريش","رفح","شيخ زويد","بئر العبد"],
+"جنوب سيناء":["دهب","شرم الشيخ","نويبع","طابا","سانت كاترين"]
 };
 
 document.getElementById("governorate").addEventListener("input", function(){
   let city = document.getElementById("city");
-  city.innerHTML = "<option>اختار المدينة</option>";
-
+  city.innerHTML = '<option value="">اختار المدينة</option>';
   if(govData[this.value]){
-    govData[this.value].forEach(function(c){
-      let option = document.createElement("option");
-      option.value = c;
-      option.text = c;
-      city.appendChild(option);
+    govData[this.value].forEach(c => {
+      let opt = document.createElement("option");
+      opt.value = c; opt.text = c;
+      city.appendChild(opt);
     });
   }
 });
+</script>
 
-// فورم وواتساب
+<!-- فورم وواتساب -->
+<script>
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
+    let customerName = document.getElementById("customerName").value;
+    let phone = document.getElementById("phone").value;
+    let gov = document.getElementById("governorate").value;
+    let city = document.getElementById("city").value;
+    let address = document.getElementById("address").value;
+    let design = document.getElementById("design").value;
+    let font = document.getElementById("font").value;
+    let chainName = document.getElementById("chainName").value;
 
-    var customerName = document.getElementById("customerName").value;
-    var phone = document.getElementById("phone").value;
-    var gov = document.getElementById("governorate").value;
-    var city = document.getElementById("city").value;
-    var address = document.getElementById("address").value;
-    var design = document.getElementById("design").value;
-    var font = document.getElementById("font").value;
-    var chainName = document.getElementById("chainName").value;
-
-    // رقم مصري
-    var phonePattern = /^01[0-9]{9}$/;
-    if(!phonePattern.test(phone)) {
+    if(!/^01[0-9]{9}$/.test(phone)){
         alert("أدخل رقم هاتف مصري صالح");
         return;
     }
 
-    // كود الطلب
-    var today = new Date();
-    var orderID = today.getFullYear().toString().slice(-2) +
-                  (today.getMonth()+1).toString().padStart(2,'0') +
-                  today.getDate().toString().padStart(2,'0') +
-                  Math.floor(Math.random()*900+100);
-
-    // إرسال للـ Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbwDZjxJEWSJoJx3Ey2iKhhgi19JRPVDZ1Hz7KtS9pxAtEBh1ptxfiM5KVBngF9uljuy2w/exec", {
-        method: "POST",
-        body: JSON.stringify({customerName, phone, gov, city, address, design, font, chainName}),
+        method:"POST",
+        body: JSON.stringify({customerName, phone, governorate: gov, city, address, design, font, chainName}),
         headers: {'Content-Type':'application/json'}
-    });
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        let orderID = data.orderID;
+        document.getElementById("orderForm").style.display="none";
+        document.getElementById("successMessage").style.display="block";
+        document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
 
-    // رسالة واتساب
-    var message = `طلب جديد من DAHAP
+        var message = `طلب جديد من DAHAP
 كود الطلب: ${orderID}
 --------------------
 اسم العميل: ${customerName}
 رقم الهاتف: ${phone}
-
 العنوان:
 ${gov} - ${city}
 ${address}
-
 الاسم على السلسلة: ${chainName}
 التصميم: ${design}
 الكتابة: ${font}`;
 
-    alert("تم تجهيز طلبك ✔ سيتم تحويلك للواتساب");
-
-    setTimeout(()=>{
-        var url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-        window.open(url, "_blank");
-    },1000);
+        setTimeout(()=>{
+            window.open("https://wa.me/201106018685?text="+encodeURIComponent(message), "_blank");
+        },1000);
+    });
 });
 </script>
 
