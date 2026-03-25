@@ -131,15 +131,11 @@ document.getElementById("governorate").addEventListener("input", function(){
   let city = document.getElementById("city");
   city.innerHTML = '<option value="">اختار المدينة</option>';
   if(govData[this.value]){
-    govData[this.value].forEach(c => {
-      let opt = document.createElement("option");
-      opt.value = c; opt.text = c;
-      city.appendChild(opt);
-    });
+    govData[this.value].forEach(c => { let opt = document.createElement("option"); opt.value = c; opt.text = c; city.appendChild(opt); });
   }
 });
-</script>
 
+  // Form Submission
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
     let customerName = document.getElementById("customerName").value.trim();
