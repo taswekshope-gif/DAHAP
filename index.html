@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>سلسلة باسمك - DAHAP</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
-
 <style>
 body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
 html { scroll-behavior: smooth; }
@@ -36,16 +34,14 @@ button:hover { background:#095c4d; }
 </head>
 <body>
 
-<!-- HERO -->
 <section class="hero">
-    <img src="images/logo.png" style="width:120px; margin-bottom:15px;">
-    <h1>DAHAP</h1>
-    <h2>سلسلة باسمك بتصميم مميز</h2>
-    <p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
-    <a class="btn" href="#order">اطلبي الآن</a>
+<img src="images/logo.png" style="width:120px; margin-bottom:15px;">
+<h1>DAHAP</h1>
+<h2>سلسلة باسمك بتصميم مميز</h2>
+<p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
+<a class="btn" href="#order">اطلبي الآن</a>
 </section>
 
-<!-- Gallery -->
 <section class="container">
 <h2>أشكال من شغلنا</h2>
 <div class="gallery">
@@ -57,20 +53,17 @@ button:hover { background:#095c4d; }
 </div>
 </section>
 
-<!-- Features -->
 <section class="container">
 <h2>ليه تختارينا؟</h2>
 <p>✔ تصميم مخصوص – ✔ جودة عالية – ✔ هدية مثالية</p>
 </section>
 
-<!-- Offer -->
 <section class="offer">
 <h2>عرض خاص</h2>
 <p><del>349 جنيه</del> <strong>249 جنيه</strong></p>
 <div class="timer" id="countdown"></div>
 </section>
 
-<!-- Form -->
 <section id="order" class="container">
 <h2>اطلبي سلسلتك الآن</h2>
 <form id="orderForm">
@@ -91,8 +84,8 @@ button:hover { background:#095c4d; }
 <div id="successMessage"></div>
 </section>
 
-<!-- Countdown -->
 <script>
+// Countdown Timer
 var end = new Date(); end.setHours(23,59,59,999);
 setInterval(function() {
   var now = new Date().getTime();
@@ -102,7 +95,6 @@ setInterval(function() {
   var s = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2,'0');
   document.getElementById("countdown").innerHTML = h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
 }, 1000);
-</script>
 
 <!-- Governorate & City -->
 <script>
@@ -147,12 +139,9 @@ document.getElementById("governorate").addEventListener("input", function(){
   }
 });
 </script>
-
-<!-- Form & WhatsApp -->
-<script>
+// Form Submission
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
-
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
     let gov = document.getElementById("governorate").value;
@@ -161,24 +150,10 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     let design = document.getElementById("design").value;
     let font = document.getElementById("font").value;
     let chainName = document.getElementById("chainName").value.trim();
+    if(!/^01[0-9]{9}$/.test(phone)){ alert("أدخل رقم هاتف مصري صالح"); return; }
 
-    if(!/^01[0-9]{9}$/.test(phone)){
-        alert("أدخل رقم هاتف مصري صالح");
-        return;
-    }
-
-    let btn = document.querySelector("#orderForm button");
-    btn.innerHTML = "جاري الإرسال...";
-    btn.disabled = true;
-
-    let now = new Date();
-    let timestamp = now.toLocaleString('ar-EG');
-
-    // fallback ID تصاعدي مؤقت لو الشيت مبيردش
-    let fallbackID = now.getFullYear().toString().slice(-2) +
-                     (now.getMonth()+1).toString().padStart(2,'0') +
-                     now.getDate().toString().padStart(2,'0') +
-                     Math.floor(Math.random()*900+100);
+    let btn = document.querySelector("#orderForm button"); btn.innerHTML = "جاري الإرسال..."; btn.disabled = true;
+    let timestamp = new Date().toLocaleString('ar-EG');
 
     fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
         method:"POST",
@@ -187,9 +162,7 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     })
     .then(res => res.json())
     .then(data => {
-        // orderID من الشيت (تصاعدي)
-        let orderID = data.orderID || fallbackID;
-
+        let orderID = data.orderID || "????";
         document.getElementById("orderForm").style.display="none";
         document.getElementById("successMessage").style.display="block";
         document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
@@ -211,24 +184,7 @@ ${address}
     })
     .catch(err => {
         console.log(err);
-        let message = `DAHAP
-كود الطلب: ${fallbackID}
---------------------
-اسم العميل: ${customerName}
-رقم الهاتف: ${phone}
-العنوان:
-${gov} - ${city}
-${address}
-الاسم على السلسلة: ${chainName}
-التصميم: ${design}
-الكتابة: ${font}
-الوقت: ${timestamp}`;
-
-        window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
-
-        document.getElementById("orderForm").style.display="none";
-        document.getElementById("successMessage").style.display="block";
-        document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${fallbackID}`;
+        alert("حصل خطأ في إرسال الطلب، حاول مرة أخرى.");
     });
 });
 </script>
