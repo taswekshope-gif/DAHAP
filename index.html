@@ -91,18 +91,18 @@ button:hover { background:#095c4d; }
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
-// ✅ تايمر 3 ساعات
+// ✅ تايمر 3 ساعات (مظبوط)
 let duration = 3 * 60 * 60;
+
 setInterval(()=>{
-let h = Math.floor(duration/3600);
-let m = Math.floor((duration%3600)/60);
-let s = duration%60;
+  let h = Math.floor(duration/3600);
+  let m = Math.floor((duration%3600)/60);
+  let s = duration%60;
 
-document.getElementById("h").innerText = String(h).padStart(2,'0');
-document.getElementById("m").innerText = String(m).padStart(2,'0');
-document.getElementById("s").innerText = String(s).padStart(2,'0');
+  document.getElementById("countdown").innerHTML =
+    h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
 
-if(duration>0) duration--;
+  if(duration>0) duration--;
 },1000);
   
 // المحافظات والمدن
@@ -209,14 +209,11 @@ ${address}
 
     window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
 })
-.then(data => {
-    // نجاح
-    btn.innerHTML = "تم الإرسال ✔";
-})
 .catch(err => {
     btn.innerHTML = "تأكيد الطلب";
     btn.disabled = false;
 });
+  });
 </script>
 
 </body>
