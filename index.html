@@ -209,12 +209,13 @@ ${address}
 
     window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
 })
+.then(data => {
+    // نجاح
+    btn.innerHTML = "تم الإرسال ✔";
+})
 .catch(err => {
-    console.log(err);
-    alert("حصل خطأ في إرسال الطلب، حاول مرة أخرى.");
-});
-        btn.innerHTML = "تأكيد الطلب"; btn.disabled = false;
-    });
+    btn.innerHTML = "تأكيد الطلب";
+    btn.disabled = false;
 });
 </script>
 
