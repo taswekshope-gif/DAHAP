@@ -68,18 +68,32 @@ body {
 
 /* Gallery */
 .gallery {
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    margin-top:20px;
+    display:flex;
+    overflow-x:auto;
+    gap:15px;
+    padding:10px;
 }
-.gallery img {
+
+.item {
+    min-width:160px;
+    text-align:center;
+}
+
+.item img {
     width:100%;
     border-radius:10px;
     transition:0.3s;
 }
-.gallery img:hover { transform:scale(1.05); }
 
+.item img:hover {
+    transform:scale(1.05);
+}
+
+.item span {
+    display:block;
+    margin-top:8px;
+    font-weight:bold;
+}
 /* Offer */
 .offer {
     background:#F5F5F5;
