@@ -165,19 +165,28 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     let btn = document.querySelector("#orderForm button"); btn.innerHTML = "جاري الإرسال..."; btn.disabled = true;
     let timestamp = new Date().toLocaleString('ar-EG');
 
-    fetch("https://script.google.com/macros/s/AKfycbwMG9YjzoGINGifIa0uygki71_VQXR81Fv63nznAfsPlvZR_7KIhW1HYjhnFgRb7uqazA/exec", {
-        method:"POST",
-        body: JSON.stringify({customerName, phone, governorate: gov, city, address, design, font, chainName, timestamp}),
-        headers:{'Content-Type':'application/json'}
-    })
-    .then(res => res.json())
-    .then(data => {
-        let orderID = data.orderID || "????";
-        document.getElementById("orderForm").style.display="none";
-        document.getElementById("successMessage").style.display="block";
-        document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
+fetch("https://script.google.com/macros/s/AKfycbwMG9YjzoGINGifIa0uygki71_VQXR81Fv63nznAfsPlvZR_7KIhW1HYjhnFgRb7uqazA/exec", {
+    method:"POST",
+    body: JSON.stringify({customerName, phone, governorate: gov, city, address, design, font, chainName, timestamp}),
+    headers:{'Content-Type':'application/json'}
+})
+.then(res => res.text())
+.then(text => {
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch(e) {
+        console.log("Response:", text);
+        throw new Error("Invalid JSON");
+    }
 
-        let message = `DAHAP
+    let orderID = data.orderID || "????";
+
+    document.getElementById("orderForm").style.display="none";
+    document.getElementById("successMessage").style.display="block";
+    document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
+
+    let message = `DAHAP
 كود الطلب: ${orderID}
 --------------------
 اسم العميل: ${customerName}
@@ -190,11 +199,12 @@ ${address}
 الكتابة: ${font}
 الوقت: ${timestamp}`;
 
-        window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
-    })
-    .catch(err => {
-        console.log(err);
-        alert("حصل خطأ في إرسال الطلب، حاول مرة أخرى.");
+    window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
+})
+.catch(err => {
+    console.log(err);
+    alert("حصل خطأ في إرسال الطلب، حاول مرة أخرى.");
+});
         btn.innerHTML = "تأكيد الطلب"; btn.disabled = false;
     });
 });
