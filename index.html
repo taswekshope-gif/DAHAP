@@ -8,286 +8,103 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 
 <style>
-/* Smooth scroll */
+body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
 html { scroll-behavior: smooth; }
-
-body {
-    margin:0;
-    font-family: 'Cairo', sans-serif;
-    background:#fff;
-    color:#111;
-}
-
-/* Container */
-.container {
-    padding:20px;
-    text-align:center;
-    max-width:900px;
-    margin:auto;
-}
-
-/* HERO */
-.hero {
-    background: url('images/header.jpg') center/cover no-repeat;
-    min-height: 90vh;
-    color:#fff;
-    padding:80px 20px;
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    border-radius:10px;
-}
-.hero::before {
-    content:'';
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.5);
-    top:0;
-    left:0;
-    border-radius:10px;
-}
+.container { padding:20px; text-align:center; max-width:900px; margin:auto; }
+.hero { background: url('images/header.jpg') center/cover no-repeat; min-height: 90vh; color:#fff; padding:80px 20px; position:relative; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:10px; }
+.hero::before { content:''; position:absolute; width:100%; height:100%; background:rgba(0,0,0,0.5); top:0; left:0; border-radius:10px; }
 .hero * { position:relative; }
 .hero h1 { color:#D4AF37; font-size:3rem; margin-bottom:10px; }
 .hero h2 { font-size:2rem; margin-bottom:10px; }
-
-/* Buttons */
-.btn {
-    background:#0F7B65;
-    color:#fff;
-    padding:15px 25px;
-    border-radius:8px;
-    display:inline-block;
-    margin-top:20px;
-    text-decoration:none;
-    font-weight:bold;
-}
+.btn { background:#0F7B65; color:#fff; padding:15px 25px; border-radius:8px; display:inline-block; margin-top:20px; text-decoration:none; font-weight:bold; }
 .btn:hover { background:#095c4d; }
-
-/* Gallery */
-.gallery {
-    display:flex;
-    overflow-x:auto;
-    gap:15px;
-    padding:10px;
-}
-
-.item {
-    min-width:160px;
-    text-align:center;
-}
-
-.item img {
-    width:100%;
-    border-radius:10px;
-    transition:0.3s;
-}
-
-.item img:hover {
-    transform:scale(1.05);
-}
-
-.item span {
-    display:block;
-    margin-top:8px;
-    font-weight:bold;
-}
-/* Offer */
-.offer {
-    background:#F5F5F5;
-    padding:40px;
-    border-radius:15px;
-    margin-top:20px;
-}
+.gallery { display:flex; overflow-x:auto; gap:15px; padding:10px; }
+.item { min-width:160px; text-align:center; }
+.item img { width:100%; border-radius:10px; transition:0.3s; }
+.item img:hover { transform:scale(1.05); }
+.item span { display:block; margin-top:8px; font-weight:bold; }
+.offer { background:#F5F5F5; padding:40px; border-radius:15px; margin-top:20px; }
 .offer del { color:#888; margin-right:10px; }
-.timer {
-    font-size:28px;
-    font-weight:bold;
-    color:#D4AF37;
-    margin-top:15px;
-}
-
-/* Form */
-form {
-    max-width:400px;
-    margin:auto;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
+.timer { font-size:28px; font-weight:bold; color:#D4AF37; margin-top:15px; }
+form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
 input, select, button { padding:12px; border-radius:8px; border:1px solid #ccc; }
-button {
-    background:#0F7B65;
-    color:#fff;
-    border:none;
-    cursor:pointer;
-    font-weight:bold;
-}
+button { background:#0F7B65; color:#fff; border:none; cursor:pointer; font-weight:bold; }
 button:hover { background:#095c4d; }
 .note { font-size:14px; color:#555; }
-
-#successMessage {
-    display:none;
-    background:#0F7B65;
-    color:#fff;
-    padding:20px;
-    border-radius:10px;
-    margin-top:20px;
-}
+#successMessage { display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px; }
 </style>
 </head>
 <body>
 
 <!-- HERO -->
 <section class="hero">
-
     <img src="images/logo.png" style="width:120px; margin-bottom:15px;">
-
     <h1>DAHAP</h1>
     <h2>سلسلة باسمك بتصميم مميز</h2>
     <p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
-
     <a class="btn" href="#order">اطلبي الآن</a>
-
 </section>
 
-<!-- صور -->
+<!-- Gallery -->
 <section class="container">
-    <h2>أشكال من شغلنا</h2>
-   <div class="gallery">
-
-  <div class="item">
-    <img src="images/1.jpg">
-    <span>عادي</span>
-  </div>
-
-  <div class="item">
-    <img src="images/2.jpg">
-    <span>قلب ❤️</span>
-  </div>
-
-  <div class="item">
-    <img src="images/3.jpg">
-    <span>فراشة 🦋</span>
-  </div>
-
-  <div class="item">
-    <img src="images/4.jpg">
-    <span>تاج 👑</span>
-  </div>
-
-  <div class="item">
-    <img src="images/5.jpg">
-    <span>مزدوج</span>
-  </div>
-
+<h2>أشكال من شغلنا</h2>
+<div class="gallery">
+  <div class="item"><img src="images/1.jpg"><span>عادي</span></div>
+  <div class="item"><img src="images/2.jpg"><span>قلب ❤️</span></div>
+  <div class="item"><img src="images/3.jpg"><span>فراشة 🦋</span></div>
+  <div class="item"><img src="images/4.jpg"><span>تاج 👑</span></div>
+  <div class="item"><img src="images/5.jpg"><span>مزدوج</span></div>
 </div>
 </section>
 
-<!-- مميزات -->
+<!-- Features -->
 <section class="container">
-    <h2>ليه تختارينا؟</h2>
-    <p>✔ تصميم مخصوص – ✔ جودة عالية – ✔ هدية مثالية</p>
+<h2>ليه تختارينا؟</h2>
+<p>✔ تصميم مخصوص – ✔ جودة عالية – ✔ هدية مثالية</p>
 </section>
 
-<!-- عرض -->
+<!-- Offer -->
 <section class="offer">
-    <h2>عرض خاص</h2>
-    <p><del>349 جنيه</del> <strong>249 جنيه</strong></p>
-    <div class="timer" id="countdown"></div>
+<h2>عرض خاص</h2>
+<p><del>349 جنيه</del> <strong>249 جنيه</strong></p>
+<div class="timer" id="countdown"></div>
 </section>
 
-<!-- فورم -->
+<!-- Form -->
 <section id="order" class="container">
-    <h2>اطلبي سلسلتك الآن</h2>
-    <form id="orderForm">
-        <input type="text" id="customerName" placeholder="اسمك" required>
-        <input type="tel" id="phone" placeholder="رقم التليفون" required>
-
-        <!-- المحافظة -->
-        <input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
-        <datalist id="governorates">
-            <option value="القاهرة">
-            <option value="الجيزة">
-            <option value="الإسكندرية">
-            <option value="الدقهلية">
-            <option value="البحيرة">
-            <option value="الشرقية">
-            <option value="القليوبية">
-            <option value="المنوفية">
-            <option value="الغربية">
-            <option value="كفر الشيخ">
-            <option value="دمياط">
-            <option value="بورسعيد">
-            <option value="الإسماعيلية">
-            <option value="السويس">
-            <option value="بني سويف">
-            <option value="الفيوم">
-            <option value="المنيا">
-            <option value="أسيوط">
-            <option value="سوهاج">
-            <option value="قنا">
-            <option value="الأقصر">
-            <option value="أسوان">
-            <option value="البحر الأحمر">
-            <option value="الوادي الجديد">
-            <option value="مطروح">
-            <option value="شمال سيناء">
-            <option value="جنوب سيناء">
-        </datalist>
-
-        <!-- المدينة / المركز -->
-        <select id="city" required>
-            <option value="">اختار المدينة</option>
-        </select>
-
-        <input type="text" id="address" placeholder="اسم الشارع ورقم العمارة والدور + علامة مميزة" required>
-
-        <!-- التصميم -->
-        <select id="design">
-            <option selected>عادي</option>
-            <option>قلب ❤️</option>
-            <option>فراشة 🦋</option>
-            <option>تاج 👑</option>
-            <option>مزدوج</option>
-        </select>
-
-        <!-- نوع الكتابة -->
-        <select id="font">
-            <option selected>عربي</option>
-            <option>إنجليزي</option>
-        </select>
-
-        <input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
-
-        <p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
-
-        <button type="submit">تأكيد الطلب</button>
-    </form>
-
-    <div id="successMessage">✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.</div>
+<h2>اطلبي سلسلتك الآن</h2>
+<form id="orderForm">
+<input type="text" id="customerName" placeholder="اسمك" required>
+<input type="tel" id="phone" placeholder="رقم التليفون" required>
+<input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
+<datalist id="governorates">
+<option value="القاهرة"><option value="الجيزة"><option value="الإسكندرية"><option value="الدقهلية"><option value="البحيرة"><option value="الشرقية"><option value="القليوبية"><option value="المنوفية"><option value="الغربية"><option value="كفر الشيخ"><option value="دمياط"><option value="بورسعيد"><option value="الإسماعيلية"><option value="السويس"><option value="بني سويف"><option value="الفيوم"><option value="المنيا"><option value="أسيوط"><option value="سوهاج"><option value="قنا"><option value="الأقصر"><option value="أسوان"><option value="البحر الأحمر"><option value="الوادي الجديد"><option value="مطروح"><option value="شمال سيناء"><option value="جنوب سيناء">
+</datalist>
+<select id="city" required><option value="">اختار المدينة</option></select>
+<input type="text" id="address" placeholder="اسم الشارع ورقم العمارة والدور + علامة مميزة" required>
+<select id="design"><option selected>عادي</option><option>قلب ❤️</option><option>فراشة 🦋</option><option>تاج 👑</option><option>مزدوج</option></select>
+<select id="font"><option selected>عربي</option><option>إنجليزي</option></select>
+<input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
+<p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
+<button type="submit">تأكيد الطلب</button>
+</form>
+<div id="successMessage"></div>
 </section>
 
-<!-- تايمر -->
+<!-- Countdown -->
 <script>
-var end = new Date();
-end.setHours(23,59,59,999);
-
+var end = new Date(); end.setHours(23,59,59,999);
 setInterval(function() {
   var now = new Date().getTime();
   var distance = end - now;
-
   var h = String(Math.floor(distance / (1000 * 60 * 60))).padStart(2,'0');
   var m = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2,'0');
   var s = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2,'0');
-
   document.getElementById("countdown").innerHTML = h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
 }, 1000);
 </script>
 
-<!-- المحافظات والمراكز -->
+<!-- Governorate & City -->
 <script>
 const govData = {
 "القاهرة":["الشرابية","الزمالك","النزهة","المعادي","مصر الجديدة","15 مايو","العمرانية","البساتين","أحياء أخرى"],
@@ -318,7 +135,6 @@ const govData = {
 "شمال سيناء":["العريش","رفح","شيخ زويد","بئر العبد"],
 "جنوب سيناء":["دهب","شرم الشيخ","نويبع","طابا","سانت كاترين"]
 };
-
 document.getElementById("governorate").addEventListener("input", function(){
   let city = document.getElementById("city");
   city.innerHTML = '<option value="">اختار المدينة</option>';
@@ -332,11 +148,10 @@ document.getElementById("governorate").addEventListener("input", function(){
 });
 </script>
 
-<!-- فورم وواتساب -->
+<!-- Form & WhatsApp -->
 <script>
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
-
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
     let gov = document.getElementById("governorate").value;
@@ -345,117 +160,31 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     let design = document.getElementById("design").value;
     let font = document.getElementById("font").value;
     let chainName = document.getElementById("chainName").value.trim();
-
-    // تحقق من رقم الهاتف
-    if(!/^01[0-9]{9}$/.test(phone)){
-        alert("أدخل رقم هاتف مصري صالح");
-        return;
-    }
-
-    let btn = document.querySelector("#orderForm button");
-    btn.innerHTML = "جاري الإرسال...";
-    btn.disabled = true;
-
-    let now = new Date();
-    let timestamp = now.toLocaleString('ar-EG');
-
-    let fallbackID = now.getFullYear().toString().slice(-2) +
-                     (now.getMonth()+1).toString().padStart(2,'0') +
-                     now.getDate().toString().padStart(2,'0') +
-                     Math.floor(Math.random()*900+100);
-
-    // إرسال للشيت
+    if(!/^01[0-9]{9}$/.test(phone)){ alert("أدخل رقم هاتف مصري صالح"); return; }
+    let btn = document.querySelector("#orderForm button"); btn.innerHTML = "جاري الإرسال..."; btn.disabled = true;
+    let now = new Date(); let timestamp = now.toLocaleString('ar-EG');
+    let fallbackID = now.getFullYear().toString().slice(-2) + (now.getMonth()+1).toString().padStart(2,'0') + now.getDate().toString().padStart(2,'0') + Math.floor(Math.random()*900+100);
     fetch("https://script.google.com/macros/s/AKfycbxmhr4iGU1msp2wwuYddob2yilsLXUxb3jtZ05yFx6ue_JxoGjsXSMCyBrVTHXSqdDdZA/exec", {
         method:"POST",
-        body: JSON.stringify({
-            customerName, 
-            phone, 
-            governorate: gov, 
-            city, 
-            address, 
-            design, 
-            font, 
-            chainName,
-            timestamp
-        }),
+        body: JSON.stringify({customerName, phone, governorate: gov, city, address, design, font, chainName, timestamp}),
         headers:{'Content-Type':'application/json'}
     })
     .then(res => res.json())
     .then(data => {
         let orderID = data.orderID || fallbackID;
-
         document.getElementById("orderForm").style.display="none";
         document.getElementById("successMessage").style.display="block";
-        document.getElementById("successMessage").innerHTML =
-        `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
-
-        let message = `طلب جديد من DAHAP
-كود الطلب: ${orderID}
---------------------
-اسم العميل: ${customerName}
-رقم الهاتف: ${phone}
-العنوان:
-${gov} - ${city}
-${address}
-الاسم على السلسلة: ${chainName}
-التصميم: ${design}
-الكتابة: ${font}
-الوقت: ${timestamp}`;
-
+        document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
+        let message = `طلب جديد من DAHAP\nكود الطلب: ${orderID}\n--------------------\nاسم العميل: ${customerName}\nرقم الهاتف: ${phone}\nالعنوان:\n${gov} - ${city}\n${address}\nالاسم على السلسلة: ${chainName}\nالتصميم: ${design}\nالكتابة: ${font}\nالوقت: ${timestamp}`;
         window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
     })
     .catch(err => {
         console.log(err);
-
-        let message = `طلب جديد من DAHAP
-كود الطلب: ${fallbackID}
---------------------
-اسم العميل: ${customerName}
-رقم الهاتف: ${phone}
-العنوان:
-${gov} - ${city}
-${address}
-الاسم على السلسلة: ${chainName}`;
-
+        let message = `طلب جديد من DAHAP\nكود الطلب: ${fallbackID}\n--------------------\nاسم العميل: ${customerName}\nرقم الهاتف: ${phone}\nالعنوان:\n${gov} - ${city}\n${address}\nالاسم على السلسلة: ${chainName}`;
         window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
-
         document.getElementById("orderForm").style.display="none";
         document.getElementById("successMessage").style.display="block";
-        document.getElementById("successMessage").innerHTML =
-        `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${fallbackID}`;
-    });
-});
-</script>
-
-    // ⚡ الفورمة الصح زي ما طلبت
-    let message = `طلب جديد من DAHAP
-كود الطلب: ${orderID}
---------------------
-اسم العميل: ${customerName}
-رقم الهاتف: ${phone}
-العنوان:
-${gov} - ${city}
-${address}
-الاسم على السلسلة: ${chainName}
-التصميم: ${design}
-الكتابة: ${font}
-الوقت: ${timestamp}`;
-
-    // فتح واتساب
-    window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
-});
-    .catch(err => {
-        console.log(err);
-
-        // حتى لو فشل الشيت → افتح واتساب برضو
-        var message = `طلب جديد من DAHAP
-اسم العميل: ${customerName}
-رقم الهاتف: ${phone}
-${gov} - ${city}
-${address}
-${chainName}`;
-
-        window.open("https://wa.me/201106018685?text="+encodeURIComponent(message), "_blank");
+        document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${fallbackID}`;
     });
 });
 </script>
