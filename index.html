@@ -69,11 +69,16 @@ button:hover { background:#095c4d; }
 <form id="orderForm">
 <input type="text" id="customerName" placeholder="اسمك" required>
 <input type="tel" id="phone" placeholder="رقم التليفون" required>
-<input list="governorates" id="governorate" placeholder="اختاري المحافظة" required>
-<datalist id="governorates">
-<option value="القاهرة"><option value="الجيزة"><option value="الإسكندرية"><option value="الدقهلية"><option value="البحيرة"><option value="الشرقية"><option value="القليوبية"><option value="المنوفية"><option value="الغربية"><option value="كفر الشيخ"><option value="دمياط"><option value="بورسعيد"><option value="الإسماعيلية"><option value="السويس"><option value="بني سويف"><option value="الفيوم"><option value="المنيا"><option value="أسيوط"><option value="سوهاج"><option value="قنا"><option value="الأقصر"><option value="أسوان"><option value="البحر الأحمر"><option value="الوادي الجديد"><option value="مطروح"><option value="شمال سيناء"><option value="جنوب سيناء">
-</datalist>
-<select id="city" required><option value="">اختار المدينة</option></select>
+
+<!-- استخدم select للمحافظة بدل datalist -->
+<select id="governorate" required>
+  <option value="">اختاري المحافظة</option>
+</select>
+
+<select id="city" required>
+  <option value="">اختار المدينة</option>
+</select>
+
 <input type="text" id="address" placeholder="اسم الشارع ورقم العمارة والدور + علامة مميزة" required>
 <select id="design"><option selected>عادي</option><option>قلب ❤️</option><option>فراشة 🦋</option><option>تاج 👑</option><option>مزدوج</option></select>
 <select id="font"><option selected>عربي</option><option>إنجليزي</option></select>
@@ -96,8 +101,7 @@ setInterval(function() {
   document.getElementById("countdown").innerHTML = h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
 }, 1000);
 
-<!-- Governorate & City -->
-<script>
+// المحافظات والمدن
 const govData = {
 "القاهرة":["الشرابية","الزمالك","النزهة","المعادي","مصر الجديدة","15 مايو","العمرانية","البساتين","أحياء أخرى"],
 "الجيزة":["الهرم","فيصل","المهندسين","6 أكتوبر","الشيخ زايد","البدرشين","الصف","العياط","أوسيم","كرداسة"],
@@ -127,21 +131,29 @@ const govData = {
 "شمال سيناء":["العريش","رفح","شيخ زويد","بئر العبد"],
 "جنوب سيناء":["دهب","شرم الشيخ","نويبع","طابا","سانت كاترين"]
 };
-document.getElementById("governorate").addEventListener("input", function(){
-  let city = document.getElementById("city");
-  city.innerHTML = '<option value="">اختار المدينة</option>';
+
+// اضافة المحافظات select
+const govSelect = document.getElementById("governorate");
+Object.keys(govData).forEach(gov => {
+  let opt = document.createElement("option");
+  opt.value = gov; opt.text = gov;
+  govSelect.appendChild(opt);
+});
+
+// تغيير المدينة بناءً على المحافظة
+govSelect.addEventListener("change", function(){
+  let citySelect = document.getElementById("city");
+  citySelect.innerHTML = '<option value="">اختار المدينة</option>';
   if(govData[this.value]){
-    govData[this.value].forEach(c => {
+    govData[this.value].forEach(cityName=>{
       let opt = document.createElement("option");
-      opt.value = c; opt.text = c;
-      city.appendChild(opt);
+      opt.value = cityName; opt.text = cityName;
+      citySelect.appendChild(opt);
     });
   }
 });
-</script>
 
-  <!-- Form & WhatsApp -->
-<script>
+// Form & WhatsApp
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
     let customerName = document.getElementById("customerName").value.trim();
