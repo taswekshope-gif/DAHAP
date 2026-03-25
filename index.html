@@ -91,18 +91,18 @@ button:hover { background:#095c4d; }
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
-// ✅ تايمر 3 ساعات
-let duration = 3 * 60 * 60;
+// 🔥 تايمر 3 ساعات
+let time = 3 * 60 * 60;
 setInterval(()=>{
-let h = Math.floor(duration/3600);
-let m = Math.floor((duration%3600)/60);
-let s = duration%60;
+let h = Math.floor(time/3600);
+let m = Math.floor((time%3600)/60);
+let s = time%60;
 
 document.getElementById("h").innerText = String(h).padStart(2,'0');
 document.getElementById("m").innerText = String(m).padStart(2,'0');
 document.getElementById("s").innerText = String(s).padStart(2,'0');
 
-if(duration>0) duration--;
+if(time>0) time--;
 },1000);
   
 // المحافظات والمدن
