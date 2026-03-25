@@ -173,7 +173,7 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     let btn = document.querySelector("#orderForm button"); btn.innerHTML = "جاري الإرسال..."; btn.disabled = true;
     let timestamp = new Date().toLocaleString('ar-EG');
 
-fetch("https://script.google.com/macros/s/AKfycbwSRnvRLmBJVLlkGAkal9p4Uv-xvHWrrAZJ-MBvUDJ2AaQu6i17Y9cYk5Dn5Arx1Xx_ZQ/exec", {
+fetch("https://script.google.com/macros/s/AKfycbxgN1gbf_oS8q_-xxHkkH6gw3PG1LYFaGKoMCp_GatFjB0HotWPzCq7_K93sAHbu5jaVw/exec", {
     method:"POST",
     body: JSON.stringify({customerName, phone, governorate: gov, city, address, design, font, chainName, timestamp}),
     headers:{'Content-Type':'application/json'}
