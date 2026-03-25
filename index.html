@@ -356,22 +356,35 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
                   (now.getMonth()+1).toString().padStart(2,'0') +
                   now.getDate().toString().padStart(2,'0') +
                   Math.floor(Math.random()*900+100);
-
+let btn = document.querySelector("button");
+btn.innerHTML = "جاري الإرسال...";
+btn.disabled = true;
+    
     // إرسال البيانات للـ Google Sheet
-    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
-        method:"POST",
-        body: JSON.stringify({
-            customerName, phone, governorate: gov, city, address, design, font, chainName, orderID, timestamp
-        }),
-        headers:{'Content-Type':'application/json'}
-    });
+ fetch("https://script.google.com/macros/s/AKfycbxmhr4iGU1msp2wwuYddob2yilsLXUxb3jtZ05yFx6ue_JxoGjsXSMCyBrVTHXSqdDdZA/exec", {
+    method:"POST",
+    body: JSON.stringify({
+        customerName, 
+        phone, 
+        governorate: gov, 
+        city, 
+        address, 
+        design, 
+        font, 
+        chainName
+    }),
+    headers:{'Content-Type':'application/json'}
+})
+.then(res => res.json())
+.then(data => {
 
-    // رسالة نجاح
+    let orderID = data.orderID;
+
     document.getElementById("orderForm").style.display="none";
     document.getElementById("successMessage").style.display="block";
-    document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
+    document.getElementById("successMessage").innerHTML =
+    `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
 
-    // رسالة واتساب
     var message = `طلب جديد من DAHAP
 كود الطلب: ${orderID}
 --------------------
@@ -382,10 +395,8 @@ ${gov} - ${city}
 ${address}
 الاسم على السلسلة: ${chainName}
 التصميم: ${design}
-الكتابة: ${font}
-الوقت: ${timestamp}`;
+الكتابة: ${font}`;
 
-    // فتح واتساب فورًا
     window.open("https://wa.me/201106018685?text="+encodeURIComponent(message), "_blank");
 });
 </script>
