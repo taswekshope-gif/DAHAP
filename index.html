@@ -337,60 +337,95 @@ document.getElementById("governorate").addEventListener("input", function(){
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
 
-    let customerName = document.getElementById("customerName").value;
-    let phone = document.getElementById("phone").value;
+    let customerName = document.getElementById("customerName").value.trim();
+    let phone = document.getElementById("phone").value.trim();
     let gov = document.getElementById("governorate").value;
     let city = document.getElementById("city").value;
-    let address = document.getElementById("address").value;
+    let address = document.getElementById("address").value.trim();
     let design = document.getElementById("design").value;
     let font = document.getElementById("font").value;
-    let chainName = document.getElementById("chainName").value;
+    let chainName = document.getElementById("chainName").value.trim();
 
+    // تحقق من رقم الهاتف
     if(!/^01[0-9]{9}$/.test(phone)){
         alert("أدخل رقم هاتف مصري صالح");
         return;
     }
 
-    let btn = document.querySelector("button");
+    let btn = document.querySelector("#orderForm button");
     btn.innerHTML = "جاري الإرسال...";
     btn.disabled = true;
 
-// وقت الطلب
-let now = new Date();
-let timestamp = now.toLocaleString('ar-EG');
+    let now = new Date();
+    let timestamp = now.toLocaleString('ar-EG');
 
-// رقم أوردر (احتياطي لو الشيت مبيردش)
-let fallbackID = now.getFullYear().toString().slice(-2) +
-                 (now.getMonth()+1).toString().padStart(2,'0') +
-                 now.getDate().toString().padStart(2,'0') +
-                 Math.floor(Math.random()*900+100);
+    let fallbackID = now.getFullYear().toString().slice(-2) +
+                     (now.getMonth()+1).toString().padStart(2,'0') +
+                     now.getDate().toString().padStart(2,'0') +
+                     Math.floor(Math.random()*900+100);
 
-// إرسال للـ Google Sheet
-fetch("https://script.google.com/macros/s/AKfycbxmhr4iGU1msp2wwuYddob2yilsLXUxb3jtZ05yFx6ue_JxoGjsXSMCyBrVTHXSqdDdZA/exec", {
-    method:"POST",
-    body: JSON.stringify({
-        customerName, 
-        phone, 
-        governorate: gov, 
-        city, 
-        address, 
-        design, 
-        font, 
-        chainName,
-        timestamp
-    }),
-    headers:{'Content-Type':'application/json'}
-})
-.then(res => res.json())
-.then(data => {
+    // إرسال للشيت
+    fetch("https://script.google.com/macros/s/AKfycbxmhr4iGU1msp2wwuYddob2yilsLXUxb3jtZ05yFx6ue_JxoGjsXSMCyBrVTHXSqdDdZA/exec", {
+        method:"POST",
+        body: JSON.stringify({
+            customerName, 
+            phone, 
+            governorate: gov, 
+            city, 
+            address, 
+            design, 
+            font, 
+            chainName,
+            timestamp
+        }),
+        headers:{'Content-Type':'application/json'}
+    })
+    .then(res => res.json())
+    .then(data => {
+        let orderID = data.orderID || fallbackID;
 
-    let orderID = data.orderID || fallbackID;
+        document.getElementById("orderForm").style.display="none";
+        document.getElementById("successMessage").style.display="block";
+        document.getElementById("successMessage").innerHTML =
+        `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
 
-    // رسالة النجاح
-    document.getElementById("orderForm").style.display="none";
-    document.getElementById("successMessage").style.display="block";
-    document.getElementById("successMessage").innerHTML =
-    `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
+        let message = `طلب جديد من DAHAP
+كود الطلب: ${orderID}
+--------------------
+اسم العميل: ${customerName}
+رقم الهاتف: ${phone}
+العنوان:
+${gov} - ${city}
+${address}
+الاسم على السلسلة: ${chainName}
+التصميم: ${design}
+الكتابة: ${font}
+الوقت: ${timestamp}`;
+
+        window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
+    })
+    .catch(err => {
+        console.log(err);
+
+        let message = `طلب جديد من DAHAP
+كود الطلب: ${fallbackID}
+--------------------
+اسم العميل: ${customerName}
+رقم الهاتف: ${phone}
+العنوان:
+${gov} - ${city}
+${address}
+الاسم على السلسلة: ${chainName}`;
+
+        window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
+
+        document.getElementById("orderForm").style.display="none";
+        document.getElementById("successMessage").style.display="block";
+        document.getElementById("successMessage").innerHTML =
+        `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${fallbackID}`;
+    });
+});
+</script>
 
     // ⚡ الفورمة الصح زي ما طلبت
     let message = `طلب جديد من DAHAP
