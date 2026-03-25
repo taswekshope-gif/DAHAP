@@ -355,17 +355,17 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     btn.innerHTML = "جاري الإرسال...";
     btn.disabled = true;
 
- // وقت الطلب
+// وقت الطلب
 let now = new Date();
 let timestamp = now.toLocaleString('ar-EG');
 
-// رقم أوردر احتياطي (لو الشيت مردش)
+// رقم أوردر (احتياطي لو الشيت مبيردش)
 let fallbackID = now.getFullYear().toString().slice(-2) +
                  (now.getMonth()+1).toString().padStart(2,'0') +
                  now.getDate().toString().padStart(2,'0') +
                  Math.floor(Math.random()*900+100);
 
-// إرسال البيانات
+// إرسال للـ Google Sheet
 fetch("https://script.google.com/macros/s/AKfycbxmhr4iGU1msp2wwuYddob2yilsLXUxb3jtZ05yFx6ue_JxoGjsXSMCyBrVTHXSqdDdZA/exec", {
     method:"POST",
     body: JSON.stringify({
@@ -386,29 +386,29 @@ fetch("https://script.google.com/macros/s/AKfycbxmhr4iGU1msp2wwuYddob2yilsLXUxb3
 
     let orderID = data.orderID || fallbackID;
 
+    // رسالة النجاح
     document.getElementById("orderForm").style.display="none";
     document.getElementById("successMessage").style.display="block";
     document.getElementById("successMessage").innerHTML =
     `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
 
-    var message = `طلب جديد من DAHAP
+    // ⚡ الفورمة الصح زي ما طلبت
+    let message = `طلب جديد من DAHAP
 كود الطلب: ${orderID}
 --------------------
 اسم العميل: ${customerName}
 رقم الهاتف: ${phone}
-
 العنوان:
 ${gov} - ${city}
 ${address}
-
 الاسم على السلسلة: ${chainName}
 التصميم: ${design}
 الكتابة: ${font}
 الوقت: ${timestamp}`;
 
-    window.open("https://wa.me/201106018685?text="+encodeURIComponent(message), "_blank");
-
-    })
+    // فتح واتساب
+    window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
+});
     .catch(err => {
         console.log(err);
 
