@@ -89,17 +89,22 @@ button:hover { background:#095c4d; }
 </section>
 
 <script>
-// Countdown Timer
-var end = new Date(); end.setHours(23,59,59,999);
-setInterval(function() {
-  var now = new Date().getTime();
-  var distance = end - now;
-  var h = String(Math.floor(distance / (1000 * 60 * 60))).padStart(2,'0');
-  var m = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2,'0');
-  var s = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2,'0');
-  document.getElementById("countdown").innerHTML = h + " ساعة : " + m + " دقيقة : " + s + " ثانية";
-}, 1000);
+document.addEventListener("DOMContentLoaded", function(){
 
+// ✅ تايمر 3 ساعات
+let duration = 3 * 60 * 60;
+setInterval(()=>{
+let h = Math.floor(duration/3600);
+let m = Math.floor((duration%3600)/60);
+let s = duration%60;
+
+document.getElementById("h").innerText = String(h).padStart(2,'0');
+document.getElementById("m").innerText = String(m).padStart(2,'0');
+document.getElementById("s").innerText = String(s).padStart(2,'0');
+
+if(duration>0) duration--;
+},1000);
+  
 // المحافظات والمدن
 const govData = {
 "القاهرة":["الشرابية","الزمالك","النزهة","المعادي","مصر الجديدة","15 مايو","العمرانية","البساتين","أحياء أخرى"],
@@ -131,21 +136,24 @@ const govData = {
 "جنوب سيناء":["دهب","شرم الشيخ","نويبع","طابا","سانت كاترين"]
 };
 
-const govSelect = document.getElementById("governorate");
-Object.keys(govData).forEach(gov => {
-  let opt = document.createElement("option"); opt.value = gov; opt.text = gov;
-  govSelect.appendChild(opt);
+let govSelect = document.getElementById("governorate");
+let citySelect = document.getElementById("city");
+
+Object.keys(govData).forEach(g=>{
+let opt=document.createElement("option");
+opt.value=g;
+opt.text=g;
+govSelect.appendChild(opt);
 });
 
-govSelect.addEventListener("change", function(){
-  let citySelect = document.getElementById("city");
-  citySelect.innerHTML = '<option value="">اختار المدينة</option>';
-  if(govData[this.value]){
-    govData[this.value].forEach(cityName=>{
-      let opt = document.createElement("option"); opt.value = cityName; opt.text = cityName;
-      citySelect.appendChild(opt);
-    });
-  }
+govSelect.addEventListener("change",()=>{
+citySelect.innerHTML='<option>المدينة</option>';
+govData[govSelect.value].forEach(c=>{
+let opt=document.createElement("option");
+opt.value=c;
+opt.text=c;
+citySelect.appendChild(opt);
+});
 });
 
 // Form Submission
