@@ -70,7 +70,6 @@ button:hover { background:#095c4d; }
 <input type="text" id="customerName" placeholder="اسمك" required>
 <input type="tel" id="phone" placeholder="رقم التليفون" required>
 
-<!-- استخدم select للمحافظة بدل datalist -->
 <select id="governorate" required>
   <option value="">اختاري المحافظة</option>
 </select>
@@ -132,28 +131,24 @@ const govData = {
 "جنوب سيناء":["دهب","شرم الشيخ","نويبع","طابا","سانت كاترين"]
 };
 
-// اضافة المحافظات select
 const govSelect = document.getElementById("governorate");
 Object.keys(govData).forEach(gov => {
-  let opt = document.createElement("option");
-  opt.value = gov; opt.text = gov;
+  let opt = document.createElement("option"); opt.value = gov; opt.text = gov;
   govSelect.appendChild(opt);
 });
 
-// تغيير المدينة بناءً على المحافظة
 govSelect.addEventListener("change", function(){
   let citySelect = document.getElementById("city");
   citySelect.innerHTML = '<option value="">اختار المدينة</option>';
   if(govData[this.value]){
     govData[this.value].forEach(cityName=>{
-      let opt = document.createElement("option");
-      opt.value = cityName; opt.text = cityName;
+      let opt = document.createElement("option"); opt.value = cityName; opt.text = cityName;
       citySelect.appendChild(opt);
     });
   }
 });
 
-// Form & WhatsApp
+// Form Submission
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
     let customerName = document.getElementById("customerName").value.trim();
@@ -164,12 +159,13 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     let design = document.getElementById("design").value;
     let font = document.getElementById("font").value;
     let chainName = document.getElementById("chainName").value.trim();
+
     if(!/^01[0-9]{9}$/.test(phone)){ alert("أدخل رقم هاتف مصري صالح"); return; }
 
     let btn = document.querySelector("#orderForm button"); btn.innerHTML = "جاري الإرسال..."; btn.disabled = true;
     let timestamp = new Date().toLocaleString('ar-EG');
 
-    fetch("https://script.google.com/macros/s/AKfycbwM-tolRADH-bdWrZ13hYVPQQROcU0voRcZlfOf8xliweYhQ0b4IulzNy1Lo9uwZUlsDg/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbyZFnQAUCyWxssCFoz-3DNQpBKidP3s4vPGI32RphP6sP28NQvjMfsouH0eZ4O2ydOJDg/exec", {
         method:"POST",
         body: JSON.stringify({customerName, phone, governorate: gov, city, address, design, font, chainName, timestamp}),
         headers:{'Content-Type':'application/json'}
@@ -199,6 +195,7 @@ ${address}
     .catch(err => {
         console.log(err);
         alert("حصل خطأ في إرسال الطلب، حاول مرة أخرى.");
+        btn.innerHTML = "تأكيد الطلب"; btn.disabled = false;
     });
 });
 </script>
