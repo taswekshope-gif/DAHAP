@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head><meta charset="UTF-8"></head>
+<body>
+
+<h2>تسجيل دخول الأدمن</h2>
+
+<input type="email" id="email" placeholder="الإيميل"><br><br>
+<input type="password" id="password" placeholder="الباسورد"><br><br>
+<button onclick="login()">دخول</button>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.login = function(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+  .then(()=>{
+    window.location.href = "admin.html";
+  })
+  .catch(()=>{
+    alert("بيانات غلط");
+  });
+}
+</script>
+
+</body>
+</html>
