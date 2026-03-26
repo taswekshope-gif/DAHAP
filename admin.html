@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>لوحة الطلبات</title>
+</head>
+<body>
+
+<h2>📦 الطلبات</h2>
+<div id="orders"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+const snapshot = await getDocs(q);
+
+let html = "";
+
+snapshot.forEach(doc => {
+  let d = doc.data();
+  html += `
+  <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+    <b>كود:</b> ${d.orderID} <br>
+    <b>اسم:</b> ${d.customerName} <br>
+    <b>هاتف:</b> ${d.phone} <br>
+    <b>عنوان:</b> ${d.gov} - ${d.city} <br>
+    ${d.address}
+  </div>`;
+});
+
+document.getElementById("orders").innerHTML = html;
+</script>
+
+</body>
+</html>
