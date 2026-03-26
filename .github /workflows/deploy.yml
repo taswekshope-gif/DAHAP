@@ -1,21 +1,26 @@
-name: Deploy Code to main Branch 🚀
+name: taswekshope-gif/DAHAP
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build:
-    name: Push to main Branch
+  build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ https://taswekshope-gif.github.io/DAHAP/#order }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6.0.2
-
-      # Workflow dispatch event that pushes the current version to the release branch.
-      # From here the secondary production deployment workflow will trigger to build the dependencies.
-      - name: Deploy 🚀
-        uses: taswekshope-gif/DAHAP@v4
-        with:
-          branch: main
-          folder: .
-          clean: false
-          single-commit: true
+      - uses: actions/checkout@v4
+      - name: DAHAP
+        run: # your build commands
+      - name: taswekshope-gif
+        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages
+        id: DAHAP
+        uses: actions/deploy-pages@v4
