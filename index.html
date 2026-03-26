@@ -91,19 +91,42 @@ button:hover { background:#095c4d; }
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
-// ✅ تايمر 3 ساعات (مظبوط)
+// ✅ تايمر
 let duration = 3 * 60 * 60;
-
 setInterval(()=>{
   let h = Math.floor(duration/3600);
   let m = Math.floor((duration%3600)/60);
   let s = duration%60;
 
-document.getElementById("countdown").innerHTML =
+  document.getElementById("countdown").innerHTML =
     `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
 
   if(duration>0) duration--;
 },1000);
+
+// ✅ توليد كود الطلب
+function generateOrderID() {
+  let now = new Date();
+  let yy = String(now.getFullYear()).slice(2);
+  let mm = String(now.getMonth()+1).padStart(2,'0');
+  let dd = String(now.getDate()).padStart(2,'0');
+
+  let todayKey = yy + mm + dd;
+
+  let lastDate = localStorage.getItem("orderDate");
+  let counter = localStorage.getItem("orderCounter");
+
+  if(lastDate === todayKey){
+    counter = Number(counter) + 1;
+  } else {
+    counter = 1;
+  }
+
+  localStorage.setItem("orderDate", todayKey);
+  localStorage.setItem("orderCounter", counter);
+
+  return `${todayKey}-${counter}`;
+}
   
 // المحافظات والمدن
 const govData = {
@@ -140,25 +163,26 @@ let govSelect = document.getElementById("governorate");
 let citySelect = document.getElementById("city");
 
 Object.keys(govData).forEach(g=>{
-let opt=document.createElement("option");
-opt.value=g;
-opt.text=g;
-govSelect.appendChild(opt);
+  let opt=document.createElement("option");
+  opt.value=g;
+  opt.text=g;
+  govSelect.appendChild(opt);
 });
 
 govSelect.addEventListener("change",()=>{
-citySelect.innerHTML='<option>المدينة</option>';
-govData[govSelect.value].forEach(c=>{
-let opt=document.createElement("option");
-opt.value=c;
-opt.text=c;
-citySelect.appendChild(opt);
-});
+  citySelect.innerHTML='<option>المدينة</option>';
+  govData[govSelect.value].forEach(c=>{
+    let opt=document.createElement("option");
+    opt.value=c;
+    opt.text=c;
+    citySelect.appendChild(opt);
+  });
 });
 
-// Form Submission
+// ✅ ارسال فورم واتساب مباشرة
 document.getElementById("orderForm").addEventListener("submit", function(e){
     e.preventDefault();
+
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
     let gov = document.getElementById("governorate").value;
@@ -168,36 +192,13 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     let font = document.getElementById("font").value;
     let chainName = document.getElementById("chainName").value.trim();
 
-    if(!/^01[0-9]{9}$/.test(phone)){ alert("أدخل رقم هاتف مصري صالح"); return; }
+    if(!/^01[0-9]{9}$/.test(phone)){
+        alert("أدخل رقم هاتف مصري صالح");
+        return;
+    }
 
-    let btn = document.querySelector("#orderForm button"); btn.innerHTML = "جاري الإرسال..."; btn.disabled = true;
+    let orderID = generateOrderID();
     let timestamp = new Date().toLocaleString('ar-EG');
-
-fetch("https://script.google.com/macros/s/AKfycbz5PEmKRiYODtEjajQSqRmeFaWfWdyWmXd_91hWS0IMHVlECW3RflK3apeRlynS6SZgEw/exec", {
-    method: "POST",
-    body: new URLSearchParams({
-        customerName,
-        phone,
-        governorate: gov,
-        city,
-        address,
-        design,
-        font,
-        chainName,
-        timestamp
-    })
-})
-.then(res => res.text())
-.then(text => {
-
-    let data = JSON.parse(text);
-
-    let orderID = data.orderID || "????";
-
-    document.getElementById("orderForm").style.display="none";
-    document.getElementById("successMessage").style.display="block";
-    document.getElementById("successMessage").innerHTML =
-        `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
 
     let message = `DAHAP
 كود الطلب: ${orderID}
@@ -212,20 +213,10 @@ ${address}
 الكتابة: ${font}
 الوقت: ${timestamp}`;
 
-    window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
-
-})
-.catch(err => {
-    console.log(err);
-    alert("حصل خطأ في إرسال الطلب");
-    btn.innerHTML = "تأكيد الطلب";
-    btn.disabled = false;
-});
+    // ✅ تحويل مباشر للواتساب بدون أي تعطيل
+    window.location.href = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
 
 });
   
 });
 </script>
-  
-</body>
-</html>
