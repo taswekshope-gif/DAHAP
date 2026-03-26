@@ -187,15 +187,8 @@ fetch("https://script.google.com/macros/s/AKfycbzNI6kipqFanc36G-iq6zI36ZODnW6ODY
         timestamp
    })
 })
-.then(res => res.text())
-.then(text => {
-    let data;
-    try {
-        data = JSON.parse(text);
-    } catch(e) {
-        console.log("Response:", text);
-        throw new Error("Invalid JSON");
-    }
+.then(res => res.json())
+.then(data => {
 
     let orderID = data.orderID || "????";
 
@@ -217,12 +210,13 @@ ${address}
 الوقت: ${timestamp}`;
 
     window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
+
 })
 .catch(err => {
-        console.log(err);
-        alert("حصل خطأ في إرسال الطلب");
-        btn.innerHTML = "تأكيد الطلب";
-        btn.disabled = false;
+    console.log(err);
+    alert("حصل خطأ في إرسال الطلب");
+    btn.innerHTML = "تأكيد الطلب";
+    btn.disabled = false;
 });
 
 });
