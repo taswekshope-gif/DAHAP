@@ -7,12 +7,18 @@
 <body>
 
 <h2>📦 الطلبات</h2>
+<h3 id="todayCount">جاري الحساب...</h3>
+
 <div id="orders"></div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// 🔥 Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// 🔥 بياناتك
 const firebaseConfig = {
   apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
   authDomain: "dahap-87e3a.firebaseapp.com",
@@ -22,28 +28,67 @@ const firebaseConfig = {
   appId: "1:914606801645:web:273f6dab0028a42bef02e4",
   measurementId: "G-ZW99YCTSGY"
 };
-
+  
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-const snapshot = await getDocs(q);
 
-let html = "";
-
-snapshot.forEach(doc => {
-  let d = doc.data();
-  html += `
-  <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-    <b>كود:</b> ${d.orderID} <br>
-    <b>اسم:</b> ${d.customerName} <br>
-    <b>هاتف:</b> ${d.phone} <br>
-    <b>عنوان:</b> ${d.gov} - ${d.city} <br>
-    ${d.address}
-  </div>`;
+// ==========================
+// 🔐 1. حماية الصفحة (LOGIN)
+// ==========================
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
 });
 
-document.getElementById("orders").innerHTML = html;
+
+// ==========================
+// 🔔 2. تحميل الطلبات + لايف
+// ==========================
+const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+
+onSnapshot(q, (snapshot) => {
+
+  let html = "";
+  let today = new Date();
+  today.setHours(0,0,0,0);
+
+  let count = 0;
+
+  snapshot.forEach(doc => {
+    let d = doc.data();
+
+    // ✅ حساب طلبات اليوم
+    if (d.createdAt.toDate() >= today) {
+      count++;
+    }
+
+    // ✅ عرض الطلب + زر واتساب
+    html += `
+    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+      <b>كود:</b> ${d.orderID} <br>
+      <b>اسم:</b> ${d.customerName} <br>
+      <b>هاتف:</b> ${d.phone} <br>
+      <b>عنوان:</b> ${d.gov} - ${d.city} <br>
+      ${d.address} <br><br>
+
+      <a href="https://wa.me/${d.phone}" target="_blank">
+        📱 تواصل مع العميل
+      </a>
+    </div>
+    `;
+  });
+
+  // ✅ عرض الطلبات
+  document.getElementById("orders").innerHTML = html;
+
+  // ✅ عرض عدد طلبات اليوم
+  document.getElementById("todayCount").innerHTML = `📊 طلبات اليوم: ${count}`;
+
+});
+
 </script>
 
 </body>
