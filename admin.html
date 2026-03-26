@@ -5,41 +5,72 @@
 <title>لوحة الطلبات</title>
 
 <style>
-body { font-family: Arial; background:#f5f5f5; padding:20px; }
+body { font-family:Cairo; background:#f4f6f9; padding:20px; }
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+input, select {
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
 .card {
   background:#fff;
-  border-radius:10px;
+  border-radius:12px;
   padding:15px;
   margin:10px 0;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
+
 .btn {
-  display:inline-block;
-  padding:8px 12px;
-  background:#25D366;
-  color:#fff;
+  padding:6px 10px;
   border-radius:6px;
   text-decoration:none;
-  margin-top:10px;
+  margin:3px;
+  display:inline-block;
+  font-size:14px;
 }
+
+.whatsapp { background:#25D366; color:#fff; }
+.copy { background:#333; color:#fff; }
+.ship { background:#0F7B65; color:#fff; }
+
+.status {
+  padding:5px 10px;
+  border-radius:6px;
+  font-size:12px;
+}
+
+.new { background:orange; color:#fff; }
+.done { background:green; color:#fff; }
 </style>
 
 </head>
 <body>
 
 <h2>📦 لوحة الطلبات</h2>
-<h3 id="todayCount">جاري الحساب...</h3>
+
+<div class="header">
+  <input type="text" id="search" placeholder="🔍 بحث بالاسم أو الرقم">
+  <input type="date" id="dateFilter">
+  <h3 id="todayCount"></h3>
+</div>
 
 <div id="orders"></div>
 
 <script type="module">
 
-// 🔥 Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// 🔑 بياناتك
 const firebaseConfig = {
   apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
   authDomain: "dahap-87e3a.firebaseapp.com",
@@ -54,95 +85,102 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+let allOrders = [];
 
-// ==========================
-// 🔐 حماية الصفحة
-// ==========================
+// 🔐 حماية
 onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "login.html";
-  } else {
-    loadOrders(); // ✅ يبدأ تحميل الطلبات بعد تسجيل الدخول فقط
-  }
+  if (!user) window.location.href = "login.html";
+  else loadOrders();
 });
 
-
-// ==========================
 // 📦 تحميل الطلبات
-// ==========================
 function loadOrders(){
-
   const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
 
-  let firstLoad = true;
-
   onSnapshot(q, (snapshot) => {
+    allOrders = [];
 
-    let html = "";
-    let today = new Date();
-    today.setHours(0,0,0,0);
-
-    let count = 0;
-
-    snapshot.forEach(doc => {
-      let d = doc.data();
-
-      // 📊 حساب اليوم
-      if (d.createdAt.toDate() >= today) {
-        count++;
-      }
-
-      // 📱 رسالة واتساب جاهزة
-      let message = `طلب رقم: ${d.orderID}
-الاسم: ${d.customerName}`;
-
-      html += `
-      <div class="card">
-        <b>🧾 كود:</b> ${d.orderID} <br>
-        <b>👤 اسم:</b> ${d.customerName} <br>
-        <b>📞 هاتف:</b> ${d.phone} <br>
-        <b>📍 عنوان:</b> ${d.gov} - ${d.city} <br>
-        ${d.address} <br>
-
-        <a class="btn" href="https://wa.me/${d.phone}?text=${encodeURIComponent(message)}" target="_blank">
-          📱 واتساب
-        </a>
-      </div>
-      `;
+    snapshot.forEach(docSnap => {
+      let data = docSnap.data();
+      data.id = docSnap.id;
+      if (!data.status) data.status = "new";
+      allOrders.push(data);
     });
 
-    document.getElementById("orders").innerHTML = html;
-    document.getElementById("todayCount").innerHTML = `📊 طلبات اليوم: ${count}`;
-
-    // 🔔 إشعار طلب جديد
-    if (!firstLoad) {
-      showNotification("🚨 طلب جديد وصل!");
-    }
-    firstLoad = false;
-
+    renderOrders();
   });
 }
 
+// 🎯 عرض الطلبات
+function renderOrders(){
+  let search = document.getElementById("search").value.toLowerCase();
+  let dateFilter = document.getElementById("dateFilter").value;
 
-// ==========================
-// 🔔 إشعار شيك بدل alert
-// ==========================
-function showNotification(text){
-  let div = document.createElement("div");
-  div.innerHTML = text;
-  div.style.position = "fixed";
-  div.style.bottom = "20px";
-  div.style.left = "20px";
-  div.style.background = "#0F7B65";
-  div.style.color = "#fff";
-  div.style.padding = "10px 15px";
-  div.style.borderRadius = "8px";
-  div.style.zIndex = "9999";
+  let html = "";
+  let today = new Date();
+  today.setHours(0,0,0,0);
 
-  document.body.appendChild(div);
+  let count = 0;
 
-  setTimeout(()=> div.remove(), 3000);
+  allOrders.forEach(d => {
+
+    // 🔍 بحث
+    if (search && !d.customerName.toLowerCase().includes(search) && !d.orderID.includes(search)) return;
+
+    // 📅 فلترة تاريخ
+    if (dateFilter){
+      let dDate = d.createdAt.toDate();
+      let selected = new Date(dateFilter);
+      if (dDate.toDateString() !== selected.toDateString()) return;
+    }
+
+    // 📊 احصاء
+    if (d.createdAt.toDate() >= today) count++;
+
+    let statusClass = d.status === "done" ? "done" : "new";
+    let statusText = d.status === "done" ? "تم الشحن" : "جديد";
+
+    let message = `طلب رقم ${d.orderID}\nالاسم: ${d.customerName}`;
+
+    html += `
+    <div class="card">
+      <b>🧾 ${d.orderID}</b>
+      <span class="status ${statusClass}">${statusText}</span><br>
+
+      👤 ${d.customerName} <br>
+      📞 ${d.phone} <br>
+      📍 ${d.gov} - ${d.city} <br>
+      ${d.address} <br><br>
+
+      <a class="btn whatsapp" href="https://wa.me/${d.phone}?text=${encodeURIComponent(message)}" target="_blank">واتساب</a>
+
+      <button class="btn copy" onclick="copyOrder('${message}')">نسخ</button>
+
+      <button class="btn ship" onclick="markDone('${d.id}')">تم الشحن</button>
+    </div>
+    `;
+  });
+
+  document.getElementById("orders").innerHTML = html;
+  document.getElementById("todayCount").innerHTML = `📊 طلبات اليوم: ${count}`;
 }
+
+// 📱 نسخ
+window.copyOrder = function(text){
+  navigator.clipboard.writeText(text);
+  alert("تم النسخ");
+}
+
+// 🟢 تغيير الحالة
+window.markDone = async function(id){
+  await updateDoc(doc(db, "orders", id), {
+    status: "done"
+  });
+}
+
+// 🔔 تحديث تلقائي
+document.getElementById("search").addEventListener("input", renderOrders);
+document.getElementById("dateFilter").addEventListener("change", renderOrders);
 
 </script>
 
