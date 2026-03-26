@@ -1,4 +1,5 @@
-name: taswekshope-gif/DAHAP
+name: Deploy to GitHub Pages
+
 on:
   push:
     branches:
@@ -10,17 +11,25 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
-      url: ${{ https://taswekshope-gif.github.io/DAHAP/#order }}
+      url: https://taswekshope-gif.github.io/DAHAP/
+
     steps:
-      - uses: actions/checkout@v4
-      - name: DAHAP
-        run: # your build commands
-      - name: taswekshope-gif
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
       - name: Deploy to GitHub Pages
-        id: DAHAP
+        id: deployment
         uses: actions/deploy-pages@v4
