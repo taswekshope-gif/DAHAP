@@ -185,16 +185,19 @@ fetch("https://script.google.com/macros/s/AKfycbz5PEmKRiYODtEjajQSqRmeFaWfWdyWmX
         font,
         chainName,
         timestamp
-   })
+    })
 })
-.then(res => res.json())
-.then(data => {
+.then(res => res.text())
+.then(text => {
+
+    let data = JSON.parse(text);
 
     let orderID = data.orderID || "????";
 
     document.getElementById("orderForm").style.display="none";
     document.getElementById("successMessage").style.display="block";
-    document.getElementById("successMessage").innerHTML = `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
+    document.getElementById("successMessage").innerHTML =
+        `✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderID}`;
 
     let message = `DAHAP
 كود الطلب: ${orderID}
