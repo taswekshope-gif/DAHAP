@@ -179,44 +179,94 @@ govSelect.addEventListener("change",()=>{
   });
 });
 
-// ✅ ارسال فورم واتساب مباشرة
-document.getElementById("orderForm").addEventListener("submit", function(e){
+<script type="module">
+// ✅ استدعاء Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
+  authDomain: "dahap-87e3a.firebaseapp.com",
+  projectId: "dahap-87e3a",
+  storageBucket: "dahap-87e3a.firebasestorage.app",
+  messagingSenderId: "914606801645",
+  appId: "1:914606801645:web:273f6dab0028a42bef02e4",
+  measurementId: "G-ZW99YCTSGY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ✅ توليد كود أوردر مركزي
+async function generateOrderID() {
+  let now = new Date();
+  let yy = String(now.getFullYear()).slice(2);
+  let mm = String(now.getMonth()+1).padStart(2,'0');
+  let dd = String(now.getDate()).padStart(2,'0');
+
+  let prefix = yy + mm + dd;
+
+  // نجيب آخر أوردر
+  const q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(1));
+  const snapshot = await getDocs(q);
+
+  let counter = 1;
+
+  if (!snapshot.empty) {
+    let last = snapshot.docs[0].data().orderID;
+    if (last.startsWith(prefix)) {
+      counter = parseInt(last.split("-")[1]) + 1;
+    }
+  }
+
+  return `${prefix}-${counter}`;
+}
+
+// ✅ الفورم
+document.getElementById("orderForm").addEventListener("submit", async function(e){
     e.preventDefault();
 
-    let customerName = document.getElementById("customerName").value.trim();
-    let phone = document.getElementById("phone").value.trim();
-    let gov = document.getElementById("governorate").value;
+    let customerName = customerName.value.trim();
+    let phone = phone.value.trim();
+    let gov = governorate.value;
     let city = document.getElementById("city").value;
-    let address = document.getElementById("address").value.trim();
-    let design = document.getElementById("design").value;
-    let font = document.getElementById("font").value;
-    let chainName = document.getElementById("chainName").value.trim();
+    let address = address.value.trim();
+    let design = design.value;
+    let font = font.value;
+    let chainName = chainName.value.trim();
 
     if(!/^01[0-9]{9}$/.test(phone)){
-        alert("أدخل رقم هاتف مصري صالح");
+        alert("رقم غير صحيح");
         return;
     }
 
-    let orderID = generateOrderID();
+    let orderID = await generateOrderID();
     let timestamp = new Date().toLocaleString('ar-EG');
 
+    // ✅ حفظ في Firebase
+    await addDoc(collection(db, "orders"), {
+        orderID,
+        customerName,
+        phone,
+        gov,
+        city,
+        address,
+        design,
+        font,
+        chainName,
+        createdAt: new Date()
+    });
+
+    // ✅ واتساب
     let message = `DAHAP
 كود الطلب: ${orderID}
 --------------------
 اسم العميل: ${customerName}
 رقم الهاتف: ${phone}
-العنوان:
 ${gov} - ${city}
 ${address}
-الاسم على السلسلة: ${chainName}
-التصميم: ${design}
-الكتابة: ${font}
-الوقت: ${timestamp}`;
+الاسم: ${chainName}`;
 
-    // ✅ تحويل مباشر للواتساب بدون أي تعطيل
     window.location.href = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-
-});
-  
 });
 </script>
