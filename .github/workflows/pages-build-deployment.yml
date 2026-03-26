@@ -13,6 +13,9 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: DAHAP
+      url: ${{https://taswekshope-gif.github.io/DAHAP/#order}}  # ← أضف هذا
 
     steps:
       - name: Checkout
@@ -27,4 +30,5 @@ jobs:
           path: .
 
       - name: Deploy
+        id: deployment                    # ← أضف هذا
         uses: actions/deploy-pages@v4
