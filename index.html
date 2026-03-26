@@ -173,7 +173,7 @@ document.getElementById("orderForm").addEventListener("submit", function(e){
     let btn = document.querySelector("#orderForm button"); btn.innerHTML = "جاري الإرسال..."; btn.disabled = true;
     let timestamp = new Date().toLocaleString('ar-EG');
 
-fetch("https://script.google.com/macros/s/AKfycbzRBsvE0rHvv41t_jbjkTvnoftoRni70VRPtwyw1xibsEFbaAvV7TozGfqaQ3lIjom7TQ/exec", {
+fetch("https://script.google.com/macros/s/AKfycbzNI6kipqFanc36G-iq6zI36ZODnW6ODYvd3KkP3RPpLz36_ksa-CMESMS-HkZS5AnCNg/exec", {
     method: "POST",
     body: new URLSearchParams({
         customerName,
