@@ -100,20 +100,29 @@ onAuthStateChanged(auth, (user) => {
 
 // 📦 تحميل الطلبات
 function loadOrders(){
-  const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+
+  const q = query(collection(db, "orders"), orderBy("createdAt","desc"));
 
   onSnapshot(q, (snapshot) => {
+
+    console.log("ORDERS SIZE:", snapshot.size); // 👈 مهم جدًا للتشخيص
+
     allOrders = [];
 
-    snapshot.forEach(docSnap => {
-      let data = docSnap.data();
-      data.id = docSnap.id;
-      if (!data.status) data.status = "new";
-      allOrders.push(data);
+    snapshot.forEach((docSnap) => {
+      console.log("ORDER:", docSnap.data()); // 👈 يشوف البيانات
+
+      allOrders.push({
+        id: docSnap.id,
+        ...docSnap.data()
+      });
     });
 
     renderOrders();
+  }, (error) => {
+    console.error("FIRESTORE ERROR:", error);
   });
+
 }
 
 // 🎯 عرض الطلبات
