@@ -284,7 +284,6 @@ window.printSelected = () => {
   let win = window.open('', '', 'width=900,height=700');
 
   let html = `
-  
 <html>
 <head>
 <meta charset="UTF-8">
@@ -295,21 +294,22 @@ body{
   font-family: Arial;
 }
 
-/* A4 PAGE */
+/* A4 GRID 4 INVOICES */
 .page{
   width:210mm;
   min-height:297mm;
   display:grid;
   grid-template-columns:1fr 1fr;
-  grid-auto-rows:140mm;
+  grid-template-rows:1fr 1fr;
   gap:5mm;
+  padding:5mm;
+  box-sizing:border-box;
 }
 
-/* INVOICE */
 .invoice{
   border:1px solid #000;
-  padding:12px;
-  box-sizing:border-box;
+  padding:10px;
+  font-size:11px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
@@ -319,28 +319,22 @@ body{
 .header{
   display:flex;
   justify-content:space-between;
-  font-size:12px;
+  font-size:11px;
   font-weight:bold;
 }
 
-/* CONTENT */
 .content{
-  font-size:12px;
-  line-height:1.6;
+  margin-top:8px;
+  line-height:1.4;
+}
+
+.centerMsg{
+  text-align:center;
+  font-size:11px;
   margin-top:10px;
 }
 
-/* CENTER MESSAGE */
-.centerMsg{
-  text-align:center;
-  font-size:13px;
-  font-weight:bold;
-  margin-top:20px;
-}
-
-hr{
-  margin:6px 0;
-}
+hr{margin:5px 0;}
 
 </style>
 </head>
@@ -352,37 +346,34 @@ hr{
 
   selected.forEach(el => {
 
-    let o = JSON.parse(decodeURIComponent(atob(el.value)))
+    let o = JSON.parse(decodeURIComponent(atob(el.value)));
 
     html += `
     <div class="invoice">
 
       <div class="header">
         <div>DAHAP</div>
-        <div>
-        ${new Date(o.createdAt?.toDate?.() || Date.now()).toLocaleString('en-US')}
-        </div>
+        <div>${new Date(o.createdAt?.toDate?.() || Date.now()).toLocaleString()}</div>
       </div>
 
       <hr>
 
       <div class="content">
-        <div><b>Order ID:</b> ${o.orderID || "-"}</div>
-        <div><b>Name:</b> ${o.customerName || "-"}</div>
-        <div><b>Phone:</b> ${o.phone || "-"}</div>
+        <b>ID:</b> ${o.orderID || "-"} <br>
+        <b>Name:</b> ${o.customerName || "-"} <br>
+        <b>Phone:</b> ${o.phone || "-"} <br>
 
         <br>
 
-        <div><b>Address:</b></div>
-        <div>${o.gov || "-"} - ${o.city || "-"}</div>
-        <div>${o.address || "-"}</div>
+        <b>Address:</b><br>
+        ${o.gov || "-"} - ${o.city || "-"}<br>
+        ${o.address || "-"}
       </div>
 
-     <div class="centerMsg">
-  <b>Thank you for choosing DAHAP 💛</b><br>
-  Your order is being processed with care ✨<br>
-  <small>We appreciate your trust</small>
-</div>
+      <div class="centerMsg">
+        <b>✨ Thank you for choosing DAHAP 💛</b><br>
+        We appreciate your trust 😊
+      </div>
 
     </div>
     `;
@@ -392,9 +383,9 @@ html += `
 </div>
 
 <script>
-  window.onload = function(){
-    window.print();
-  };
+window.onload = function(){
+  window.print();
+};
 <\/script>
 
 </body>
