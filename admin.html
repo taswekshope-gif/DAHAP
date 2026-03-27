@@ -85,9 +85,13 @@ import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } 
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy***",
+  apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
   authDomain: "dahap-87e3a.firebaseapp.com",
   projectId: "dahap-87e3a",
+  storageBucket: "dahap-87e3a.firebasestorage.app",
+  messagingSenderId: "914606801645",
+  appId: "1:914606801645:web:273f6dab0028a42bef02e4",
+  measurementId: "G-ZW99YCTSGY"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -102,29 +106,27 @@ let lastCount = 0;
 let authReady = false;
 
 // 🔐 انتظار Firebase بدون طرد غلط
+let loaded = false;
+
 onAuthStateChanged(auth, (user) => {
 
   console.log("AUTH:", user);
 
   if (user) {
-    load();
+    if (!loaded) {
+      load();
+      loaded = true;
+    }
   } else {
+    // استنى شوية قبل الطرد
     setTimeout(() => {
       if (!auth.currentUser) {
         window.location.href = "login.html";
       }
-    }, 2000);
+    }, 4000);
   }
+
 });
-  
-// ⛔ حماية متأخرة بدل الطرد الفوري
-setTimeout(() => {
-
-  if (!auth.currentUser) {
-    window.location.href = "login.html";
-  }
-
-}, 3000);
   
 // 📦 load orders
 function load(){
@@ -189,7 +191,17 @@ function render(){
 
     let status = o.status || "new";
 
-    let msg = `DAHAP\n${o.orderID}\n${o.customerName}`;
+    let msg = `DAHAP
+كود الطلب: ${o.orderID}
+
+👤 ${o.customerName}
+📞 ${o.phone}
+
+📍 ${o.gov} - ${o.city}
+${o.address}
+
+💎 ${o.chainName} - ${o.design}
+`;
 
     html += `
     <div class="card">
