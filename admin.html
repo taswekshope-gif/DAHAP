@@ -48,7 +48,7 @@ input{
 .print{background:#ff9800;color:#fff;}
 .ship{background:#0F7B65;color:#fff;}
 .doneBtn{background:#1976d2;color:#fff;}
-
+  
 .status{
   padding:4px 8px;
   border-radius:6px;
@@ -56,6 +56,9 @@ input{
   color:#fff;
 }
 
+ .newCard{
+  border-right:5px solid orange;
+}
 .new{background:orange;}
 .done{background:green;}
 .shipped{background:#1976d2;}
@@ -78,7 +81,11 @@ input{
 </button>
   
 <div id="orders"></div>
-
+  
+<div id="liveStatus" style="color:green;margin-bottom:10px;">
+🟢 Live Connected
+</div>
+  
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -122,7 +129,10 @@ function load(){
 
   const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
 
-  onSnapshot(q,(snap)=>{
+  onSnapshot(q,(snap)=>{document.getElementById("liveStatus").innerText = "🟢 Live Updating...";
+setTimeout(()=>{
+  document.getElementById("liveStatus").innerText = "🟢 Live Connected";
+}, 1000);
 
     if(lastCount && snap.size > lastCount){
       notify();
@@ -140,7 +150,7 @@ function load(){
   });
 
 }
-
+  
 // 🔔 صوت
 function sound(){
   new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
@@ -156,6 +166,11 @@ Notification.requestPermission();
 
 // 🎯 render
 function render(){
+
+  let totalOrders = orders.length;
+  let newOrders = 0;
+  let shippedOrders = 0;
+  let doneOrders = 0;
 
   let search = document.getElementById("search").value.toLowerCase();
   let date = document.getElementById("dateFilter").value;
@@ -175,10 +190,15 @@ function render(){
     if(date && d){
       if(d.toDateString() !== new Date(date).toDateString()) return;
     }
-
+   let status = o.status || "new";
+    
+   if(status === "new") newOrders++;
+   if(status === "shipped") shippedOrders++;
+   if(status === "done") doneOrders++;
+    
     count++;
 
-    let status = o.status || "new";
+  
 
  let msg = `DAHAP
 كود الطلب: ${o.orderID || "-"}
@@ -202,7 +222,7 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 
 html += `
 <div class="card">
-
+<div class="card ${status === 'new' ? 'newCard' : ''}">
 <input type="checkbox" class="selectOrder"
 value='${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}'
 style="float:left; transform:scale(1.2); margin-left:10px;">
@@ -230,14 +250,20 @@ href="https://wa.me/${o.phone}">واتساب</a>
 
 <button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
 
+<button class="btn" onclick="update('${o.id}','new')">New</button>
+
 <button class="btn doneBtn" onclick="update('${o.id}','done')">تم</button>
 
 </div>
 `;
   });
 
-  document.getElementById("orders").innerHTML=html;
-  document.getElementById("count").innerText="📊 "+count;
+ document.getElementById("count").innerHTML = `
+📊 Total: ${totalOrders} |
+🆕 New: ${newOrders} |
+🚚 Shipped: ${shippedOrders} |
+✅ Done: ${doneOrders}
+`;
 }
 
 // 📋 copy
@@ -258,6 +284,7 @@ window.printSelected = () => {
   let win = window.open('', '', 'width=900,height=700');
 
   let html = `
+  
 <html>
 <head>
 <meta charset="UTF-8">
@@ -271,10 +298,11 @@ body{
 /* A4 PAGE */
 .page{
   width:210mm;
-  height:297mm;
+  min-height:297mm;
   display:grid;
   grid-template-columns:1fr 1fr;
-  grid-template-rows:1fr 1fr;
+  grid-auto-rows:140mm;
+  gap:5mm;
 }
 
 /* INVOICE */
@@ -324,7 +352,7 @@ hr{
 
   selected.forEach(el => {
 
-    let o = JSON.parse(decodeURIComponent(escape(atob(el.value))));
+    let o = JSON.parse(decodeURIComponent(atob(el.value)))
 
     html += `
     <div class="invoice">
@@ -332,7 +360,7 @@ hr{
       <div class="header">
         <div>DAHAP</div>
         <div>
-          ${o.createdAt?.toDate?.().toLocaleString('en-US') || new Date().toLocaleString('en-US')}
+        ${new Date(o.createdAt?.toDate?.() || Date.now()).toLocaleString('en-US')}
         </div>
       </div>
 
@@ -350,10 +378,11 @@ hr{
         <div>${o.address || "-"}</div>
       </div>
 
-      <div class="centerMsg">
-        Thank you for your order 💛<br>
-        We appreciate your trust in DAHAP
-      </div>
+     <div class="centerMsg">
+  <b>Thank you for choosing DAHAP 💛</b><br>
+  Your order is being processed with care ✨<br>
+  <small>We appreciate your trust</small>
+</div>
 
     </div>
     `;
