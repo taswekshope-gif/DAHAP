@@ -335,114 +335,86 @@ window.printSelected = () => {
     return;
   }
 
-  let win = window.open('', '', 'width=900,height=700');
+  let win = window.open('', '', 'width=800,height=600');
 
   let html = `
   <html>
   <head>
   <style>
-
-    @page {
-      size: A4;
-      margin: 10mm;
-    }
-
     body{
-      font-family: Arial;
-      margin:0;
-      padding:0;
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      margin: 0;
+      padding: 0;
     }
-
     .page{
-      display:flex;
-      flex-wrap:wrap;
-      width:100%;
+      display: flex;
+      flex-wrap: wrap;
+      width: 210mm;
+      height: 297mm;
+      box-sizing: border-box;
     }
-
     .invoice{
-      width:48%;
-      height:135mm;
-      border:1px solid #000;
-      margin:1%;
-      padding:10px;
-      box-sizing:border-box;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
+      width: 50%;
+      height: 50%;
+      border: 1px solid #000;
+      box-sizing: border-box;
+      padding: 10px;
+      page-break-inside: avoid;
     }
-
-    .title{
-      font-size:16px;
-      font-weight:bold;
-      margin-bottom:5px;
+    h3{
+      margin: 0 0 5px 0;
     }
-
-    .line{
-      border-bottom:1px solid #ccc;
-      margin:5px 0;
+    hr{
+      border: 0;
+      border-top: 1px solid #000;
+      margin: 5px 0;
     }
-
-    .info{
-      font-size:13px;
-      line-height:1.6;
+    p{
+      margin: 3px 0;
+      font-size: 12px;
     }
-
     .footer{
-      font-size:12px;
-      text-align:center;
-      margin-top:10px;
-      font-weight:bold;
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      color: #555;
     }
-
   </style>
   </head>
-
   <body>
   <div class="page">
   `;
 
   selected.forEach(el => {
-
     let o = JSON.parse(decodeURIComponent(el.value));
 
     html += `
     <div class="invoice">
 
-      <div>
-        <div class="title">DAHAP</div>
-        <div class="line"></div>
+      <h3>Order from DAHAP</h3>
+      <hr>
 
-        <div class="info">
-          <b>Customer:</b> ${o.customerName || "-"} <br>
-          <b>Phone:</b> ${o.phone || "-"} <br>
-          <b>Address:</b><br>
-          ${o.gov || ""} - ${o.city || ""} <br>
-          ${o.address || ""}
-        </div>
-      </div>
+      <p><b>Order ID:</b> ${o.orderID || "-"}</p>
+      <p><b>Name:</b> ${o.customerName || "-"}</p>
+      <p><b>Phone:</b> ${o.phone || "-"}</p>
 
-      <div class="footer">
-        💛 Thank you for choosing DAHAP!<br>
-        We appreciate your trust ✨
-      </div>
+      <p><b>Address:</b></p>
+      <p>${o.gov || "-"} - ${o.city || "-"}</p>
+      <p>${o.address || "-"}</p>
+
+      <div class="footer">Thank you for your order from DAHAP! 💛</div>
 
     </div>
     `;
   });
 
-  html += `
-  </div>
-
-  <script>
-    window.onload = () => window.print();
-  </script>
-
-  </body>
-  </html>
-  `;
+  html += `</div></body></html>`;
 
   win.document.write(html);
   win.document.close();
+  win.focus();
+  win.print();
 };
   
 // 🔄 update status
