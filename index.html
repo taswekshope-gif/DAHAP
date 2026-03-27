@@ -88,8 +88,24 @@ button:hover { background:#095c4d; }
 <div id="successMessage"></div>
 </section>
 
-<script>
-document.addEventListener("DOMContentLoaded", function(){
+<script type="module">
+
+// 🔥 Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
+  authDomain: "dahap-87e3a.firebaseapp.com",
+  projectId: "dahap-87e3a",
+  storageBucket: "dahap-87e3a.firebasestorage.app",
+  messagingSenderId: "914606801645",
+  appId: "1:914606801645:web:273f6dab0028a42bef02e4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 
 // ✅ تايمر
 let duration = 3 * 60 * 60;
@@ -103,30 +119,6 @@ setInterval(()=>{
 
   if(duration>0) duration--;
 },1000);
-
-// ✅ توليد كود الطلب
-function generateOrderID() {
-  let now = new Date();
-  let yy = String(now.getFullYear()).slice(2);
-  let mm = String(now.getMonth()+1).padStart(2,'0');
-  let dd = String(now.getDate()).padStart(2,'0');
-
-  let todayKey = yy + mm + dd;
-
-  let lastDate = localStorage.getItem("orderDate");
-  let counter = localStorage.getItem("orderCounter");
-
-  if(lastDate === todayKey){
-    counter = Number(counter) + 1;
-  } else {
-    counter = 1;
-  }
-
-  localStorage.setItem("orderDate", todayKey);
-  localStorage.setItem("orderCounter", counter);
-
-  return `${todayKey}-${counter}`;
-}
   
 // المحافظات والمدن
 const govData = {
@@ -179,24 +171,6 @@ govSelect.addEventListener("change",()=>{
   });
 });
 
-<script type="module">
-// ✅ استدعاء Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
-  authDomain: "dahap-87e3a.firebaseapp.com",
-  projectId: "dahap-87e3a",
-  storageBucket: "dahap-87e3a.firebasestorage.app",
-  messagingSenderId: "914606801645",
-  appId: "1:914606801645:web:273f6dab0028a42bef02e4",
-  measurementId: "G-ZW99YCTSGY"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
 // ✅ توليد كود أوردر مركزي
 async function generateOrderID() {
   let now = new Date();
@@ -206,7 +180,6 @@ async function generateOrderID() {
 
   let prefix = yy + mm + dd;
 
-  // نجيب آخر أوردر
   const q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(1));
   const snapshot = await getDocs(q);
 
@@ -222,18 +195,19 @@ async function generateOrderID() {
   return `${prefix}-${counter}`;
 }
 
+
 // ✅ الفورم
 document.getElementById("orderForm").addEventListener("submit", async function(e){
     e.preventDefault();
 
-    let customerName = customerName.value.trim();
-    let phone = phone.value.trim();
-    let gov = governorate.value;
+    let customerName = document.getElementById("customerName").value.trim();
+    let phone = document.getElementById("phone").value.trim();
+    let gov = document.getElementById("governorate").value;
     let city = document.getElementById("city").value;
-    let address = address.value.trim();
-    let design = design.value;
-    let font = font.value;
-    let chainName = chainName.value.trim();
+    let address = document.getElementById("address").value.trim();
+    let design = document.getElementById("design").value;
+    let font = document.getElementById("font").value;
+    let chainName = document.getElementById("chainName").value.trim();
 
     if(!/^01[0-9]{9}$/.test(phone)){
         alert("رقم غير صحيح");
@@ -241,7 +215,6 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     }
 
     let orderID = await generateOrderID();
-    let timestamp = new Date().toLocaleString('ar-EG');
 
     // ✅ حفظ في Firebase
     await addDoc(collection(db, "orders"), {
@@ -254,7 +227,8 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
         design,
         font,
         chainName,
-        createdAt: new Date()
+        createdAt: new Date(),
+        status: "new"
     });
 
     // ✅ واتساب
@@ -269,4 +243,5 @@ ${address}
 
     window.location.href = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
 });
+
 </script>
