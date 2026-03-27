@@ -146,9 +146,15 @@ setTimeout(()=>{
       ...d.data()
     }));
 
-    render();
+  function render(){
+
+  let html = "";
+
+  orders.forEach(o => {
+    html += `...`;
   });
 
+  document.getElementById("orders").innerHTML = html;
 }
   
 // 🔔 صوت
@@ -221,7 +227,6 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 `;
 
 html += `
-<div class="card">
 <div class="card ${status === 'new' ? 'newCard' : ''}">
 <input type="checkbox" class="selectOrder"
 value='${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}'
