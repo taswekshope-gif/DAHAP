@@ -129,10 +129,13 @@ function load(){
 
   const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
 
-  onSnapshot(q,(snap)=>{document.getElementById("liveStatus").innerText = "🟢 Live Updating...";
-setTimeout(()=>{
-  document.getElementById("liveStatus").innerText = "🟢 Live Connected";
-}, 1000);
+  onSnapshot(q,(snap)=>{
+
+    document.getElementById("liveStatus").innerText = "🟢 Live Updating...";
+
+    setTimeout(()=>{
+      document.getElementById("liveStatus").innerText = "🟢 Live Connected";
+    }, 1000);
 
     if(lastCount && snap.size > lastCount){
       notify();
@@ -141,20 +144,15 @@ setTimeout(()=>{
 
     lastCount = snap.size;
 
-    orders = snap.docs.map(d=>({
-      id:d.id,
+    orders = snap.docs.map(d => ({
+      id: d.id,
       ...d.data()
     }));
 
-  function render(){
+    render(); // ✅ هنا الصح
 
-  let html = "";
-
-  orders.forEach(o => {
-    html += `...`;
   });
 
-  document.getElementById("orders").innerHTML = html;
 }
   
 // 🔔 صوت
