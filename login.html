@@ -55,9 +55,13 @@ button {
 </div>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
@@ -68,23 +72,24 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// ✅ خلي الفنكشن دي Global
-window.login = async function(){
+window.login = async function () {
 
   let email = document.getElementById("email").value;
   let password = document.getElementById("password").value;
 
   try {
+
+    // 🔐 تثبيت الجلسة
+    await setPersistence(auth, browserLocalPersistence);
+
+    // 🔑 تسجيل الدخول
     await signInWithEmailAndPassword(auth, email, password);
+
     window.location.href = "admin.html";
-  } catch (error) {
-    console.log(error);
-    alert("❌ الإيميل أو الباسورد غلط");
+
+  } catch (err) {
+    console.log(err);
+    alert("❌ خطأ في الدخول");
   }
-
-}
-
+};
 </script>
-
-</body>
-</html>
