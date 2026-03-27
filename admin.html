@@ -260,8 +260,65 @@ href="https://wa.me/${o.phone}">واتساب</a>
 </div>
 `;
   });
+function render(){
 
- document.getElementById("count").innerHTML = `
+  let totalOrders = orders.length;
+
+  let newOrders = 0;
+  let shippedOrders = 0;
+  let doneOrders = 0;
+
+  let search = document.getElementById("search").value.toLowerCase();
+  let date = document.getElementById("dateFilter").value;
+
+  let html = "";
+  let count = 0;
+
+  orders.forEach(o => {
+
+    if(search &&
+      !o.customerName?.toLowerCase().includes(search) &&
+      !o.phone?.includes(search)
+    ) return;
+
+    let d = o.createdAt?.toDate?.();
+
+    if(date && d){
+      if(d.toDateString() !== new Date(date).toDateString()) return;
+    }
+
+    let status = o.status || "new";
+
+    if(status === "new") newOrders++;
+    if(status === "shipped") shippedOrders++;
+    if(status === "done") doneOrders++;
+
+    count++;
+
+    let msg = `DAHAP
+كود الطلب: ${o.orderID || "-"}`;
+
+    html += `
+    <div class="card ${status === 'new' ? 'newCard' : ''}">
+      <b>🧾 ${o.orderID}</b><br>
+      👤 ${o.customerName || "غير محدد"} <br>
+      📞 ${o.phone || "غير محدد"} <br>
+      📍 ${o.gov || "-"} - ${o.city || "-"} <br><br>
+
+      <button onclick="update('${o.id}','done')">تم</button>
+    </div>
+    `;
+  });
+
+  document.getElementById("orders").innerHTML = html;
+
+  document.getElementById("count").innerHTML = `
+  📊 Total: ${totalOrders} |
+  🆕 New: ${newOrders} |
+  🚚 Shipped: ${shippedOrders} |
+  ✅ Done: ${doneOrders}
+  `;
+}`
 📊 Total: ${totalOrders} |
 🆕 New: ${newOrders} |
 🚚 Shipped: ${shippedOrders} |
