@@ -359,17 +359,7 @@ hr{
     `;
   });
 
-  html += `
-</div>
-
-<script>
-  window.onload = function(){
-    window.print();
-  };
-<\/script>
-
-</body>
-  html += `
+html += `
 </div>
 
 <script>
@@ -381,7 +371,8 @@ hr{
 </body>
 </html>
 `;
-
+  
+<\/script>
   win.document.write(html);
   win.document.close();
 };
