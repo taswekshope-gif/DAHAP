@@ -88,6 +88,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+const CAIRO_FONT = `
+AAEAAAARAQAABAAQR0RFRrRCsIIAAACcAAAAHEdQT1MB9QG2AAABHAAAAExHU1VCWzX3GAAAFGAAAAA4T1MvMg8SBTcAAAGQAAAAYGNtYXABd9k1AAAB8AAAAFRnYXNwAAAAEAAAAgAAAAAIZ2x5Zo8sN9EAAAIQAAABfGhlYWQKk4k2AAADkAAAADZoaGVhB8YH5wAAA+gAAAAkaG10eA0wAAEAAAP8AAAALGxvY2EAFgA0AAAEGAAAABptYXhwAAwAFQAAAQQAAAAgbmFtZV9tQZkAAAEkAAAARnBvc3QAAwAAAAAEjAAAACBwcmVwAAEAAgAABJQAAAAIAAAAAA==
+`;
+  
 const firebaseConfig = {
   apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
   authDomain: "dahap-87e3a.firebaseapp.com",
@@ -255,75 +259,68 @@ window.pdf = (o) => {
 
   const { jsPDF } = window.jspdf;
 
-  // 🧾 صفحة A4
   let doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
     format: "a4"
   });
 
-  // 🎯 إعدادات
+  // 🟢 تفعيل الخط العربي
+  doc.addFileToVFS("Cairo-Regular.ttf", CAIRO_FONT);
+  doc.addFont("Cairo-Regular.ttf", "Cairo", "normal");
+  doc.setFont("Cairo");
+
   let x = 10;
   let y = 15;
 
-  doc.setFont("Helvetica", "normal");
-
-  // 🟡 عنوان البراند
-  doc.setFontSize(18);
-  doc.text("DAHAP", x, y);
-
-  y += 6;
-
-  doc.setFontSize(10);
-  doc.text("Order Invoice", x, y);
-
-  // خط فاصل
-  y += 5;
-  doc.setLineWidth(0.5);
-  doc.line(x, y, 100, y);
-
-  // 📦 البيانات
-  y += 10;
-
-  doc.setFontSize(11);
-
-  doc.text(`Customer Name:`, x, y);
-  doc.text(`${o.customerName || "-"}`, x + 50, y);
-
-  y += 8;
-
-  doc.text(`Phone Number:`, x, y);
-  doc.text(`${o.phone || "-"}`, x + 50, y);
-
-  y += 8;
-
-  doc.text(`Address:`, x, y);
-  doc.text(`${o.gov || "-"} - ${o.city || "-"}`, x + 50, y);
-
-  y += 6;
-  doc.text(`${o.address || "-"}`, x + 50, y);
-
-  // 📅 التاريخ (إنجليزي)
-  y += 10;
-
+  // 📅 التاريخ (يمين فوق)
   let date = o.createdAt?.toDate?.()
     ? o.createdAt.toDate().toLocaleString("en-US")
     : new Date().toLocaleString("en-US");
 
-  doc.text(`Date: ${date}`, x, y);
-
-  // ❤️ رسالة احترافية
-  y += 15;
-
   doc.setFontSize(10);
+  doc.text(date, 140, y);
 
-  doc.text("Thank you for choosing DAHAP.", x, y);
-  y += 5;
-  doc.text("We truly appreciate your trust.", x, y);
-  y += 5;
-  doc.text("Your custom piece is made with care.", x, y);
+  // 🟡 عنوان
+  doc.setFontSize(18);
+  doc.text("DAHAP", x, y);
 
-  // 🧠 مهم: حفظ الملف
+  y += 6;
+  doc.setFontSize(10);
+  doc.text("Order Invoice", x, y);
+
+  y += 5;
+  doc.line(x, y, 100, y);
+
+  // 📦 بيانات
+  y += 10;
+
+  doc.setFontSize(12);
+
+  doc.text(`Customer Name:`, x, y);
+  doc.text(`${o.customerName || "-"}`, x + 60, y);
+
+  y += 8;
+
+  doc.text(`Phone:`, x, y);
+  doc.text(`${o.phone || "-"}`, x + 60, y);
+
+  y += 8;
+
+  doc.text(`Address:`, x, y);
+
+  y += 6;
+  doc.text(`${o.gov || "-"} - ${o.city || "-"}`, x + 5, y);
+
+  y += 6;
+  doc.text(`${o.address || "-"}`, x + 5, y);
+
+  // ❤️ رسالة خفيفة
+  y += 15;
+  doc.setFontSize(10);
+  doc.text("Thank you for your order 💛", x, y);
+
+  // 💾 حفظ
   doc.save(`DAHAP-${o.orderID || "order"}.pdf`);
 };
   
