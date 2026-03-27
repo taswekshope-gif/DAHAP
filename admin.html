@@ -251,59 +251,10 @@ window.copyText = (t)=>{
 }
 
 // 🧾 PDF
-window.pdf = (o) => {
-  const { jsPDF } = window.jspdf;
-  let doc = new jsPDF();
+تحويل font لـ base64
+إضافته في jsPDF
 
-  let y = 15;
-
-  // 🧾 عنوان
-  doc.setFontSize(18);
-  doc.text("Order from DAHAP", 10, y);
-
-  y += 10;
-  doc.setFontSize(12);
-  doc.text("-----------------------------", 10, y);
-
-  // 📦 بيانات
-  y += 10;
-  doc.text(`Order ID: ${o.orderID}`, 10, y);
-
-  y += 10;
-  doc.text(`Customer: ${o.customerName}`, 10, y);
-
-  y += 10;
-  doc.text(`Phone: ${o.phone}`, 10, y);
-
-  y += 10;
-  doc.text(`Address: ${o.gov} - ${o.city}`, 10, y);
-
-  y += 10;
-  doc.text(`${o.address}`, 10, y);
-
-  y += 10;
-  doc.text(`Design: ${o.design}`, 10, y);
-
-  y += 10;
-  doc.text(`Font: ${o.font}`, 10, y);
-
-  y += 10;
-  doc.text(`Name on chain: ${o.chainName}`, 10, y);
-
-  y += 15;
-  doc.text(`Date: ${o.createdAt?.toDate?.().toLocaleString('en-US')}`, 10, y);
-
-  // ❤️ رسالة تحت
-  y += 20;
-  doc.setFontSize(11);
-  doc.text("Thank you for choosing DAHAP 💛", 10, y);
-
-  y += 8;
-  doc.text("We hope you love your custom piece ✨", 10, y);
-
-  doc.save(`${o.orderID}.pdf`);
-};
-
+👉 لو عايز أظبطهولك كامل قولّي وأنا أعملهولك جاهز copy paste 🔥
 window.printSelected = () => {
 
   let selected = document.querySelectorAll(".selectOrder:checked");
