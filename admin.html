@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>DAHAP PRO Dashboard</title>
+<title>DAHAP PRO FIX</title>
 
 <style>
 body{
@@ -72,7 +72,7 @@ button.main{
 
 <body>
 
-<h2>📦 DAHAP PRO</h2>
+<h2>📦 DAHAP PRO FIX</h2>
 
 <div class="header">
   <input id="search" placeholder="بحث">
@@ -108,11 +108,12 @@ const auth = getAuth(app);
 
 let orders = [];
 
+// ✅ مهم: تحميل مباشر حتى لو auth فيه مشكلة
+load();
+
 onAuthStateChanged(auth, (user)=>{
   if(!user){
-    location.href="login.html";
-  } else {
-    load();
+    console.log("No user logged in");
   }
 });
 
@@ -121,7 +122,10 @@ function load(){
 
   onSnapshot(q,(snap)=>{
     orders = snap.docs.map(d=>({id:d.id,...d.data()}));
+    console.log("ORDERS:", orders); // 👈 تأكيد الداتا
     render();
+  }, (err)=>{
+    console.error("Firestore error:", err);
   });
 }
 
@@ -135,43 +139,46 @@ function render(){
 
   orders.forEach(o=>{
 
+    // ✅ عرض بدون كسر لو مفيش قيم
+    let name = (o.customerName || "");
+    let phone = (o.phone || "");
+    let gov = (o.gov || "");
+    let city = (o.city || "");
+    let address = (o.address || "");
+
+    // 🔍 فلتر البحث (آمن)
     if(search &&
-      !o.customerName?.toLowerCase().includes(search) &&
-      !o.phone?.includes(search)
+      !name.toLowerCase().includes(search) &&
+      !phone.includes(search)
     ) return;
 
+    // 📅 فلتر التاريخ (آمن)
     let d = o.createdAt?.toDate?.();
-    if(date && d && d.toDateString() !== new Date(date).toDateString()) return;
+    if(date && d){
+      let selected = new Date(date).toDateString();
+      if(d.toDateString() !== selected) return;
+    }
 
     count++;
 
     let status = o.status || "new";
-
-    let msg = `
-DAHAP
-كود: ${o.orderID}
-
-اسم: ${o.customerName}
-هاتف: ${o.phone}
-العنوان: ${o.gov} - ${o.city}
-${o.address}
-`;
 
     html += `
 <div class="card">
 
 <input type="checkbox" class="sel" value='${btoa(JSON.stringify(o))}'>
 
-<b>${o.orderID}</b>
+<b>${o.orderID || "NO-ID"}</b>
 <span class="status ${status}">${status}</span><br><br>
 
-${o.customerName}<br>
-${o.phone}<br>
-${o.gov} - ${o.city}<br><br>
+${name}<br>
+${phone}<br>
+${gov} - ${city}<br><br>
+${address}<br><br>
 
-<button class="btn whatsapp" onclick="window.open('https://wa.me/${o.phone}')">واتساب</button>
+<button class="btn whatsapp" onclick="window.open('https://wa.me/${phone}')">واتساب</button>
 
-<button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>نسخ</button>
+<button class="btn copy" onclick='copyText(${JSON.stringify(name + " - " + phone)})'>نسخ</button>
 
 <button class="btn ship" onclick="updateStatus('${o.id}','shipped')">شحن</button>
 
@@ -181,7 +188,7 @@ ${o.gov} - ${o.city}<br><br>
 `;
   });
 
-  document.getElementById("orders").innerHTML = html;
+  document.getElementById("orders").innerHTML = html || "<p>لا توجد طلبات</p>";
   document.getElementById("count").innerText = "📊 " + count;
 }
 
@@ -193,6 +200,7 @@ window.updateStatus = async (id,status)=>{
   await updateDoc(doc(db,"orders",id),{status});
 };
 
+// 🖨️ طباعة
 window.printSelected = ()=>{
 
   let selected = document.querySelectorAll(".sel:checked");
@@ -204,11 +212,24 @@ window.printSelected = ()=>{
 <html>
 <head>
 <style>
-.page{display:grid;grid-template-columns:1fr 1fr;width:210mm;height:297mm}
-.box{border:1px solid #000;padding:10px;font-size:12px}
+@page { size: A4; margin: 10mm; }
+
+.page{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.box{
+  border:1px solid #000;
+  padding:10px;
+  font-size:12px;
+  height:130px;
+}
 </style>
 </head>
 <body>
+
 <div class="page">
 `;
 
@@ -217,16 +238,25 @@ window.printSelected = ()=>{
 
     html += `
 <div class="box">
-<b>${o.orderID}</b><br>
-${o.customerName}<br>
-${o.phone}<br>
-${o.gov} - ${o.city}<br>
-${o.address}
+<b>${o.orderID || ""}</b><br>
+${o.customerName || ""}<br>
+${o.phone || ""}<br>
+${o.gov || ""} - ${o.city || ""}<br>
+${o.address || ""}
 </div>
 `;
   });
 
-  html += "</div><script>window.print()<\/script></body></html>";
+  html += `
+</div>
+
+<script>
+window.onload = ()=>window.print();
+<\/script>
+
+</body>
+</html>
+`;
 
   win.document.write(html);
   win.document.close();
