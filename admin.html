@@ -2,70 +2,78 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>لوحة الطلبات</title>
+<title>DAHAP Dashboard Pro</title>
 
 <style>
-body { font-family:Cairo; background:#f4f6f9; padding:20px; }
+body{
+  font-family: Cairo, sans-serif;
+  background:#f4f6f9;
+  padding:20px;
+}
 
-.header {
+.header{
   display:flex;
-  justify-content:space-between;
-  flex-wrap:wrap;
   gap:10px;
+  flex-wrap:wrap;
   margin-bottom:20px;
 }
 
-input, select {
+input{
   padding:10px;
   border-radius:8px;
   border:1px solid #ccc;
 }
 
-.card {
+.card{
   background:#fff;
-  border-radius:12px;
   padding:15px;
-  margin:10px 0;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  border-radius:12px;
+  margin-bottom:12px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+  transition:0.2s;
 }
+.card:hover{transform:scale(1.01)}
 
-.btn {
+.btn{
   padding:6px 10px;
   border-radius:6px;
-  text-decoration:none;
+  border:none;
+  cursor:pointer;
   margin:3px;
-  display:inline-block;
-  font-size:14px;
+  font-size:13px;
 }
 
-.whatsapp { background:#25D366; color:#fff; }
-.copy { background:#333; color:#fff; }
-.ship { background:#0F7B65; color:#fff; }
-  
-.print {
-  background: #ff9800;
-  color: #fff;
-}       
-    
-.status {
-  padding:5px 10px;
+.whatsapp{background:#25D366;color:#fff;}
+.copy{background:#333;color:#fff;}
+.print{background:#ff9800;color:#fff;}
+.ship{background:#0F7B65;color:#fff;}
+.doneBtn{background:#1976d2;color:#fff;}
+
+.status{
+  padding:4px 8px;
   border-radius:6px;
   font-size:12px;
+  color:#fff;
 }
 
-.new { background:orange; color:#fff; }
-.done { background:green; color:#fff; }
+.new{background:orange;}
+.done{background:green;}
+.shipped{background:#1976d2;}
 </style>
-    
+
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
+
 <body>
 
-<h2>📦 لوحة الطلبات</h2>
+<h2>📦 DAHAP Dashboard Pro</h2>
 
 <div class="header">
-  <input type="text" id="search" placeholder="🔍 بحث بالاسم أو الرقم">
+  <input type="text" id="search" placeholder="🔍 بحث">
   <input type="date" id="dateFilter">
-  <h3 id="todayCount"></h3>
+  <h3 id="count"></h3>
 </div>
 
 <div id="orders"></div>
@@ -77,170 +85,148 @@ import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } 
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
+  apiKey: "AIzaSy***",
   authDomain: "dahap-87e3a.firebaseapp.com",
   projectId: "dahap-87e3a",
-  storageBucket: "dahap-87e3a.firebasestorage.app",
-  messagingSenderId: "914606801645",
-  appId: "1:914606801645:web:273f6dab0028a42bef02e4",
-  measurementId: "G-ZW99YCTSGY"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let allOrders = [];
+let orders = [];
+let lastCount = 0;
 
-// 🔐 حماية
-onAuthStateChanged(auth, (user) => {
-  if (!user) window.location.href = "login.html";
-  else loadOrders();
+// 🔐 login
+onAuthStateChanged(auth,(user)=>{
+  if(!user) window.location.href="login.html";
+  else load();
 });
 
-// 📦 تحميل الطلبات
-function loadOrders(){
+// 📦 load orders
+function load(){
 
-  const q = query(collection(db, "orders"), orderBy("createdAt","desc"));
+  const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
 
-  onSnapshot(q, (snapshot) => {
+  onSnapshot(q,(snap)=>{
 
-    console.log("ORDERS SIZE:", snapshot.size); // 👈 مهم جدًا للتشخيص
-
-    allOrders = [];
-
-    snapshot.forEach((docSnap) => {
-      console.log("ORDER:", docSnap.data()); // 👈 يشوف البيانات
-
-      allOrders.push({
-        id: docSnap.id,
-        ...docSnap.data()
-      });
-    });
-
-    renderOrders();
-  }, (error) => {
-    console.error("FIRESTORE ERROR:", error);
-  });
-
-}
-
-// 🎯 عرض الطلبات
-function renderOrders(){
-  let search = document.getElementById("search").value.toLowerCase();
-  let dateFilter = document.getElementById("dateFilter").value;
-
-  let html = "";
-  let today = new Date();
-  today.setHours(0,0,0,0);
-
-  let count = 0;
-
-  allOrders.forEach(d => {
-
-    // 🔍 بحث
-    if (search && !d.customerName?.toLowerCase?.().includes(search) && !d.orderID?.includes?.(search)) return;
-
-    // 📅 فلترة تاريخ
-    if (dateFilter){
-      let dDate = d.createdAt?.toDate?.();
-      let selected = new Date(dateFilter);
-      if (dDate?.toDateString?.() !== selected.toDateString()) return;
+    if(lastCount && snap.size > lastCount){
+      notify();
+      sound();
     }
 
-    // 📊 احصاء
- if (d.createdAt?.toDate && d.createdAt.toDate() >= today) {
-  count++;
-}
+    lastCount = snap.size;
 
-    let statusClass = d.status === "done" ? "done" : "new";
-    let statusText = d.status === "done" ? "تم الشحن" : "جديد";
+    orders = snap.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
 
-    let message = `طلب رقم ${d.orderID}\nالاسم: ${d.customerName}`;
-
-html += `
-<div class="card">
-
-<b>🧾 ${d.orderID}</b>
-<span class="status ${statusClass}">${statusText}</span><br><br>
-
-👤 ${d.customerName} <br>
-📞 ${d.phone} <br>
-
-📍 ${d.gov ?? "غير محدد"} - ${d.city ?? "غير محدد"}
-${d.address} <br><br>
-
-💎 <b>تفاصيل الطلب:</b><br>
-- الاسم: ${d.chainName} <br>
-- الكتابة: ${d.font} <br>
-- التصميم: ${d.design} <br><br>
-
-🕒 ${d.createdAt?.toDate().toLocaleString('ar-EG')} <br><br>
-
-<a class="btn whatsapp" href="https://wa.me/${d.phone}?text=${encodeURIComponent(message)}" target="_blank">واتساب</a>
-
-<button class="btn copy" onclick='copyOrder(${JSON.stringify(message)})'">نسخ</button>
-
-<button class="btn print" onclick='printOrder(${JSON.stringify(d)})'>🖨️ طباعة</button>
-
-<button class="btn ship" onclick="markDone('${d.id}')">تم الشحن</button>
-
-</div>
-`;
+    render();
   });
 
-  document.getElementById("orders").innerHTML = html;
-  document.getElementById("todayCount").innerHTML = `📊 طلبات اليوم: ${count}`;
-}
-       
-// 📱 نسخ
-function copyOrder(text){
-  navigator.clipboard.writeText(text);
-  alert("✅ تم نسخ الطلب بالكامل");
 }
 
-  function printOrder(d){
-
-  let content = `
-  <div style="font-family:Arial; direction:rtl; padding:20px">
-    <h2>فاتورة طلب</h2>
-    <hr>
-
-    <b>كود الطلب:</b> ${d.orderID} <br><br>
-
-    <b>اسم العميل:</b> ${d.customerName} <br>
-    <b>رقم الهاتف:</b> ${d.phone} <br><br>
-
-    <b>العنوان:</b><br>
-    ${d.gov} - ${d.city} <br>
-    ${d.address} <br><br>
-
-    <b>تفاصيل السلسلة:</b><br>
-    الاسم: ${d.chainName} <br>
-    الكتابة: ${d.font} <br>
-    التصميم: ${d.design} <br><br>
-
-    <b>التاريخ:</b><br>
-    ${d.createdAt?.toDate?.().toLocaleString('ar-EG')}
-  </div>
-  `;
-
-  let win = window.open('', '', 'width=800,height=600');
-  win.document.write(content);
-  win.document.close();
-  win.print();
+// 🔔 صوت
+function sound(){
+  new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
 }
-  
-// 🟢 تغيير الحالة
-window.markDone = async function(id){
-  await updateDoc(doc(db, "orders", id), {
-    status: "done"
+
+// 🔔 إشعار
+function notify(){
+  if(Notification.permission==="granted"){
+    new Notification("طلب جديد 🛒");
+  }
+}
+Notification.requestPermission();
+
+// 🎯 render
+function render(){
+
+  let search = document.getElementById("search").value.toLowerCase();
+  let date = document.getElementById("dateFilter").value;
+
+  let html="";
+  let count=0;
+
+  orders.forEach(o=>{
+
+    if(search &&
+      !o.customerName?.toLowerCase().includes(search) &&
+      !o.phone?.includes(search)
+    ) return;
+
+    let d = o.createdAt?.toDate?.();
+
+    if(date && d){
+      if(d.toDateString() !== new Date(date).toDateString()) return;
+    }
+
+    count++;
+
+    let status = o.status || "new";
+
+    let msg = `DAHAP\n${o.orderID}\n${o.customerName}`;
+
+    html += `
+    <div class="card">
+
+      <b>🧾 ${o.orderID}</b>
+      <span class="status ${status}">${status}</span><br><br>
+
+      👤 ${o.customerName}<br>
+      📞 ${o.phone}<br>
+
+      📍 ${o.gov || ""} - ${o.city || ""}<br>
+
+      💎 ${o.chainName || ""} - ${o.design || ""}<br>
+
+      🕒 ${d ? d.toLocaleString('ar-EG') : ""}<br><br>
+
+      <a class="btn whatsapp" target="_blank"
+      href="https://wa.me/${o.phone}?text=${encodeURIComponent(msg)}">WhatsApp</a>
+
+      <button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>Copy</button>
+
+      <button class="btn print" onclick='pdf(${JSON.stringify(o)})'>PDF</button>
+
+      <button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
+
+      <button class="btn doneBtn" onclick="update('${o.id}','done')">تم</button>
+
+    </div>
+    `;
   });
+
+  document.getElementById("orders").innerHTML=html;
+  document.getElementById("count").innerText="📊 "+count;
 }
 
-// 🔔 تحديث تلقائي
-document.getElementById("search").addEventListener("input", renderOrders);
-document.getElementById("dateFilter").addEventListener("change", renderOrders);
+// 📋 copy
+window.copyText = (t)=>{
+  navigator.clipboard.writeText(t);
+}
+
+// 🧾 PDF
+window.pdf = (o)=>{
+  const { jsPDF } = window.jspdf;
+  let doc = new jsPDF();
+
+  doc.text(`Order: ${o.orderID}`,10,10);
+  doc.text(`Name: ${o.customerName}`,10,20);
+  doc.text(`Phone: ${o.phone}`,10,30);
+
+  doc.save(`${o.orderID}.pdf`);
+}
+
+// 🔄 update status
+window.update = async (id,status)=>{
+  await updateDoc(doc(db,"orders",id),{status});
+}
+
+// 🔍 live
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("dateFilter").addEventListener("change",render);
 
 </script>
 
