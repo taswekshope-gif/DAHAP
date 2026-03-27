@@ -51,7 +51,12 @@ input, select {
 .new { background:orange; color:#fff; }
 .done { background:green; color:#fff; }
 </style>
-
+    
+.print {
+  background: #ff9800;
+  color: #fff;
+}       
+    
 </head>
 <body>
 
@@ -125,22 +130,17 @@ function renderOrders(){
   allOrders.forEach(d => {
 
     // 🔍 بحث
-    if (search && !d.customerName.toLowerCase().includes(search) && !d.orderID.includes(search)) return;
+    if (search && !d.customerName?.toLowerCase?.().includes(search) && !d.orderID?.includes?.(search)) return;
 
     // 📅 فلترة تاريخ
     if (dateFilter){
-      let dDate = d.createdAt.toDate();
+      let dDate = d.createdAt?.toDate?.();
       let selected = new Date(dateFilter);
-      if (dDate.toDateString() !== selected.toDateString()) return;
+      if (dDate?.toDateString?.() !== selected.toDateString()) return;
     }
-    
-.print {
-  background: #ff9800;
-  color: #fff;
-}       
-    
+
     // 📊 احصاء
-   if (d.createdAt?.toDate && d.createdAt.toDate() >= today) count++;
+ if (d.createdAt?.toDate && d.createdAt.toDate() >= today)
 
     let statusClass = d.status === "done" ? "done" : "new";
     let statusText = d.status === "done" ? "تم الشحن" : "جديد";
@@ -168,7 +168,7 @@ ${d.address} <br><br>
 
 <a class="btn whatsapp" href="https://wa.me/${d.phone}?text=${encodeURIComponent(message)}" target="_blank">واتساب</a>
 
-<button class="btn copy" onclick="copyOrder(${JSON.stringify(message)})">نسخ</button>
+<button class="btn copy" onclick='copyOrder(${JSON.stringify(message)})'">نسخ</button>
 
 <button class="btn print" onclick='printOrder(${JSON.stringify(d)})'>🖨️ طباعة</button>
 
@@ -210,7 +210,7 @@ function copyOrder(text){
     التصميم: ${d.design} <br><br>
 
     <b>التاريخ:</b><br>
-    ${d.createdAt?.toDate().toLocaleString('ar-EG')}
+    ${d.createdAt?.toDate?.().toLocaleString('ar-EG')}
   </div>
   `;
 
