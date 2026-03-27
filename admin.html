@@ -48,7 +48,7 @@ input{
 .print{background:#ff9800;color:#fff;}
 .ship{background:#0F7B65;color:#fff;}
 .doneBtn{background:#1976d2;color:#fff;}
-  
+
 .status{
   padding:4px 8px;
   border-radius:6px;
@@ -56,9 +56,6 @@ input{
   color:#fff;
 }
 
- .newCard{
-  border-right:5px solid orange;
-}
 .new{background:orange;}
 .done{background:green;}
 .shipped{background:#1976d2;}
@@ -81,11 +78,7 @@ input{
 </button>
   
 <div id="orders"></div>
-  
-<div id="liveStatus" style="color:green;margin-bottom:10px;">
-🟢 Live Connected
-</div>
-  
+
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -131,12 +124,6 @@ function load(){
 
   onSnapshot(q,(snap)=>{
 
-    document.getElementById("liveStatus").innerText = "🟢 Live Updating...";
-
-    setTimeout(()=>{
-      document.getElementById("liveStatus").innerText = "🟢 Live Connected";
-    }, 1000);
-
     if(lastCount && snap.size > lastCount){
       notify();
       sound();
@@ -144,17 +131,16 @@ function load(){
 
     lastCount = snap.size;
 
-    orders = snap.docs.map(d => ({
-      id: d.id,
+    orders = snap.docs.map(d=>({
+      id:d.id,
       ...d.data()
     }));
 
-    render(); // ✅ هنا الصح
-
+    render();
   });
 
 }
-  
+
 // 🔔 صوت
 function sound(){
   new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
@@ -170,11 +156,6 @@ Notification.requestPermission();
 
 // 🎯 render
 function render(){
-
-  let totalOrders = orders.length;
-  let newOrders = 0;
-  let shippedOrders = 0;
-  let doneOrders = 0;
 
   let search = document.getElementById("search").value.toLowerCase();
   let date = document.getElementById("dateFilter").value;
@@ -194,15 +175,10 @@ function render(){
     if(date && d){
       if(d.toDateString() !== new Date(date).toDateString()) return;
     }
-   let status = o.status || "new";
-    
-   if(status === "new") newOrders++;
-   if(status === "shipped") shippedOrders++;
-   if(status === "done") doneOrders++;
-    
+
     count++;
 
-  
+    let status = o.status || "new";
 
  let msg = `DAHAP
 كود الطلب: ${o.orderID || "-"}
@@ -225,7 +201,8 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 `;
 
 html += `
-<div class="card ${status === 'new' ? 'newCard' : ''}">
+<div class="card">
+
 <input type="checkbox" class="selectOrder"
 value='${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}'
 style="float:left; transform:scale(1.2); margin-left:10px;">
@@ -253,77 +230,14 @@ href="https://wa.me/${o.phone}">واتساب</a>
 
 <button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
 
-<button class="btn" onclick="update('${o.id}','new')">New</button>
-
 <button class="btn doneBtn" onclick="update('${o.id}','done')">تم</button>
 
 </div>
 `;
   });
-function render(){
 
-  let totalOrders = orders.length;
-
-  let newOrders = 0;
-  let shippedOrders = 0;
-  let doneOrders = 0;
-
-  let search = document.getElementById("search").value.toLowerCase();
-  let date = document.getElementById("dateFilter").value;
-
-  let html = "";
-  let count = 0;
-
-  orders.forEach(o => {
-
-    if(search &&
-      !o.customerName?.toLowerCase().includes(search) &&
-      !o.phone?.includes(search)
-    ) return;
-
-    let d = o.createdAt?.toDate?.();
-
-    if(date && d){
-      if(d.toDateString() !== new Date(date).toDateString()) return;
-    }
-
-    let status = o.status || "new";
-
-    if(status === "new") newOrders++;
-    if(status === "shipped") shippedOrders++;
-    if(status === "done") doneOrders++;
-
-    count++;
-
-    let msg = `DAHAP
-كود الطلب: ${o.orderID || "-"}`;
-
-    html += `
-    <div class="card ${status === 'new' ? 'newCard' : ''}">
-      <b>🧾 ${o.orderID}</b><br>
-      👤 ${o.customerName || "غير محدد"} <br>
-      📞 ${o.phone || "غير محدد"} <br>
-      📍 ${o.gov || "-"} - ${o.city || "-"} <br><br>
-
-      <button onclick="update('${o.id}','done')">تم</button>
-    </div>
-    `;
-  });
-
-  document.getElementById("orders").innerHTML = html;
-
-  document.getElementById("count").innerHTML = `
-  📊 Total: ${totalOrders} |
-  🆕 New: ${newOrders} |
-  🚚 Shipped: ${shippedOrders} |
-  ✅ Done: ${doneOrders}
-  `;
-}`
-📊 Total: ${totalOrders} |
-🆕 New: ${newOrders} |
-🚚 Shipped: ${shippedOrders} |
-✅ Done: ${doneOrders}
-`;
+  document.getElementById("orders").innerHTML=html;
+  document.getElementById("count").innerText="📊 "+count;
 }
 
 // 📋 copy
@@ -354,22 +268,20 @@ body{
   font-family: Arial;
 }
 
-/* A4 GRID 4 INVOICES */
+/* A4 PAGE */
 .page{
   width:210mm;
-  min-height:297mm;
+  height:297mm;
   display:grid;
   grid-template-columns:1fr 1fr;
   grid-template-rows:1fr 1fr;
-  gap:5mm;
-  padding:5mm;
-  box-sizing:border-box;
 }
 
+/* INVOICE */
 .invoice{
   border:1px solid #000;
-  padding:10px;
-  font-size:11px;
+  padding:12px;
+  box-sizing:border-box;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
@@ -379,22 +291,28 @@ body{
 .header{
   display:flex;
   justify-content:space-between;
-  font-size:11px;
+  font-size:12px;
   font-weight:bold;
 }
 
+/* CONTENT */
 .content{
-  margin-top:8px;
-  line-height:1.4;
-}
-
-.centerMsg{
-  text-align:center;
-  font-size:11px;
+  font-size:12px;
+  line-height:1.6;
   margin-top:10px;
 }
 
-hr{margin:5px 0;}
+/* CENTER MESSAGE */
+.centerMsg{
+  text-align:center;
+  font-size:13px;
+  font-weight:bold;
+  margin-top:20px;
+}
+
+hr{
+  margin:6px 0;
+}
 
 </style>
 </head>
@@ -406,33 +324,35 @@ hr{margin:5px 0;}
 
   selected.forEach(el => {
 
-    let o = JSON.parse(decodeURIComponent(atob(el.value)));
+    let o = JSON.parse(decodeURIComponent(escape(atob(el.value))));
 
     html += `
     <div class="invoice">
 
       <div class="header">
         <div>DAHAP</div>
-        <div>${new Date(o.createdAt?.toDate?.() || Date.now()).toLocaleString()}</div>
+        <div>
+          ${o.createdAt?.toDate?.().toLocaleString('en-US') || new Date().toLocaleString('en-US')}
+        </div>
       </div>
 
       <hr>
 
       <div class="content">
-        <b>ID:</b> ${o.orderID || "-"} <br>
-        <b>Name:</b> ${o.customerName || "-"} <br>
-        <b>Phone:</b> ${o.phone || "-"} <br>
+        <div><b>Order ID:</b> ${o.orderID || "-"}</div>
+        <div><b>Name:</b> ${o.customerName || "-"}</div>
+        <div><b>Phone:</b> ${o.phone || "-"}</div>
 
         <br>
 
-        <b>Address:</b><br>
-        ${o.gov || "-"} - ${o.city || "-"}<br>
-        ${o.address || "-"}
+        <div><b>Address:</b></div>
+        <div>${o.gov || "-"} - ${o.city || "-"}</div>
+        <div>${o.address || "-"}</div>
       </div>
 
       <div class="centerMsg">
-        <b>✨ Thank you for choosing DAHAP 💛</b><br>
-        We appreciate your trust 😊
+        Thank you for your order 💛<br>
+        We appreciate your trust in DAHAP
       </div>
 
     </div>
@@ -443,9 +363,9 @@ html += `
 </div>
 
 <script>
-window.onload = function(){
-  window.print();
-};
+  window.onload = function(){
+    window.print();
+  };
 <\/script>
 
 </body>
