@@ -1,27 +1,14 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>DAHAP Dashboard Pro</title>
+<title>DAHAP Pro Invoice System</title>
 
 <style>
 body{
-  font-family: Cairo, sans-serif;
+  font-family: Arial;
   background:#f4f6f9;
   padding:20px;
-}
-
-.header{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:20px;
-}
-
-input{
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
 }
 
 .card{
@@ -29,39 +16,20 @@ input{
   padding:15px;
   border-radius:12px;
   margin-bottom:12px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.08);
-  transition:0.2s;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
 }
-.card:hover{transform:scale(1.01)}
 
 .btn{
   padding:6px 10px;
-  border-radius:6px;
   border:none;
+  border-radius:6px;
   cursor:pointer;
   margin:3px;
-  font-size:13px;
 }
 
-.whatsapp{background:#25D366;color:#fff;}
-.copy{background:#333;color:#fff;}
 .print{background:#ff9800;color:#fff;}
-.ship{background:#0F7B65;color:#fff;}
-.doneBtn{background:#1976d2;color:#fff;}
-
-.status{
-  padding:4px 8px;
-  border-radius:6px;
-  font-size:12px;
-  color:#fff;
-}
-
-.new{background:orange;}
-.done{background:green;}
-.shipped{background:#1976d2;}
 </style>
 
-<!-- PDF Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
@@ -70,336 +38,97 @@ input{
 
 <h2>📦 DAHAP Dashboard Pro</h2>
 
-<div class="header">
-  <input type="text" id="search" placeholder="🔍 بحث">
-  <input type="date" id="dateFilter">
-  <h3 id="count"></h3>
-</div>
-
-<button onclick="printSelected()" style="margin-bottom:15px;">
-🖨️ طباعة المحدد
-</button>
-  
 <div id="orders"></div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const CAIRO_FONT = `
-AAEAAAARAQAABAAQR0RFRrRCsIIAAACcAAAAHEdQT1MB9QG2AAABHAAAAExHU1VCWzX3GAAAFGAAAAA4T1MvMg8SBTcAAAGQAAAAYGNtYXABd9k1AAAB8AAAAFRnYXNwAAAAEAAAAgAAAAAIZ2x5Zo8sN9EAAAIQAAABfGhlYWQKk4k2AAADkAAAADZoaGVhB8YH5wAAA+gAAAAkaG10eA0wAAEAAAP8AAAALGxvY2EAFgA0AAAEGAAAABptYXhwAAwAFQAAAQQAAAAgbmFtZV9tQZkAAAEkAAAARnBvc3QAAwAAAAAEjAAAACBwcmVwAAEAAgAABJQAAAAIAAAAAA==
-`;
-  
 const firebaseConfig = {
-  apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
-  authDomain: "dahap-87e3a.firebaseapp.com",
-  projectId: "dahap-87e3a",
-  storageBucket: "dahap-87e3a.firebasestorage.app",
-  messagingSenderId: "914606801645",
-  appId: "1:914606801645:web:273f6dab0028a42bef02e4",
-  measurementId: "G-ZW99YCTSGY"
+  apiKey: "AIzaSy...",
+  authDomain: "dahap.firebaseapp.com",
+  projectId: "dahap-87e3a"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
 
 let orders = [];
-let lastCount = 0;
 
-// 🔐 login
-  
-let authReady = false;
+onSnapshot(query(collection(db,"orders"), orderBy("createdAt","desc")), (snap)=>{
 
-// 🔐 انتظار Firebase بدون طرد غلط
-let loaded = false;
+  orders = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+  render();
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    load();
-  } else {
-    window.location.href = "login.html";
-  }
 });
-  
-// 📦 load orders
-function load(){
 
-  const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
-
-  onSnapshot(q,(snap)=>{
-
-    if(lastCount && snap.size > lastCount){
-      notify();
-      sound();
-    }
-
-    lastCount = snap.size;
-
-    orders = snap.docs.map(d=>({
-      id:d.id,
-      ...d.data()
-    }));
-
-    render();
-  });
-
-}
-
-// 🔔 صوت
-function sound(){
-  new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
-}
-
-// 🔔 إشعار
-function notify(){
-  if(Notification.permission==="granted"){
-    new Notification("طلب جديد 🛒");
-  }
-}
-Notification.requestPermission();
-
-// 🎯 render
 function render(){
 
-  let search = document.getElementById("search").value.toLowerCase();
-  let date = document.getElementById("dateFilter").value;
-
   let html="";
-  let count=0;
 
   orders.forEach(o=>{
 
-    if(search &&
-      !o.customerName?.toLowerCase().includes(search) &&
-      !o.phone?.includes(search)
-    ) return;
-
-    let d = o.createdAt?.toDate?.();
-
-    if(date && d){
-      if(d.toDateString() !== new Date(date).toDateString()) return;
-    }
-
-    count++;
-
-    let status = o.status || "new";
-
- let msg = `DAHAP
-كود الطلب: ${o.orderID || "-"}
-
---------------------
-👤 اسم العميل: ${o.customerName || "-"}
-📞 رقم الهاتف: ${o.phone || "-"}
-
-📍 العنوان:
-${o.gov || "-"} - ${o.city || "-"}
-${o.address || "-"}
-
-💎 تفاصيل السلسلة:
-الاسم على السلسلة: ${o.chainName || "-"}
-نوع الكتابة: ${o.font || "-"}
-التصميم: ${o.design || "-"}
-
-🕒 وقت الطلب:
-${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
-`;
-
-html += `
-<div class="card">
-
-<input type="checkbox" class="selectOrder"
-value='${encodeURIComponent(JSON.stringify(o))}'
-style="float:left; transform:scale(1.2); margin-left:10px;">
-
-<b>🧾 ${o.orderID}</b>
-<span class="status ${status}">${status}</span><br><br>
-
-👤 ${o.customerName || "غير محدد"} <br>
-📞 ${o.phone || "غير محدد"} <br>
-
-📍 ${o.gov || "غير محدد"} - ${o.city || "غير محدد"} <br>
-${o.address || ""} <br><br>
-
-💎 <b>تفاصيل الطلب:</b><br>
-الاسم: ${o.chainName || "-"} <br>
-الكتابة: ${o.font || "-"} <br>
-التصميم: ${o.design || "-"} <br><br>
-
-🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
-
-<a class="btn whatsapp" target="_blank"
-href="https://wa.me/2${o.phone}">واتساب</a>
-
-<button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>نسخ</button>
-
-<button class="btn print" onclick='pdf(${JSON.stringify(o)})'>PDF</button>
-
-<button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
-
-<button class="btn doneBtn" onclick="update('${o.id}','done')">تم</button>
-
-</div>
-`;
-  });
-
-  document.getElementById("orders").innerHTML=html;
-  document.getElementById("count").innerText="📊 "+count;
-}
-
-// 📋 copy
-window.copyText = (t)=>{
-  navigator.clipboard.writeText(t);
-}
-
-// 🧾 PDF
-window.pdf = (o) => {
-
-  const { jsPDF } = window.jspdf;
-
-  let doc = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4"
-  });
-
-  // 🟢 تفعيل الخط العربي
-  doc.addFileToVFS("Cairo-Regular.ttf", CAIRO_FONT);
-  doc.addFont("Cairo-Regular.ttf", "Cairo", "normal");
-  doc.setFont("Cairo");
-
-  let x = 10;
-  let y = 15;
-
-  // 📅 التاريخ (يمين فوق)
-  let date = o.createdAt?.toDate?.()
-    ? o.createdAt.toDate().toLocaleString("en-US")
-    : new Date().toLocaleString("en-US");
-
-  doc.setFontSize(10);
-  doc.text(date, 140, y);
-
-  // 🟡 عنوان
-  doc.setFontSize(18);
-  doc.text("DAHAP", x, y);
-
-  y += 6;
-  doc.setFontSize(10);
-  doc.text("Order Invoice", x, y);
-
-  y += 5;
-  doc.line(x, y, 100, y);
-
-  // 📦 بيانات
-  y += 10;
-
-  doc.setFontSize(12);
-
-  doc.text(`Customer Name:`, x, y);
-  doc.text(`${o.customerName || "-"}`, x + 60, y);
-
-  y += 8;
-
-  doc.text(`Phone:`, x, y);
-  doc.text(`${o.phone || "-"}`, x + 60, y);
-
-  y += 8;
-
-  doc.text(`Address:`, x, y);
-
-  y += 6;
-  doc.text(`${o.gov || "-"} - ${o.city || "-"}`, x + 5, y);
-
-  y += 6;
-  doc.text(`${o.address || "-"}`, x + 5, y);
-
-  // ❤️ رسالة خفيفة
-  y += 15;
-  doc.setFontSize(10);
-  doc.text("Thank you for your order 💛", x, y);
-
-  // 💾 حفظ
-  doc.save(`DAHAP-${o.orderID || "order"}.pdf`);
-};
-  
-window.printSelected = () => {
-
-  let selected = document.querySelectorAll(".selectOrder:checked");
-
-  if(selected.length === 0){
-    alert("اختار أوردرات الأول");
-    return;
-  }
-
-  let win = window.open('', '', 'width=800,height=600');
-
-  let html = `
-  <html>
-  <head>
-  <style>
-    body{font-family:Arial; direction:rtl;}
-    .page{
-      display:flex;
-      flex-wrap:wrap;
-    }
-    .invoice{
-      width:50%;
-      border:1px solid #000;
-      padding:10px;
-      box-sizing:border-box;
-    }
-  </style>
-  </head>
-  <body>
-  <div class="page">
-  `;
-
-  selected.forEach(el => {
-
-    let o = JSON.parse(decodeURIComponent(el.value));
-
     html += `
-    <div class="invoice">
+    <div class="card">
+      <b>🧾 ${o.orderID}</b><br>
+      👤 ${o.customerName}<br>
+      📞 ${o.phone}<br><br>
 
-      <h3>Order from DAHAP</h3>
-      <hr>
-
-      <b>Order ID:</b> ${o.orderID}<br>
-      <b>Name:</b> ${o.customerName}<br>
-      <b>Phone:</b> ${o.phone}<br><br>
-
-      <b>Address:</b><br>
-      ${o.gov} - ${o.city}<br>
-      ${o.address}<br><br>
-
-      <b>Details:</b><br>
-      Name: ${o.chainName}<br>
-      Font: ${o.font}<br>
-      Design: ${o.design}<br><br>
-
-      <small>شكراً لطلبك من DAHAP ❤️</small>
-
+      <button class="btn print" onclick='pdf(${JSON.stringify(o)})'>
+        PDF
+      </button>
     </div>
     `;
   });
 
-  html += `</div></body></html>`;
-
-  win.document.write(html);
-  win.document.close();
-  win.print();
-};
-  
-// 🔄 update status
-window.update = async (id,status)=>{
-  await updateDoc(doc(db,"orders",id),{status});
+  document.getElementById("orders").innerHTML = html;
 }
 
-// 🔍 live
-document.getElementById("search").addEventListener("input",render);
-document.getElementById("dateFilter").addEventListener("change",render);
+// ================= PDF (FIXED FINAL VERSION) =================
+window.pdf = (o) => {
+
+  const { jsPDF } = window.jspdf;
+
+  const doc = new jsPDF({
+    format: "a5",
+    unit: "mm"
+  });
+
+  let x = 12;
+  let y = 15;
+
+  const date = new Date().toLocaleString("en-US");
+
+  // HEADER
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(16);
+  doc.text("DAHAP", x, y);
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica","normal");
+  doc.text("Order Invoice", x, y + 6);
+
+  doc.text(date, 120, y);
+
+  doc.line(10, 25, 140, 25);
+
+  // BODY
+  y = 35;
+
+  doc.setFontSize(11);
+
+  doc.text(`Customer: ${o.customerName || "-"}`, x, y); y+=7;
+  doc.text(`Phone: ${o.phone || "-"}`, x, y); y+=7;
+
+  doc.text(`Address: ${o.gov || ""} - ${o.city || ""}`, x, y); y+=7;
+  doc.text(`${o.address || ""}`, x, y); y+=10;
+
+  // FOOTER
+  doc.text("💛 Thank you for your order!", x, y);
+
+  doc.save(`DAHAP-${o.orderID || "order"}.pdf`);
+};
 
 </script>
 
