@@ -98,21 +98,31 @@ let orders = [];
 let lastCount = 0;
 
 // 🔐 login
+  
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+let authReady = false;
+
+// 🔐 انتظار Firebase بدون طرد غلط
 onAuthStateChanged(auth, (user) => {
 
-  console.log("AUTH USER:", user);
+  authReady = true;
+
+  console.log("AUTH STATE:", user);
 
   if (user) {
-    load();
-  } else {
-    setTimeout(() => {
-      if (!auth.currentUser) {
-        window.location.href = "login.html";
-      }
-    }, 1500);
+    load(); // تحميل الطلبات
+  }
+});
+
+// ⛔ حماية متأخرة بدل الطرد الفوري
+setTimeout(() => {
+
+  if (!auth.currentUser) {
+    window.location.href = "login.html";
   }
 
-});
+}, 3000);
   
 // 📦 load orders
 function load(){
