@@ -335,25 +335,68 @@ window.printSelected = () => {
     return;
   }
 
-  let win = window.open('', '', 'width=800,height=600');
+  let win = window.open('', '', 'width=900,height=700');
 
   let html = `
   <html>
   <head>
   <style>
-    body{font-family:Arial; direction:rtl;}
+
+    @page {
+      size: A4;
+      margin: 10mm;
+    }
+
+    body{
+      font-family: Arial;
+      margin:0;
+      padding:0;
+    }
+
     .page{
       display:flex;
       flex-wrap:wrap;
+      width:100%;
     }
+
     .invoice{
-      width:50%;
+      width:48%;
+      height:135mm;
       border:1px solid #000;
+      margin:1%;
       padding:10px;
       box-sizing:border-box;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
     }
+
+    .title{
+      font-size:16px;
+      font-weight:bold;
+      margin-bottom:5px;
+    }
+
+    .line{
+      border-bottom:1px solid #ccc;
+      margin:5px 0;
+    }
+
+    .info{
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .footer{
+      font-size:12px;
+      text-align:center;
+      margin-top:10px;
+      font-weight:bold;
+    }
+
   </style>
   </head>
+
   <body>
   <div class="page">
   `;
@@ -365,33 +408,41 @@ window.printSelected = () => {
     html += `
     <div class="invoice">
 
-      <h3>Order from DAHAP</h3>
-      <hr>
+      <div>
+        <div class="title">DAHAP</div>
+        <div class="line"></div>
 
-      <b>Order ID:</b> ${o.orderID}<br>
-      <b>Name:</b> ${o.customerName}<br>
-      <b>Phone:</b> ${o.phone}<br><br>
+        <div class="info">
+          <b>Customer:</b> ${o.customerName || "-"} <br>
+          <b>Phone:</b> ${o.phone || "-"} <br>
+          <b>Address:</b><br>
+          ${o.gov || ""} - ${o.city || ""} <br>
+          ${o.address || ""}
+        </div>
+      </div>
 
-      <b>Address:</b><br>
-      ${o.gov} - ${o.city}<br>
-      ${o.address}<br><br>
-
-      <b>Details:</b><br>
-      Name: ${o.chainName}<br>
-      Font: ${o.font}<br>
-      Design: ${o.design}<br><br>
-
-      <small>شكراً لطلبك من DAHAP ❤️</small>
+      <div class="footer">
+        💛 Thank you for choosing DAHAP!<br>
+        We appreciate your trust ✨
+      </div>
 
     </div>
     `;
   });
 
-  html += `</div></body></html>`;
+  html += `
+  </div>
+
+  <script>
+    window.onload = () => window.print();
+  </script>
+
+  </body>
+  </html>
+  `;
 
   win.document.write(html);
   win.document.close();
-  win.print();
 };
   
 // 🔄 update status
