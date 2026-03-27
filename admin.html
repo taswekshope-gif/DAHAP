@@ -98,11 +98,22 @@ let orders = [];
 let lastCount = 0;
 
 // 🔐 login
-onAuthStateChanged(auth,(user)=>{
-  if(!user) window.location.href="login.html";
-  else load();
-});
+onAuthStateChanged(auth, (user) => {
 
+  console.log("AUTH USER:", user);
+
+  if (user) {
+    load();
+  } else {
+    setTimeout(() => {
+      if (!auth.currentUser) {
+        window.location.href = "login.html";
+      }
+    }, 1500);
+  }
+
+});
+  
 // 📦 load orders
 function load(){
 
