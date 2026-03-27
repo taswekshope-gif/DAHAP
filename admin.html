@@ -335,86 +335,124 @@ window.printSelected = () => {
     return;
   }
 
-  let win = window.open('', '', 'width=800,height=600');
+  let win = window.open('', '', 'width=900,height=700');
 
   let html = `
-  <html>
-  <head>
-  <style>
-    body{
-      font-family: Arial, sans-serif;
-      direction: rtl;
-      margin: 0;
-      padding: 0;
-    }
-    .page{
-      display: flex;
-      flex-wrap: wrap;
-      width: 210mm;
-      height: 297mm;
-      box-sizing: border-box;
-    }
-    .invoice{
-      width: 50%;
-      height: 50%;
-      border: 1px solid #000;
-      box-sizing: border-box;
-      padding: 10px;
-      page-break-inside: avoid;
-    }
-    h3{
-      margin: 0 0 5px 0;
-    }
-    hr{
-      border: 0;
-      border-top: 1px solid #000;
-      margin: 5px 0;
-    }
-    p{
-      margin: 3px 0;
-      font-size: 12px;
-    }
-    .footer{
-      position: absolute;
-      bottom: 10px;
-      font-size: 12px;
-      color: #555;
-    }
-  </style>
-  </head>
-  <body>
-  <div class="page">
-  `;
+<html>
+<head>
+<style>
+
+body{
+  margin:0;
+  font-family: Arial;
+}
+
+/* A4 PAGE */
+.page{
+  width: 210mm;
+  height: 297mm;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+/* INVOICE BOX */
+.invoice{
+  border: 1px solid #000;
+  padding: 10px;
+  box-sizing: border-box;
+  position: relative;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* CONTENT */
+.content{
+  font-size: 12px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+/* FOOTER MESSAGE */
+.footer{
+  text-align:center;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: auto;
+  padding-top: 10px;
+  color:#333;
+}
+
+hr{
+  margin:5px 0;
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+`;
 
   selected.forEach(el => {
+
     let o = JSON.parse(decodeURIComponent(el.value));
 
     html += `
     <div class="invoice">
 
-      <h3>Order from DAHAP</h3>
+      <!-- HEADER -->
+      <div class="header">
+        <div>DAHAP</div>
+        <div>${o.createdAt?.toDate?.().toLocaleString('en-US') || new Date().toLocaleString('en-US')}</div>
+      </div>
+
       <hr>
 
-      <p><b>Order ID:</b> ${o.orderID || "-"}</p>
-      <p><b>Name:</b> ${o.customerName || "-"}</p>
-      <p><b>Phone:</b> ${o.phone || "-"}</p>
+      <!-- CONTENT -->
+      <div class="content">
+        <div><b>Order ID:</b> ${o.orderID || "-"}</div>
+        <div><b>Name:</b> ${o.customerName || "-"}</div>
+        <div><b>Phone:</b> ${o.phone || "-"}</div>
 
-      <p><b>Address:</b></p>
-      <p>${o.gov || "-"} - ${o.city || "-"}</p>
-      <p>${o.address || "-"}</p>
+        <br>
 
-      <div class="footer">Thank you for your order from DAHAP! 💛</div>
+        <div><b>Address:</b></div>
+        <div>${o.gov || "-"} - ${o.city || "-"}</div>
+        <div>${o.address || "-"}</div>
+      </div>
+
+      <!-- FOOTER MESSAGE -->
+      <div class="footer">
+        Thank you for your order 💛<br>
+        We appreciate your trust in DAHAP
+      </div>
 
     </div>
     `;
   });
 
-  html += `</div></body></html>`;
+  html += `
+</div>
+
+<script>
+  window.onload = () => window.print();
+</script>
+
+</body>
+</html>
+`;
 
   win.document.write(html);
   win.document.close();
-  win.focus();
-  win.print();
 };
   
 // 🔄 update status
