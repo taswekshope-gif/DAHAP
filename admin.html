@@ -252,64 +252,79 @@ window.copyText = (t)=>{
 
 // 🧾 PDF
 window.pdf = (o) => {
+
   const { jsPDF } = window.jspdf;
-  let doc = new jsPDF();
 
-  // ✅ فونت عربي (Base64 مختصر)
-  const font = "AAEAAAALAIAAAwAwT1MvMg8SBJkAAAC8AAAAYGNtYXAWd2+JAAABHAAAAFRnYXNwAAAAEAAAAXAAAAAIZ2x5Zgq6J9sAAAF4AAABhGhlYWQK1m7YAAADHAAAADZoaGVhB4gD6AAAA1wAAAAkaG10eD1n3gAAAAN8AAAALGxvY2EBHgAAAAADqAAAABptYXhwAA4AKAAAA8wAAAAgbmFtZVxk2l8AAAQMAAABsnBvc3QAAwAAAAAFyAAAACBwcmVwAAEAAAAABewAAAACAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAAABAACAAQAAAAEAAA==";
+  // 🧾 صفحة A4
+  let doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4"
+  });
 
-  doc.addFileToVFS("Cairo.ttf", font);
-  doc.addFont("Cairo.ttf", "Cairo", "normal");
-  doc.setFont("Cairo");
+  // 🎯 إعدادات
+  let x = 10;
+  let y = 15;
 
-  let y = 20;
+  doc.setFont("Helvetica", "normal");
 
-  // 🧾 عنوان
+  // 🟡 عنوان البراند
   doc.setFontSize(18);
-  doc.text("Order from DAHAP", 105, y, { align: "center" });
+  doc.text("DAHAP", x, y);
 
-  y += 10;
-  doc.setFontSize(12);
-  doc.text("-----------------------------", 105, y, { align: "center" });
+  y += 6;
+
+  doc.setFontSize(10);
+  doc.text("Order Invoice", x, y);
+
+  // خط فاصل
+  y += 5;
+  doc.setLineWidth(0.5);
+  doc.line(x, y, 100, y);
 
   // 📦 البيانات
   y += 10;
 
-  let date = "";
-  if (o.createdAt) {
-    if (o.createdAt.toDate) {
-      date = o.createdAt.toDate().toLocaleString("en-US");
-    } else {
-      date = new Date(o.createdAt).toLocaleString("en-US");
-    }
-  }
-
-  doc.text(`Order ID: ${o.orderID || "-"}`, 10, y);
-  y += 10;
-
-  doc.text(`Customer: ${o.customerName || "-"}`, 10, y);
-  y += 10;
-
-  doc.text(`Phone: ${o.phone || "-"}`, 10, y);
-  y += 10;
-
-  doc.text(`Address:`, 10, y);
-  y += 8;
-
-  doc.text(`${o.gov || "-"} - ${o.city || "-"}`, 10, y);
-  y += 8;
-
-  doc.text(`${o.address || "-"}`, 10, y);
-  y += 12;
-
-  doc.text(`Date: ${date}`, 10, y);
-
-  // ❤️ رسالة
-  y += 20;
   doc.setFontSize(11);
-  doc.text("Thank you for choosing DAHAP 💛", 105, y, { align: "center" });
 
-  doc.save(`${o.orderID}.pdf`);
+  doc.text(`Customer Name:`, x, y);
+  doc.text(`${o.customerName || "-"}`, x + 50, y);
+
+  y += 8;
+
+  doc.text(`Phone Number:`, x, y);
+  doc.text(`${o.phone || "-"}`, x + 50, y);
+
+  y += 8;
+
+  doc.text(`Address:`, x, y);
+  doc.text(`${o.gov || "-"} - ${o.city || "-"}`, x + 50, y);
+
+  y += 6;
+  doc.text(`${o.address || "-"}`, x + 50, y);
+
+  // 📅 التاريخ (إنجليزي)
+  y += 10;
+
+  let date = o.createdAt?.toDate?.()
+    ? o.createdAt.toDate().toLocaleString("en-US")
+    : new Date().toLocaleString("en-US");
+
+  doc.text(`Date: ${date}`, x, y);
+
+  // ❤️ رسالة احترافية
+  y += 15;
+
+  doc.setFontSize(10);
+
+  doc.text("Thank you for choosing DAHAP.", x, y);
+  y += 5;
+  doc.text("We truly appreciate your trust.", x, y);
+  y += 5;
+  doc.text("Your custom piece is made with care.", x, y);
+
+  // 🧠 مهم: حفظ الملف
+  doc.save(`DAHAP-${o.orderID || "order"}.pdf`);
 };
   
 window.printSelected = () => {
