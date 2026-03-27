@@ -191,50 +191,58 @@ function render(){
 
     let status = o.status || "new";
 
-    let msg = `DAHAP
-كود الطلب: ${o.orderID}
+ let msg = `DAHAP
+كود الطلب: ${o.orderID || "-"}
 
-👤 ${o.customerName}
-📞 ${o.phone}
+--------------------
+👤 اسم العميل: ${o.customerName || "-"}
+📞 رقم الهاتف: ${o.phone || "-"}
 
-📍 ${o.gov} - ${o.city}
-${o.address}
+📍 العنوان:
+${o.gov || "-"} - ${o.city || "-"}
+${o.address || "-"}
 
-💎 ${o.chainName} - ${o.design}
+💎 تفاصيل السلسلة:
+- الاسم على السلسلة: ${o.chainName || "-"}
+- نوع الكتابة: ${o.font || "-"}
+- التصميم: ${o.design || "-"}
+
+🕒 وقت الطلب:
+${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 `;
 
 html += `
 <div class="card">
 
-<b>🧾 ${d.orderID}</b>
-<span class="status ${statusClass}">${statusText}</span><br><br>
+<b>🧾 ${o.orderID}</b>
+<span class="status ${status}">${status}</span><br><br>
 
-👤 ${d.customerName} <br>
-📞 ${d.phone} <br>
+👤 ${o.customerName || "غير محدد"} <br>
+📞 ${o.phone || "غير محدد"} <br>
 
-📍 ${d.gov ?? "غير محدد"} - ${d.city ?? "غير محدد"}
-${d.address} <br><br>
+📍 ${o.gov || "غير محدد"} - ${o.city || "غير محدد"} <br>
+${o.address || ""} <br><br>
 
 💎 <b>تفاصيل الطلب:</b><br>
-- الاسم: ${d.chainName} <br>
-- الكتابة: ${d.font} <br>
-- التصميم: ${d.design} <br><br>
+- الاسم: ${o.chainName || "-"} <br>
+- الكتابة: ${o.font || "-"} <br>
+- التصميم: ${o.design || "-"} <br><br>
 
-🕒 ${d.createdAt?.toDate().toLocaleString('ar-EG')} <br><br>
+🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
 
-      <a class="btn whatsapp" target="_blank"
-      href="https://wa.me/${o.phone}?text=${encodeURIComponent(msg)}">WhatsApp</a>
+<a class="btn whatsapp" target="_blank"
+href="https://wa.me/${o.phone}?text=${encodeURIComponent(msg)}">واتساب</a>
 
-      <button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>Copy</button>
+<button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>نسخ</button>
 
-      <button class="btn print" onclick='pdf(${JSON.stringify(o)})'>PDF</button>
+<button class="btn print" onclick='pdf(${JSON.stringify(o)})'>PDF</button>
 
-      <button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
+<button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
 
-      <button class="btn doneBtn" onclick="update('${o.id}','done')">تم</button>
+<button class="btn doneBtn" onclick="update('${o.id}','done')">تم</button>
 
-    </div>
-    `;
+</div>
+`;
   });
 
   document.getElementById("orders").innerHTML=html;
