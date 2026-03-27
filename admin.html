@@ -211,7 +211,7 @@ html += `
 <div class="card">
 
 <input type="checkbox" class="selectOrder"
-value='${encodeURIComponent(JSON.stringify(o))}'
+value='${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}'
 style="float:left; transform:scale(1.2); margin-left:10px;">
 
 <b>🧾 ${o.orderID}</b>
@@ -233,7 +233,7 @@ ${o.address || ""} <br><br>
 <a class="btn whatsapp" target="_blank"
 href="https://wa.me/${o.phone}">واتساب</a>
 
-<button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>نسخ</button>
+<button class="btn copy" onclick='copyText(` + JSON.stringify(msg) + `)'>نسخ</button>
 
 <button class="btn print" onclick='pdf(${JSON.stringify(o)})'>PDF</button>
 
@@ -404,7 +404,7 @@ hr{
 
   selected.forEach(el => {
 
-    let o = JSON.parse(decodeURIComponent(el.value));
+    let o = JSON.parse(decodeURIComponent(escape(atob(el.value))));
 
     html += `
     <div class="invoice">
