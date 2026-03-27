@@ -133,9 +133,14 @@ function renderOrders(){
       let selected = new Date(dateFilter);
       if (dDate.toDateString() !== selected.toDateString()) return;
     }
-
+    
+.print {
+  background: #ff9800;
+  color: #fff;
+}       
+    
     // 📊 احصاء
-    if (d.createdAt.toDate() >= today) count++;
+   if (d.createdAt?.toDate && d.createdAt.toDate() >= today) count++;
 
     let statusClass = d.status === "done" ? "done" : "new";
     let statusText = d.status === "done" ? "تم الشحن" : "جديد";
@@ -151,7 +156,7 @@ html += `
 👤 ${d.customerName} <br>
 📞 ${d.phone} <br>
 
-📍 ${d.gov} - ${d.city} <br>
+📍 ${d.gov ?? "غير محدد"} - ${d.city ?? "غير محدد"}
 ${d.address} <br><br>
 
 💎 <b>تفاصيل الطلب:</b><br>
@@ -163,7 +168,7 @@ ${d.address} <br><br>
 
 <a class="btn whatsapp" href="https://wa.me/${d.phone}?text=${encodeURIComponent(message)}" target="_blank">واتساب</a>
 
-<button class="btn copy" onclick='copyOrder(${JSON.stringify(message)})'>نسخ</button>
+<button class="btn copy" onclick="copyOrder(${JSON.stringify(message)})">نسخ</button>
 
 <button class="btn print" onclick='printOrder(${JSON.stringify(d)})'>🖨️ طباعة</button>
 
@@ -176,7 +181,7 @@ ${d.address} <br><br>
   document.getElementById("orders").innerHTML = html;
   document.getElementById("todayCount").innerHTML = `📊 طلبات اليوم: ${count}`;
 }
-
+       
 // 📱 نسخ
 function copyOrder(text){
   navigator.clipboard.writeText(text);
