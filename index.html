@@ -232,16 +232,32 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     });
 
     // ✅ واتساب
-    let message = `DAHAP
+let message = `DAHAP
 كود الطلب: ${orderID}
 --------------------
-اسم العميل: ${customerName}
-رقم الهاتف: ${phone}
+👤 اسم العميل: ${customerName}
+📞 رقم الهاتف: ${phone}
+
+📍 العنوان:
 ${gov} - ${city}
 ${address}
-الاسم: ${chainName}`;
 
-  window.open("https://wa.me/201106018685?text=" + encodeURIComponent(message), "_blank");
+💎 تفاصيل السلسلة:
+- الاسم على السلسلة: ${chainName}
+- نوع الكتابة: ${font}
+- التصميم: ${design}
+
+🕒 وقت الطلب: ${new Date().toLocaleString('ar-EG')}
+`;
+
+<div id="successMessage" style="display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px;">
+    ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.
+</div>
+
+    setTimeout(()=>{
+        var url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+        window.open(url, "_blank");
+    },1000);
 });
 
 </script>
