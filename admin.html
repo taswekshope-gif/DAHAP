@@ -233,7 +233,7 @@ ${o.address || ""} <br><br>
 <a class="btn whatsapp" target="_blank"
 href="https://wa.me/${o.phone}">واتساب</a>
 
-<button class="btn copy" onclick='copyText(` + JSON.stringify(msg) + `)'>نسخ</button>
+<button class="btn copy" onclick="copyText(` + '`' + msg + '`' + `)">نسخ</button>
 
 <button class="btn print" onclick='pdf(${JSON.stringify(o)})'>PDF</button>
 
@@ -254,78 +254,7 @@ window.copyText = (t)=>{
   navigator.clipboard.writeText(decodeURIComponent(t));
 }
 
-// 🧾 PDF
-window.pdf = (o) => {
-
-  const { jsPDF } = window.jspdf;
-
-  const doc = new jsPDF({
-    format: "a4",
-    unit: "mm",
-    orientation: "portrait"
-  });
-
-  let x = 12;
-  let y = 15;
-
-  // 🕒 Date (English fixed)
-  const date = new Date().toLocaleString("en-US");
-
-  // ================= HEADER =================
-  doc.setFont("helvetica","bold");
-  doc.setFontSize(18);
-  doc.text("DAHAP", x, y);
-
-  doc.setFontSize(10);
-  doc.setFont("helvetica","normal");
-  doc.text("Order Invoice", x, y + 6);
-
-  doc.text(date, 140, y);
-
-  doc.line(10, 25, 200, 25);
-
-  // ================= CUSTOMER =================
-  y = 40;
-
-  doc.setFontSize(12);
-  doc.setFont("helvetica","bold");
-  doc.text("Customer Information", x, y);
-
-  y += 10;
-
-  doc.setFont("helvetica","normal");
-
-  doc.text(`Name: ${o.customerName || "-"}`, x, y); y += 8;
-  doc.text(`Phone: ${o.phone || "-"}`, x, y); y += 8;
-
-  doc.text(`Address:`, x, y); y += 6;
-  doc.text(`${o.gov || "-"} - ${o.city || "-"}`, x + 5, y); y += 6;
-  doc.text(`${o.address || "-"}`, x + 5, y);
-
-  // ================= ORDER DETAILS =================
-  y += 15;
-
-  doc.setFont("helvetica","bold");
-  doc.text("Order Details", x, y);
-
-  y += 10;
-
-  doc.setFont("helvetica","normal");
-  doc.text(`Chain Name: ${o.chainName || "-"}`, x, y); y += 7;
-  doc.text(`Font: ${o.font || "-"}`, x, y); y += 7;
-  doc.text(`Design: ${o.design || "-"}`, x, y); y += 10;
-
-  // ================= FOOTER =================
-  doc.setFont("helvetica","bold");
-  doc.text("💛 Thank you for your order!", x, y);
-
-  y += 7;
-  doc.setFont("helvetica","normal");
-  doc.text("We appreciate your trust in DAHAP.", x, y);
-
-  doc.save(`DAHAP-${o.orderID || "order"}.pdf`);
-};
-  
+// 🖨️ PRINT ONLY (NO PDF)
 window.printSelected = () => {
 
   let selected = document.querySelectorAll(".selectOrder:checked");
@@ -356,54 +285,53 @@ body{
   grid-template-rows: 1fr 1fr;
 }
 
-/* INVOICE BOX */
+/* INVOICE */
 .invoice{
-  border: 1px solid #000;
-  padding: 10px;
-  box-sizing: border-box;
-  position: relative;
+  border:1px solid #000;
+  padding:12px;
+  box-sizing:border-box;
   display:flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
 /* HEADER */
 .header{
   display:flex;
-  justify-content: space-between;
-  font-size: 12px;
-  font-weight: bold;
+  justify-content:space-between;
+  font-size:12px;
+  font-weight:bold;
 }
 
 /* CONTENT */
 .content{
-  font-size: 12px;
-  margin-top: 10px;
-  line-height: 1.6;
+  font-size:12px;
+  line-height:1.6;
+  margin-top:10px;
 }
 
-/* FOOTER MESSAGE */
-.footer{
+/* CENTER MESSAGE */
+.centerMsg{
   text-align:center;
-  font-size: 12px;
-  font-weight: bold;
-  margin-top: auto;
-  padding-top: 10px;
-  color:#333;
+  font-size:13px;
+  font-weight:bold;
+  margin-top:20px;
 }
 
 hr{
-  margin:5px 0;
+  margin:6px 0;
 }
 
 </style>
 </head>
 <body>
+
 <div class="page">
 `;
 
   selected.forEach(el => {
 
+    // ✅ فك التشفير صح 100%
     let o = JSON.parse(decodeURIComponent(escape(atob(el.value))));
 
     html += `
@@ -412,7 +340,9 @@ hr{
       <!-- HEADER -->
       <div class="header">
         <div>DAHAP</div>
-        <div>${o.createdAt?.toDate?.().toLocaleString('en-US') || new Date().toLocaleString('en-US')}</div>
+        <div>
+          ${o.createdAt?.toDate?.().toLocaleString('en-US') || new Date().toLocaleString('en-US')}
+        </div>
       </div>
 
       <hr>
@@ -430,8 +360,8 @@ hr{
         <div>${o.address || "-"}</div>
       </div>
 
-      <!-- FOOTER MESSAGE -->
-      <div class="footer">
+      <!-- MESSAGE IN CENTER -->
+      <div class="centerMsg">
         Thank you for your order 💛<br>
         We appreciate your trust in DAHAP
       </div>
@@ -454,17 +384,3 @@ hr{
   win.document.write(html);
   win.document.close();
 };
-  
-// 🔄 update status
-window.update = async (id,status)=>{
-  await updateDoc(doc(db,"orders",id),{status});
-}
-
-// 🔍 live
-document.getElementById("search").addEventListener("input",render);
-document.getElementById("dateFilter").addEventListener("change",render);
-
-</script>
-
-</body>
-</html>
