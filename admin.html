@@ -149,7 +149,9 @@ function renderOrders(){
     }
 
     // 📊 احصاء
- if (d.createdAt?.toDate && d.createdAt.toDate() >= today)
+ if (d.createdAt?.toDate && d.createdAt.toDate() >= today) {
+  count++;
+}
 
     let statusClass = d.status === "done" ? "done" : "new";
     let statusText = d.status === "done" ? "تم الشحن" : "جديد";
