@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>DAHAP Dashboard Pro</title>
+<title>DAHAP PRO Dashboard</title>
 
 <style>
 body{
@@ -30,9 +30,7 @@ input{
   border-radius:12px;
   margin-bottom:12px;
   box-shadow:0 2px 12px rgba(0,0,0,0.08);
-  transition:0.2s;
 }
-.card:hover{transform:scale(1.01)}
 
 .btn{
   padding:6px 10px;
@@ -45,7 +43,6 @@ input{
 
 .whatsapp{background:#25D366;color:#fff;}
 .copy{background:#333;color:#fff;}
-.print{background:#ff9800;color:#fff;}
 .ship{background:#0F7B65;color:#fff;}
 .doneBtn{background:#1976d2;color:#fff;}
 
@@ -59,32 +56,42 @@ input{
 .new{background:orange;}
 .done{background:green;}
 .shipped{background:#1976d2;}
+
+button.main{
+  margin:10px 0;
+  padding:10px 15px;
+  background:#000;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
 </style>
 
 </head>
 
 <body>
 
-<h2>📦 DAHAP Dashboard Pro</h2>
+<h2>📦 DAHAP PRO</h2>
 
 <div class="header">
-  <input type="text" id="search" placeholder="🔍 بحث">
+  <input id="search" placeholder="بحث">
   <input type="date" id="dateFilter">
   <h3 id="count"></h3>
 </div>
 
-<button onclick="printSelected()" style="margin-bottom:15px;">
-🖨️ طباعة المحدد
-</button>
-  
+<button class="main" onclick="printSelected()">🖨️ طباعة المحدد</button>
+
 <div id="orders"></div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  
+import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
   authDomain: "dahap-87e3a.firebaseapp.com",
@@ -100,68 +107,31 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 let orders = [];
-let lastCount = 0;
 
-// 🔐 login
-  
-let authReady = false;
-
-// 🔐 انتظار Firebase بدون طرد غلط
-let loaded = false;
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    load();
+onAuthStateChanged(auth, (user)=>{
+  if(!user){
+    location.href="login.html";
   } else {
-    window.location.href = "login.html";
+    load();
   }
 });
-  
-// 📦 load orders
-function load(){
 
+function load(){
   const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
 
   onSnapshot(q,(snap)=>{
-
-    if(lastCount && snap.size > lastCount){
-      notify();
-      sound();
-    }
-
-    lastCount = snap.size;
-
-    orders = snap.docs.map(d=>({
-      id:d.id,
-      ...d.data()
-    }));
-
+    orders = snap.docs.map(d=>({id:d.id,...d.data()}));
     render();
   });
-
 }
 
-// 🔔 صوت
-function sound(){
-  new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
-}
-
-// 🔔 إشعار
-function notify(){
-  if(Notification.permission==="granted"){
-    new Notification("طلب جديد 🛒");
-  }
-}
-Notification.requestPermission();
-
-// 🎯 render
 function render(){
 
   let search = document.getElementById("search").value.toLowerCase();
   let date = document.getElementById("dateFilter").value;
 
-  let html="";
-  let count=0;
+  let html = "";
+  let count = 0;
 
   orders.forEach(o=>{
 
@@ -171,210 +141,97 @@ function render(){
     ) return;
 
     let d = o.createdAt?.toDate?.();
-
-    if(date && d){
-      if(d.toDateString() !== new Date(date).toDateString()) return;
-    }
+    if(date && d && d.toDateString() !== new Date(date).toDateString()) return;
 
     count++;
 
     let status = o.status || "new";
 
- let msg = `DAHAP
-كود الطلب: ${o.orderID || "-"}
+    let msg = `
+DAHAP
+كود: ${o.orderID}
 
---------------------
-👤 اسم العميل: ${o.customerName || "-"}
-📞 رقم الهاتف: ${o.phone || "-"}
-
-📍 العنوان:
-${o.gov || "-"} - ${o.city || "-"}
-${o.address || "-"}
-
-💎 تفاصيل السلسلة:
-الاسم على السلسلة: ${o.chainName || "-"}
-نوع الكتابة: ${o.font || "-"}
-التصميم: ${o.design || "-"}
-
-🕒 وقت الطلب:
-${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
+اسم: ${o.customerName}
+هاتف: ${o.phone}
+العنوان: ${o.gov} - ${o.city}
+${o.address}
 `;
 
-html += `
+    html += `
 <div class="card">
 
-<input type="checkbox" class="selectOrder"
-value='${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}'
-style="float:left; transform:scale(1.2); margin-left:10px;">
+<input type="checkbox" class="sel" value='${btoa(JSON.stringify(o))}'>
 
-<b>🧾 ${o.orderID}</b>
+<b>${o.orderID}</b>
 <span class="status ${status}">${status}</span><br><br>
 
-👤 ${o.customerName || "غير محدد"} <br>
-📞 ${o.phone || "غير محدد"} <br>
+${o.customerName}<br>
+${o.phone}<br>
+${o.gov} - ${o.city}<br><br>
 
-📍 ${o.gov || "غير محدد"} - ${o.city || "غير محدد"} <br>
-${o.address || ""} <br><br>
-
-💎 <b>تفاصيل الطلب:</b><br>
-الاسم: ${o.chainName || "-"} <br>
-الكتابة: ${o.font || "-"} <br>
-التصميم: ${o.design || "-"} <br><br>
-
-🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
-
-<a class="btn whatsapp" target="_blank"
-href="https://wa.me/${o.phone}">واتساب</a>
+<button class="btn whatsapp" onclick="window.open('https://wa.me/${o.phone}')">واتساب</button>
 
 <button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>نسخ</button>
 
-<button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
+<button class="btn ship" onclick="updateStatus('${o.id}','shipped')">شحن</button>
 
-<button class="btn doneBtn" onclick="update('${o.id}','done')">تم</button>
+<button class="btn doneBtn" onclick="updateStatus('${o.id}','done')">تم</button>
 
 </div>
 `;
   });
 
-  document.getElementById("orders").innerHTML=html;
-  document.getElementById("count").innerText="📊 "+count;
+  document.getElementById("orders").innerHTML = html;
+  document.getElementById("count").innerText = "📊 " + count;
 }
 
-// 📋 copy
 window.copyText = (t)=>{
-  navigator.clipboard.writeText(decodeURIComponent(t));
-}
+  navigator.clipboard.writeText(t);
+};
 
-// 🖨️ PRINT ONLY (NO PDF)
-window.printSelected = () => {
+window.updateStatus = async (id,status)=>{
+  await updateDoc(doc(db,"orders",id),{status});
+};
 
-  let selected = document.querySelectorAll(".selectOrder:checked");
+window.printSelected = ()=>{
 
-  if(selected.length === 0){
-    alert("اختار أوردرات الأول");
-    return;
-  }
+  let selected = document.querySelectorAll(".sel:checked");
+  if(!selected.length) return alert("اختار أوردرات");
 
-  let win = window.open('', '', 'width=900,height=700');
+  let win = window.open("");
 
   let html = `
 <html>
 <head>
-<meta charset="UTF-8">
 <style>
-
-body{
-  margin:0;
-  font-family: Arial;
-}
-
-/* A4 PAGE */
-.page{
-  width:210mm;
-  height:297mm;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  grid-template-rows:1fr 1fr;
-}
-
-/* INVOICE */
-.invoice{
-  border:1px solid #000;
-  padding:12px;
-  box-sizing:border-box;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-/* HEADER */
-.header{
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  font-weight:bold;
-}
-
-/* CONTENT */
-.content{
-  font-size:12px;
-  line-height:1.6;
-  margin-top:10px;
-}
-
-/* CENTER MESSAGE */
-.centerMsg{
-  text-align:center;
-  font-size:13px;
-  font-weight:bold;
-  margin-top:20px;
-}
-
-hr{
-  margin:6px 0;
-}
-
+.page{display:grid;grid-template-columns:1fr 1fr;width:210mm;height:297mm}
+.box{border:1px solid #000;padding:10px;font-size:12px}
 </style>
 </head>
-
 <body>
-
 <div class="page">
 `;
 
-  selected.forEach(el => {
-
-    let o = JSON.parse(decodeURIComponent(escape(atob(el.value))));
+  selected.forEach(el=>{
+    let o = JSON.parse(atob(el.value));
 
     html += `
-    <div class="invoice">
-
-      <div class="header">
-        <div>DAHAP</div>
-        <div>
-          ${o.createdAt?.toDate?.().toLocaleString('en-US') || new Date().toLocaleString('en-US')}
-        </div>
-      </div>
-
-      <hr>
-
-      <div class="content">
-        <div><b>Order ID:</b> ${o.orderID || "-"}</div>
-        <div><b>Name:</b> ${o.customerName || "-"}</div>
-        <div><b>Phone:</b> ${o.phone || "-"}</div>
-
-        <br>
-
-        <div><b>Address:</b></div>
-        <div>${o.gov || "-"} - ${o.city || "-"}</div>
-        <div>${o.address || "-"}</div>
-      </div>
-
-      <div class="centerMsg">
-        Thank you for your order 💛<br>
-        We appreciate your trust in DAHAP
-      </div>
-
-    </div>
-    `;
+<div class="box">
+<b>${o.orderID}</b><br>
+${o.customerName}<br>
+${o.phone}<br>
+${o.gov} - ${o.city}<br>
+${o.address}
+</div>
+`;
   });
 
-html += `
-</div>
+  html += "</div><script>window.print()<\/script></body></html>";
 
-<script>
-  window.onload = function(){
-    window.print();
-  };
-<\/script>
-
-</body>
-</html>
-`;
-
-win.document.write(html);
-win.document.close();
+  win.document.write(html);
+  win.document.close();
 };
+
 </script>
 
 </body>
