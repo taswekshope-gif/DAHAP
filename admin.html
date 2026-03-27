@@ -61,9 +61,6 @@ input{
 .shipped{background:#1976d2;}
 </style>
 
-<!-- PDF Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 </head>
 
 <body>
@@ -263,6 +260,7 @@ window.printSelected = () => {
   let html = `
 <html>
 <head>
+<meta charset="UTF-8">
 <style>
 
 body{
@@ -272,11 +270,11 @@ body{
 
 /* A4 PAGE */
 .page{
-  width: 210mm;
-  height: 297mm;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  width:210mm;
+  height:297mm;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;
 }
 
 /* INVOICE */
@@ -318,6 +316,7 @@ hr{
 
 </style>
 </head>
+
 <body>
 
 <div class="page">
@@ -325,13 +324,11 @@ hr{
 
   selected.forEach(el => {
 
-    // ✅ فك التشفير صح 100%
     let o = JSON.parse(decodeURIComponent(escape(atob(el.value))));
 
     html += `
     <div class="invoice">
 
-      <!-- HEADER -->
       <div class="header">
         <div>DAHAP</div>
         <div>
@@ -341,7 +338,6 @@ hr{
 
       <hr>
 
-      <!-- CONTENT -->
       <div class="content">
         <div><b>Order ID:</b> ${o.orderID || "-"}</div>
         <div><b>Name:</b> ${o.customerName || "-"}</div>
@@ -354,7 +350,6 @@ hr{
         <div>${o.address || "-"}</div>
       </div>
 
-      <!-- MESSAGE IN CENTER -->
       <div class="centerMsg">
         Thank you for your order 💛<br>
         We appreciate your trust in DAHAP
@@ -368,8 +363,10 @@ hr{
 </div>
 
 <script>
-  window.onload = () => window.print();
-</script>
+  window.onload = function(){
+    window.print();
+  };
+<\/script>
 
 </body>
 </html>
