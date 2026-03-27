@@ -76,6 +76,10 @@ input{
   <h3 id="count"></h3>
 </div>
 
+<button onclick="printSelected()" style="margin-bottom:15px;">
+🖨️ طباعة المحدد
+</button>
+  
 <div id="orders"></div>
 
 <script type="module">
@@ -109,23 +113,11 @@ let authReady = false;
 let loaded = false;
 
 onAuthStateChanged(auth, (user) => {
-
-  console.log("AUTH:", user);
-
   if (user) {
-    if (!loaded) {
-      load();
-      loaded = true;
-    }
+    load();
   } else {
-    // استنى شوية قبل الطرد
-    setTimeout(() => {
-      if (!auth.currentUser) {
-        window.location.href = "login.html";
-      }
-    }, 4000);
+    window.location.href = "login.html";
   }
-
 });
   
 // 📦 load orders
@@ -214,6 +206,10 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 html += `
 <div class="card">
 
+<input type="checkbox" class="selectOrder"
+value='${encodeURIComponent(JSON.stringify(o))}'
+style="float:left; transform:scale(1.2); margin-left:10px;">
+
 <b>🧾 ${o.orderID}</b>
 <span class="status ${status}">${status}</span><br><br>
 
@@ -231,7 +227,7 @@ ${o.address || ""} <br><br>
 🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
 
 <a class="btn whatsapp" target="_blank"
-href="https://wa.me/${o.phone}">واتساب</a>
+href="https://wa.me/2${o.phone}">واتساب</a>
 
 <button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>نسخ</button>
 
@@ -255,17 +251,127 @@ window.copyText = (t)=>{
 }
 
 // 🧾 PDF
-window.pdf = (o)=>{
+window.pdf = (o) => {
   const { jsPDF } = window.jspdf;
   let doc = new jsPDF();
 
-  doc.text(`Order: ${o.orderID}`,10,10);
-  doc.text(`Name: ${o.customerName}`,10,20);
-  doc.text(`Phone: ${o.phone}`,10,30);
+  let y = 15;
+
+  // 🧾 عنوان
+  doc.setFontSize(18);
+  doc.text("Order from DAHAP", 10, y);
+
+  y += 10;
+  doc.setFontSize(12);
+  doc.text("-----------------------------", 10, y);
+
+  // 📦 بيانات
+  y += 10;
+  doc.text(`Order ID: ${o.orderID}`, 10, y);
+
+  y += 10;
+  doc.text(`Customer: ${o.customerName}`, 10, y);
+
+  y += 10;
+  doc.text(`Phone: ${o.phone}`, 10, y);
+
+  y += 10;
+  doc.text(`Address: ${o.gov} - ${o.city}`, 10, y);
+
+  y += 10;
+  doc.text(`${o.address}`, 10, y);
+
+  y += 10;
+  doc.text(`Design: ${o.design}`, 10, y);
+
+  y += 10;
+  doc.text(`Font: ${o.font}`, 10, y);
+
+  y += 10;
+  doc.text(`Name on chain: ${o.chainName}`, 10, y);
+
+  y += 15;
+  doc.text(`Date: ${o.createdAt?.toDate?.().toLocaleString('en-US')}`, 10, y);
+
+  // ❤️ رسالة تحت
+  y += 20;
+  doc.setFontSize(11);
+  doc.text("Thank you for choosing DAHAP 💛", 10, y);
+
+  y += 8;
+  doc.text("We hope you love your custom piece ✨", 10, y);
 
   doc.save(`${o.orderID}.pdf`);
-}
+};
 
+window.printSelected = () => {
+
+  let selected = document.querySelectorAll(".selectOrder:checked");
+
+  if(selected.length === 0){
+    alert("اختار أوردرات الأول");
+    return;
+  }
+
+  let win = window.open('', '', 'width=800,height=600');
+
+  let html = `
+  <html>
+  <head>
+  <style>
+    body{font-family:Arial; direction:rtl;}
+    .page{
+      display:flex;
+      flex-wrap:wrap;
+    }
+    .invoice{
+      width:50%;
+      border:1px solid #000;
+      padding:10px;
+      box-sizing:border-box;
+    }
+  </style>
+  </head>
+  <body>
+  <div class="page">
+  `;
+
+  selected.forEach(el => {
+
+    let o = JSON.parse(decodeURIComponent(el.value));
+
+    html += `
+    <div class="invoice">
+
+      <h3>Order from DAHAP</h3>
+      <hr>
+
+      <b>Order ID:</b> ${o.orderID}<br>
+      <b>Name:</b> ${o.customerName}<br>
+      <b>Phone:</b> ${o.phone}<br><br>
+
+      <b>Address:</b><br>
+      ${o.gov} - ${o.city}<br>
+      ${o.address}<br><br>
+
+      <b>Details:</b><br>
+      Name: ${o.chainName}<br>
+      Font: ${o.font}<br>
+      Design: ${o.design}<br><br>
+
+      <small>شكراً لطلبك من DAHAP ❤️</small>
+
+    </div>
+    `;
+  });
+
+  html += `</div></body></html>`;
+
+  win.document.write(html);
+  win.document.close();
+  win.print();
+};
+  
 // 🔄 update status
 window.update = async (id,status)=>{
   await updateDoc(doc(db,"orders",id),{status});
