@@ -226,7 +226,7 @@ ${o.address || ""} <br><br>
 <a class="btn whatsapp" target="_blank"
 href="https://wa.me/${o.phone}">واتساب</a>
 
-<button class="btn copy" onclick="copyText(` + '`' + msg + '`' + `)">نسخ</button>
+<button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>نسخ</button>
 
 <button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
 
