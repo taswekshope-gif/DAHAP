@@ -203,20 +203,24 @@ ${o.address}
 💎 ${o.chainName} - ${o.design}
 `;
 
-    html += `
-    <div class="card">
+html += `
+<div class="card">
 
-      <b>🧾 ${o.orderID}</b>
-      <span class="status ${status}">${status}</span><br><br>
+<b>🧾 ${d.orderID}</b>
+<span class="status ${statusClass}">${statusText}</span><br><br>
 
-      👤 ${o.customerName}<br>
-      📞 ${o.phone}<br>
+👤 ${d.customerName} <br>
+📞 ${d.phone} <br>
 
-      📍 ${o.gov || ""} - ${o.city || ""}<br>
+📍 ${d.gov ?? "غير محدد"} - ${d.city ?? "غير محدد"}
+${d.address} <br><br>
 
-      💎 ${o.chainName || ""} - ${o.design || ""}<br>
+💎 <b>تفاصيل الطلب:</b><br>
+- الاسم: ${d.chainName} <br>
+- الكتابة: ${d.font} <br>
+- التصميم: ${d.design} <br><br>
 
-      🕒 ${d ? d.toLocaleString('ar-EG') : ""}<br><br>
+🕒 ${d.createdAt?.toDate().toLocaleString('ar-EG')} <br><br>
 
       <a class="btn whatsapp" target="_blank"
       href="https://wa.me/${o.phone}?text=${encodeURIComponent(msg)}">WhatsApp</a>
