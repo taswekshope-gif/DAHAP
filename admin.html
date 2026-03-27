@@ -87,10 +87,6 @@ input{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-const CAIRO_FONT = `
-AAEAAAARAQAABAAQR0RFRrRCsIIAAACcAAAAHEdQT1MB9QG2AAABHAAAAExHU1VCWzX3GAAAFGAAAAA4T1MvMg8SBTcAAAGQAAAAYGNtYXABd9k1AAAB8AAAAFRnYXNwAAAAEAAAAgAAAAAIZ2x5Zo8sN9EAAAIQAAABfGhlYWQKk4k2AAADkAAAADZoaGVhB8YH5wAAA+gAAAAkaG10eA0wAAEAAAP8AAAALGxvY2EAFgA0AAAEGAAAABptYXhwAAwAFQAAAQQAAAAgbmFtZV9tQZkAAAEkAAAARnBvc3QAAwAAAAAEjAAAACBwcmVwAAEAAgAABJQAAAAIAAAAAA==
-`;
   
 const firebaseConfig = {
   apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
@@ -234,8 +230,6 @@ ${o.address || ""} <br><br>
 href="https://wa.me/${o.phone}">واتساب</a>
 
 <button class="btn copy" onclick="copyText(` + '`' + msg + '`' + `)">نسخ</button>
-
-<button class="btn print" onclick='pdf(${JSON.stringify(o)})'>PDF</button>
 
 <button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
 
