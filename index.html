@@ -65,6 +65,12 @@ button:hover { background:#095c4d; }
 </section>
 
 <section id="order" class="container">
+  
+<div id="successMessage"
+     style="display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px;">
+ ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.
+</div>
+  
 <h2>اطلبي سلسلتك الآن</h2>
 <form id="orderForm">
 <input type="text" id="customerName" placeholder="اسمك" required>
@@ -208,7 +214,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     let design = document.getElementById("design").value;
     let font = document.getElementById("font").value;
     let chainName = document.getElementById("chainName").value.trim();
-
+  
     if(!/^01[0-9]{9}$/.test(phone)){
         alert("رقم غير صحيح");
         return;
@@ -249,15 +255,18 @@ ${address}
 
 🕒 وقت الطلب: ${new Date().toLocaleString('ar-EG')}
 `;
+  
+ // إظهار رسالة نجاح
+document.getElementById("successMessage").style.display = "block";
 
-<div id="successMessage" style="display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px;">
-    ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.
-</div>
-
-    setTimeout(()=>{
-        var url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-        window.open(url, "_blank");
-    },1000);
+setTimeout(() => {
+    let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+    window.open(url, "_blank");
+}, 1000);
+setTimeout(() => {
+    document.getElementById("successMessage").style.display = "none";
+}, 5000);
+  
 });
 
 </script>
