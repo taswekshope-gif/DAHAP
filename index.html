@@ -65,6 +65,12 @@ button:hover { background:#095c4d; }
 </section>
 
 <section id="order" class="container">
+
+<select id="quantity">
+  <option value="1">قطعة واحدة</option>
+  <option value="2">2 قطع</option>
+  <option value="3">3 قطع</option>
+</select>
   
 <div id="successMessage"
      style="display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px;">
@@ -84,11 +90,13 @@ button:hover { background:#095c4d; }
   <option value="">اختار المدينة</option>
 </select>
 
-<input type="text" id="address" placeholder="اسم الشارع ورقم العمارة والدور + علامة مميزة" required>
+<input type="text" id="address" placeholder="اسم الشارع + رقم(العمارة-الدور-الشقه) + علامة مميزة" required>
 <select id="design"><option selected>عادي</option><option>قلب ❤️</option><option>فراشة 🦋</option><option>تاج 👑</option><option>مزدوج</option></select>
 <select id="font"><option selected>عربي</option><option>إنجليزي</option></select>
 <input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
 <p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
+  <p>السعر: <span id="price">249</span> جنيه</p>
+<p>الإجمالي: <span id="total">249</span> جنيه</p>
 <button type="submit">تأكيد الطلب</button>
 </form>
 <div id="successMessage"></div>
@@ -201,10 +209,25 @@ async function generateOrderID() {
   return `${prefix}-${counter}`;
 }
 
-
+const prices = {
+  "عادي": 249,
+  "قلب ❤️": 279,
+  "فراشة 🦋": 299,
+  "تاج 👑": 319,
+  "مزدوج": 349
+};
+  
 // ✅ الفورم
 document.getElementById("orderForm").addEventListener("submit", async function(e){
     e.preventDefault();
+
+  let submitBtn = document.querySelector("#orderForm button");
+
+    // 🔒 قفل الزرار
+    submitBtn.disabled = true;
+    submitBtn.innerText = "جاري الإرسال...";
+
+    try {
 
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
@@ -215,6 +238,10 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     let font = document.getElementById("font").value;
     let chainName = document.getElementById("chainName").value.trim();
   
+    let quantity = document.getElementById("quantity").value;
+    let price = prices[design];
+    let total = price * quantity;
+
     if(!/^01[0-9]{9}$/.test(phone)){
         alert("رقم غير صحيح");
         return;
@@ -233,6 +260,9 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
         design,
         font,
         chainName,
+        quantity,
+        price,
+        total,
         createdAt: new Date(),
         status: "new"
     });
@@ -248,13 +278,39 @@ let message = `DAHAP
 ${gov} - ${city}
 ${address}
 
-💎 تفاصيل السلسلة:
-- الاسم على السلسلة: ${chainName}
-- نوع الكتابة: ${font}
+💎 تفاصيل الطلب:
+- الاسم: ${chainName}
 - التصميم: ${design}
+- النوع: ${font}
+- الكمية: ${quantity}
 
-🕒 وقت الطلب: ${new Date().toLocaleString('ar-EG')}
+💰 السعر للقطعة: ${price} جنيه
+💵 الإجمالي: ${total} جنيه
+
+🕒 Order Time: ${new Date().toLocaleString('en-EG')}
 `;
+
+let designSelect = document.getElementById("design");
+let quantitySelect = document.getElementById("quantity");
+let priceSpan = document.getElementById("price");
+let totalSpan = document.getElementById("total");
+
+function updatePrice() {
+  let design = designSelect.value;
+  let quantity = parseInt(quantitySelect.value);
+
+  let price = prices[design] || 249;
+  let total = price * quantity;
+
+  priceSpan.innerText = price;
+  totalSpan.innerText = total;
+}
+
+designSelect.addEventListener("change", updatePrice);
+quantitySelect.addEventListener("change", updatePrice);
+
+// تشغيل أول مرة
+updatePrice();
   
  // إظهار رسالة نجاح
 document.getElementById("successMessage").style.display = "block";
