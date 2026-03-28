@@ -236,8 +236,6 @@ const shippingFees = {
 
 // عناصر الصفحة
 let designSelect = document.getElementById("design");
-let quantitySelect = document.getElementById("quantity");
-let govSelect = document.getElementById("governorate");
 
 let priceSpan = document.getElementById("price");
 let totalSpan = document.getElementById("total");
@@ -250,7 +248,7 @@ function updatePrice() {
   let chainName = document.getElementById("chainName").value;
   let names = chainName.split("-").map(n => n.trim()).filter(n => n);
 
-  let quantity = names.length || parseInt(quantitySelect.value);
+  let quantity = names.length || 1;
 
   let price = prices[design] || 249;
   let total = price * quantity;
@@ -261,9 +259,9 @@ function updatePrice() {
   totalSpan.innerText = total;
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
-  document.getElementById("chainName").addEventListener("input", updatePrice);
+  document.getElementById("quantityDisplay").innerText = quantity;
 }
-
+  
 // 🔥 ربط التغييرات
 designSelect.addEventListener("change", updatePrice);
 quantitySelect.addEventListener("change", updatePrice);
