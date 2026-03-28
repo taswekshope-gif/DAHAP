@@ -101,7 +101,10 @@ button:hover { background:#095c4d; }
 <p>الإجمالي النهائي: <span id="finalTotal">0</span> جنيه</p>
 <button type="submit">تأكيد الطلب</button>
 </form>
-<div id="successMessage"></div>
+  <p class="note">
+✔ يمكنك طلب 3 قطع فقط من الموقع  
+✔ للزيادة اطلب اوردر وسيتم تأكيد العدد على واتساب
+</p>
 </section>
 
 <script type="module">
@@ -135,16 +138,6 @@ setInterval(()=>{
 
   if(duration>0) duration--;
 },1000);
-
-const shippingFees = {
-  "قنا": 25,
-  "الأقصر": 25,
-  "البحر الأحمر": 35,
-  "الوادي الجديد": 35,
-  "مطروح": 35,
-  "شمال سيناء": 40,
-  "جنوب سيناء": 40
-};
   
 // المحافظات والمدن
 const govData = {
@@ -180,9 +173,6 @@ const govData = {
 let govSelect = document.getElementById("governorate");
 let citySelect = document.getElementById("city");
 
-let shipping = shippingFees[gov] || 20;
-let finalTotal = (price * quantity) + shipping;
-  
 Object.keys(govData).forEach(g=>{
   let opt=document.createElement("option");
   opt.value=g;
@@ -224,6 +214,7 @@ async function generateOrderID() {
   return `${prefix}-${counter}`;
 }
 
+// الأسعار
 const prices = {
   "عادي": 249,
   "قلب ❤️": 279,
@@ -232,58 +223,123 @@ const prices = {
   "مزدوج": 349
 };
 
+// الشحن
+const shippingFees = {
+  "قنا": 25,
+  "الأقصر": 25,
+  "البحر الأحمر": 35,
+  "الوادي الجديد": 35,
+  "مطروح": 35,
+  "شمال سيناء": 40,
+  "جنوب سيناء": 40
+};
+
+// عناصر الصفحة
+let designSelect = document.getElementById("design");
+let quantitySelect = document.getElementById("quantity");
+let govSelect = document.getElementById("governorate");
+
+let priceSpan = document.getElementById("price");
+let totalSpan = document.getElementById("total");
+
+// 🔥 حساب السعر (مهم)
+function updatePrice() {
+  let design = designSelect.value;
+  let gov = govSelect.value;
+
+  let chainName = document.getElementById("chainName").value;
+  let names = chainName.split("-").map(n => n.trim()).filter(n => n);
+
+  let quantity = names.length || parseInt(quantitySelect.value);
+
+  let price = prices[design] || 249;
+  let total = price * quantity;
+  let shipping = shippingFees[gov] || 20;
+  let finalTotal = total + shipping;
+
+  priceSpan.innerText = price;
+  totalSpan.innerText = total;
+  document.getElementById("shipping").innerText = shipping;
+  document.getElementById("finalTotal").innerText = finalTotal;
+  document.getElementById("chainName").addEventListener("input", updatePrice);
+}
+
+// 🔥 ربط التغييرات
+designSelect.addEventListener("change", updatePrice);
+quantitySelect.addEventListener("change", updatePrice);
+govSelect.addEventListener("change", updatePrice);
+
+// تشغيل أول مرة
+updatePrice();
+  
 // ✅ الفورم
 document.getElementById("orderForm").addEventListener("submit", async function(e){
-    e.preventDefault();
+  e.preventDefault();
 
   let submitBtn = document.querySelector("#orderForm button");
 
-    // 🔒 قفل الزرار
-    submitBtn.innerText = "جاري الإرسال...";
-    submitBtn.style.background = "#999";
-    submitBtn.disabled = true;
-  
+  submitBtn.innerText = "جاري الإرسال...";
+  submitBtn.style.background = "#999";
+  submitBtn.disabled = true;
+
+  try {
+
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
-    let gov = document.getElementById("governorate").value;
+    let gov = govSelect.value;
     let city = document.getElementById("city").value;
     let address = document.getElementById("address").value.trim();
-    let design = document.getElementById("design").value;
+    let design = designSelect.value;
     let font = document.getElementById("font").value;
-    let names = chainName.split("-").map(n => n.trim());
-  
-    let quantity = document.getElementById("quantity").value;
-    let price = prices[design];
-    let total = price * quantity;
+    let chainName = document.getElementById("chainName").value;
 
-    if(!/^01[0-9]{9}$/.test(phone)){
-        alert("رقم غير صحيح");
-        return;
+    let names = chainName.split("-").map(n => n.trim()).filter(n => n);
+
+    if(names.length > 3){
+      alert("الحد الأقصى 3 أسماء فقط");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "تأكيد الطلب";
+      return;
     }
 
-  if(names.length > 3){
-  alert("الحد الأقصى 3 أسماء للزياده عليك إبلاغنا مع طلب الأوردر فى محادثة الواتساب ويتم التوفير");
+    if(names.length === 0){
+  alert("من فضلك اكتب الاسم على السلسلة");
+  submitBtn.disabled = false;
+  submitBtn.innerText = "تأكيد الطلب";
   return;
 }
-  quantity = names.length;
+    let price = prices[design] || 249;
+    let quantity = names.length || 1;
+    let total = price * quantity;
+    let shipping = shippingFees[gov] || 20;
+    let finalTotal = total + shipping;
+
+    if(!/^01[0-9]{9}$/.test(phone)){
+      alert("رقم غير صحيح");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "تأكيد الطلب";
+      return;
+    }
+
     let orderID = await generateOrderID();
 
-    // ✅ حفظ في Firebase
     await addDoc(collection(db, "orders"), {
-        orderID,
-        customerName,
-        phone,
-        gov,
-        city,
-        address,
-        design,
-        font,
-        chainName,
-        quantity,
-        price,
-        total,
-        createdAt: new Date(),
-        status: "new"
+      orderID,
+      customerName,
+      phone,
+      gov,
+      city,
+      address,
+      design,
+      font,
+      chainName,
+      quantity,
+      price,
+      total,
+      shipping,
+      finalTotal,
+      createdAt: new Date(),
+      status: "new"
     });
 
     // ✅ واتساب
@@ -297,63 +353,35 @@ let message = `DAHAP
 ${gov} - ${city}
 ${address}
 
-💎 تفاصيل الطلب:
-- الاسم: ${chainName}
-- التصميم: ${design}
-- النوع: ${font}
-- الكمية: ${quantity}
+💎 الطلب:
+${names.join(" / ")}
 
-💰 السعر للقطعة: ${price} جنيه
-💵 الإجمالي: ${total} جنيه
+🎨 التصميم: ${design}
+🔤 الكتابة: ${font}
+
+📦 الكمية: ${quantity}
+💰 سعر القطعة: ${price}
+🚚 الشحن: ${shipping}
+💵 الإجمالي: ${finalTotal}
 
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
 `;
   
-<p class="note">
-✔ يمكنك طلب 3 قطع فقط من الموقع  
-✔ للزيادة اطلب اوردر وسيتم تأكيد العدد على واتساب
-</p>
-  
-let designSelect = document.getElementById("design");
-let quantitySelect = document.getElementById("quantity");
-let priceSpan = document.getElementById("price");
-let totalSpan = document.getElementById("total");
+    // نجاح
+    submitBtn.innerText = "✅ تم إرسال الطلب";
+    submitBtn.style.background = "#0F7B65";
+    document.getElementById("successMessage").style.display = "block";
+    
+    setTimeout(() => {
+      let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+      window.open(url, "_blank");
+    }, 1000);
 
-function updatePrice() {
-  let design = designSelect.value;
-  let quantity = parseInt(quantitySelect.value);
-
-let gov = document.getElementById("governorate").value;
-let shipping = shippingFees[gov] || 20;
-
-document.getElementById("shipping").innerText = shipping;
-document.getElementById("finalTotal").innerText = total + shipping;
-  
-  let price = prices[design] || 249;
-  let total = price * quantity;
-
-  priceSpan.innerText = price;
-  totalSpan.innerText = total;
-}
-
-designSelect.addEventListener("change", updatePrice);
-quantitySelect.addEventListener("change", updatePrice);
-
-// تشغيل أول مرة
-updatePrice();
-  
- // إظهار رسالة نجاح
-submitBtn.innerText = "✅ تم إرسال طلبك بنجاح";
-submitBtn.style.background = "#0F7B65";
-
-setTimeout(() => {
-    let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
-}, 1000);
-setTimeout(() => {
-    document.getElementById("successMessage").style.display = "none";
-}, 5000);
-  
+  } catch (error) {
+    alert("حصل خطأ حاول تاني");
+    submitBtn.disabled = false;
+    submitBtn.innerText = "تأكيد الطلب";
+  }
 });
-
+  
 </script>
