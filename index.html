@@ -68,7 +68,7 @@ button:hover { background:#095c4d; }
 
 <select id="quantity">
   <option value="1">قطعة واحدة</option>
-  <option value="2">2 قطع</option>
+  <option value="2">قطعتين</option>
   <option value="3">3 قطع</option>
 </select>
   
@@ -93,10 +93,12 @@ button:hover { background:#095c4d; }
 <input type="text" id="address" placeholder="اسم الشارع + رقم(العمارة-الدور-الشقه) + علامة مميزة" required>
 <select id="design"><option selected>عادي</option><option>قلب ❤️</option><option>فراشة 🦋</option><option>تاج 👑</option><option>مزدوج</option></select>
 <select id="font"><option selected>عربي</option><option>إنجليزي</option></select>
-<input type="text" id="chainName" placeholder="الاسم المطلوب على السلسلة" required>
+<input type="text" id="chainName" placeholder="مثال: احمد - سارة - محمد">
 <p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
   <p>السعر: <span id="price">249</span> جنيه</p>
 <p>الإجمالي: <span id="total">249</span> جنيه</p>
+  <p>الشحن: <span id="shipping">0</span> جنيه</p>
+<p>الإجمالي النهائي: <span id="finalTotal">0</span> جنيه</p>
 <button type="submit">تأكيد الطلب</button>
 </form>
 <div id="successMessage"></div>
@@ -133,6 +135,16 @@ setInterval(()=>{
 
   if(duration>0) duration--;
 },1000);
+
+const shippingFees = {
+  "قنا": 25,
+  "الأقصر": 25,
+  "البحر الأحمر": 35,
+  "الوادي الجديد": 35,
+  "مطروح": 35,
+  "شمال سيناء": 40,
+  "جنوب سيناء": 40
+};
   
 // المحافظات والمدن
 const govData = {
@@ -168,6 +180,9 @@ const govData = {
 let govSelect = document.getElementById("governorate");
 let citySelect = document.getElementById("city");
 
+let shipping = shippingFees[gov] || 20;
+let finalTotal = (price * quantity) + shipping;
+  
 Object.keys(govData).forEach(g=>{
   let opt=document.createElement("option");
   opt.value=g;
@@ -216,7 +231,7 @@ const prices = {
   "تاج 👑": 319,
   "مزدوج": 349
 };
-  
+
 // ✅ الفورم
 document.getElementById("orderForm").addEventListener("submit", async function(e){
     e.preventDefault();
@@ -224,9 +239,10 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
   let submitBtn = document.querySelector("#orderForm button");
 
     // 🔒 قفل الزرار
-    submitBtn.disabled = true;
     submitBtn.innerText = "جاري الإرسال...";
-
+    submitBtn.style.background = "#999";
+    submitBtn.disabled = true;
+  
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
     let gov = document.getElementById("governorate").value;
@@ -234,7 +250,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     let address = document.getElementById("address").value.trim();
     let design = document.getElementById("design").value;
     let font = document.getElementById("font").value;
-    let chainName = document.getElementById("chainName").value.trim();
+    let names = chainName.split("-").map(n => n.trim());
   
     let quantity = document.getElementById("quantity").value;
     let price = prices[design];
@@ -245,6 +261,11 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
         return;
     }
 
+  if(names.length > 3){
+  alert("الحد الأقصى 3 أسماء للزياده عليك إبلاغنا مع طلب الأوردر فى محادثة الواتساب ويتم التوفير");
+  return;
+}
+  quantity = names.length;
     let orderID = await generateOrderID();
 
     // ✅ حفظ في Firebase
@@ -287,7 +308,12 @@ ${address}
 
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
 `;
-
+  
+<p class="note">
+✔ يمكنك طلب 3 قطع فقط من الموقع  
+✔ للزيادة اطلب اوردر وسيتم تأكيد العدد على واتساب
+</p>
+  
 let designSelect = document.getElementById("design");
 let quantitySelect = document.getElementById("quantity");
 let priceSpan = document.getElementById("price");
@@ -297,6 +323,12 @@ function updatePrice() {
   let design = designSelect.value;
   let quantity = parseInt(quantitySelect.value);
 
+let gov = document.getElementById("governorate").value;
+let shipping = shippingFees[gov] || 20;
+
+document.getElementById("shipping").innerText = shipping;
+document.getElementById("finalTotal").innerText = total + shipping;
+  
   let price = prices[design] || 249;
   let total = price * quantity;
 
@@ -311,7 +343,8 @@ quantitySelect.addEventListener("change", updatePrice);
 updatePrice();
   
  // إظهار رسالة نجاح
-document.getElementById("successMessage").style.display = "block";
+submitBtn.innerText = "✅ تم إرسال طلبك بنجاح";
+submitBtn.style.background = "#0F7B65";
 
 setTimeout(() => {
     let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
