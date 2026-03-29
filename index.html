@@ -391,7 +391,7 @@ function updatePrice() {
   let price = prices[design] || 249;
   let shipping = shippingFees[gov] || 20;
   let finalTotal = (price * quantity) + shipping;
-
+ 
   document.getElementById("price").innerText = price;
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
@@ -402,7 +402,13 @@ function updatePrice() {
     input.placeholder = `اكتب ${requiredNames} اسم`;
   }
 }
+// 🔥 تحديث السعر عند التغيير
+document.getElementById("quantity").addEventListener("change", updatePrice);
+document.getElementById("design").addEventListener("change", updatePrice);
+document.getElementById("governorate").addEventListener("change", updatePrice);
 
+// تشغيل أول مرة
+updatePrice();
 
 // ✅ الفورم
 document.getElementById("orderForm").addEventListener("submit", async function (e) {
