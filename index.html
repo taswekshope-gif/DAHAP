@@ -220,7 +220,6 @@ const db = getFirestore(app);
 
   // يخلي شكل الإدخال نظيف
   this.value = this.value.replace(/\/+/g, " / ");
-});
   
 // ✅ تايمر
 let duration = 3 * 60 * 60;
@@ -390,10 +389,6 @@ const shippingFees = {
 };
 
 // عناصر الصفحة
-
-    let value = this.value.trim();
-    if (!value) return;
-
     let namesPerPiece = (design === "مزدوج") ? 2 : 1;
     let max = quantity * namesPerPiece;
 
@@ -425,7 +420,6 @@ function updatePrice() {
   let requiredNames = quantity * namesPerPiece;
 
   // ❌ لو زاد عدد الأسماء
-    function renderTags() {
   let container = document.getElementById("tagsContainer");
   container.innerHTML = "";
 
@@ -434,7 +428,6 @@ function updatePrice() {
     span.innerText = t;
     span.className = "tag";
     container.appendChild(span);
-  });
 }
   }
 
