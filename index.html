@@ -28,6 +28,34 @@ form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10
 input, select, button { padding:12px; border-radius:8px; border:1px solid #ccc; }
 button { background:#0F7B65; color:#fff; border:none; cursor:pointer; font-weight:bold; }
 button:hover { background:#095c4d; }
+  .checkout-box {
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:12px;
+  padding:15px;
+  margin-top:20px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.row {
+  display:flex;
+  justify-content:space-between;
+  margin:8px 0;
+  font-size:15px;
+}
+
+.total {
+  font-size:18px;
+  font-weight:bold;
+  color:#0F7B65;
+}
+
+.error {
+  color:red;
+  font-size:13px;
+  text-align:right;
+  display:none;
+}
 .note { font-size:14px; color:#555; }
 #successMessage { display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px; }
 </style>
@@ -72,15 +100,12 @@ button:hover { background:#095c4d; }
   <option value="3">3 قطع</option>
 </select>
   
-<div id="successMessage"
-     style="display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px;">
- ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.
-</div>
-  
 <h2>اطلبي سلسلتك الآن</h2>
 <form id="orderForm">
 <input type="text" id="customerName" placeholder="اسمك" required>
+  <div class="error" id="nameError"></div>
 <input type="tel" id="phone" placeholder="رقم التليفون" required>
+  <div class="error" id="nameError"></div>
 
 <select id="governorate" required>
   <option value="">اختاري المحافظة</option>
@@ -91,16 +116,38 @@ button:hover { background:#095c4d; }
 </select>
 
 <input type="text" id="address" placeholder="اسم الشارع + رقم(العمارة-الدور-الشقه) + علامة مميزة" required>
+  <div class="error" id="nameError"></div>
 <select id="design"><option selected>عادي</option><option>قلب ❤️</option><option>فراشة 🦋</option><option>تاج 👑</option><option>مزدوج</option></select>
 <select id="font"><option selected>عربي</option><option>إنجليزي</option></select>
 <input type="text" id="chainName" placeholder="مثال: احمد - سارة - محمد">
+  <div class="error" id="nameError"></div>
 <p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
-<div class="price-box">
-  <div>💰 السعر: <span id="price">249</span></div>
-  <div>📦 الكمية: <span id="quantityDisplay">1</span></div>
-  <div>🚚 الشحن: <span id="shipping">20</span></div>
-  <div class="total">الإجمالي: <span id="finalTotal">269</span> جنيه</div>
+<div class="checkout-box">
+
+  <div class="row">
+    <span>💰 سعر القطعة</span>
+    <span id="price">249</span>
+  </div>
+
+  <div class="row">
+    <span>📦 الكمية</span>
+    <span id="quantityDisplay">1</span>
+  </div>
+
+  <div class="row">
+    <span>🚚 الشحن</span>
+    <span id="shipping">20</span>
+  </div>
+
+  <hr>
+
+  <div class="row total">
+    <span>الإجمالي</span>
+    <span id="finalTotal">269</span>
+  </div>
+
 </div>
+
 <button type="submit">تأكيد الطلب</button>
 </form>
 <div id="successMessage"
@@ -221,6 +268,14 @@ async function generateOrderID() {
   return `${prefix}-${counter}`;
 }
 
+  // UI ✅
+.error {
+  color:red;
+  font-size:13px;
+  text-align:right;
+  display:none;
+}
+  
 // الأسعار
 const prices = {
   "عادي": 249,
@@ -251,19 +306,14 @@ let totalSpan = document.getElementById("total");
 function updatePrice() {
   let design = designSelect.value;
   let gov = govSelect.value;
-
-  let chainName = document.getElementById("chainName").value;
-  let names = chainName.split("-").map(n => n.trim()).filter(n => n);
-
-  let quantity = names.length || 1;
+  let quantity = parseInt(document.getElementById("quantity").value) || 1;
 
   let price = prices[design] || 249;
-  let total = price * quantity;
   let shipping = shippingFees[gov] || 20;
-  let finalTotal = total + shipping;
 
-  priceSpan.innerText = price;
-  totalSpan.innerText = total;
+  let finalTotal = (price * quantity) + shipping;
+
+  document.getElementById("price").innerText = price;
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
   document.getElementById("quantityDisplay").innerText = quantity;
@@ -272,8 +322,10 @@ function updatePrice() {
 // 🔥 ربط التغييرات
 designSelect.addEventListener("change", updatePrice);
 govSelect.addEventListener("change", updatePrice);
-
-// تشغيل أول مرة
+document.getElementById("chainName").addEventListener("input", updatePrice);
+document.getElementById("quantity").addEventListener("change", updatePrice);
+  
+  // تشغيل أول مرة
 updatePrice();
   
 // ✅ الفورم
@@ -297,23 +349,8 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     let font = document.getElementById("font").value;
     let chainName = document.getElementById("chainName").value;
 
-    let names = chainName.split("-").map(n => n.trim()).filter(n => n);
-
-    if(names.length > 3){
-      alert("الحد الأقصى 3 أسماء فقط");
-      submitBtn.disabled = false;
-      submitBtn.innerText = "تأكيد الطلب";
-      return;
-    }
-
-    if(names.length === 0){
-  alert("من فضلك اكتب الاسم على السلسلة");
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
-  return;
-}
+    let quantity = parseInt(document.getElementById("quantity").value) || 1;
     let price = prices[design] || 249;
-    let quantity = names.length || 1;
     let total = price * quantity;
     let shipping = shippingFees[gov] || 20;
     let finalTotal = total + shipping;
@@ -345,7 +382,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
       createdAt: new Date(),
       status: "new"
     });
-
+    
     // ✅ واتساب
 let message = `DAHAP
 كود الطلب: ${orderID}
@@ -358,7 +395,7 @@ ${gov} - ${city}
 ${address}
 
 💎 الطلب:
-${names.join(" / ")}
+$ الأسم المطلوب للسلسله: {chainName}
 
 🎨 التصميم: ${design}
 🔤 الكتابة: ${font}
