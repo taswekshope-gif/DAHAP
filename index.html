@@ -292,6 +292,11 @@ const shippingFees = {
 
 // عناصر الصفحة
 let designSelect = document.getElementById("design");
+  let chainInput = document.getElementById("chainName");
+
+chainInput.addEventListener("input", function() {
+  this.value = this.value.replace(/\s+/g, " / ");
+});
 
 let priceSpan = document.getElementById("price");
 let totalSpan = document.getElementById("total");
@@ -341,8 +346,25 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     let address = document.getElementById("address").value.trim();
     let design = designSelect.value;
     let font = document.getElementById("font").value;
-    let chainName = document.getElementById("chainName").value;
+    let chainName = document.getElementById("chainName").value.trim();
 
+    let names = chainName.split("/").map(n => n.trim()).filter(n => n);
+
+    // ✅ شرط التصميم المزدوج
+    if (design === "مزدوج" && names.length !== 2) {
+      alert("التصميم المزدوج لازم اسمين فقط");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "تأكيد الطلب";
+      return;
+    }
+
+    if(names.length === 0){
+      alert("اكتب الاسم على السلسلة");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "تأكيد الطلب";
+      return;
+    }
+    
     let quantity = parseInt(document.getElementById("quantity").value) || 1;
     let price = prices[design] || 249;
     let total = price * quantity;
@@ -356,6 +378,13 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
       return;
     }
 
+ // ❤️ تنسيق الاسم حسب التصميم
+    let formattedNames = names.join(" / ");
+
+    if (design === "مزدوج") {
+      formattedNames = names.join(" ❤️ ");
+    }
+
     let orderID = await generateOrderID();
 
     await addDoc(collection(db, "orders"), {
@@ -367,7 +396,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
       address,
       design,
       font,
-      chainName,
+      chainName: formattedNames,
       quantity,
       price,
       total,
@@ -389,7 +418,7 @@ ${gov} - ${city}
 ${address}
 
 💎 الطلب:
-$ الأسم المطلوب للسلسله: ${chainName}
+الأسم المطلوب للسلسله: ${formattedNames}
 
 🎨 التصميم: ${design}
 🔤 الكتابة: ${font}
