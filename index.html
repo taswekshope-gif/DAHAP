@@ -95,12 +95,19 @@ button:hover { background:#095c4d; }
 <select id="font"><option selected>عربي</option><option>إنجليزي</option></select>
 <input type="text" id="chainName" placeholder="مثال: احمد - سارة - محمد">
 <p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
-  <p>السعر: <span id="price">249</span> جنيه</p>
-<p>الإجمالي: <span id="total">249</span> جنيه</p>
-  <p>الشحن: <span id="shipping">0</span> جنيه</p>
-<p>الإجمالي النهائي: <span id="finalTotal">0</span> جنيه</p>
+<div class="price-box">
+  <div>💰 السعر: <span id="price">249</span></div>
+  <div>📦 الكمية: <span id="quantityDisplay">1</span></div>
+  <div>🚚 الشحن: <span id="shipping">20</span></div>
+  <div class="total">الإجمالي: <span id="finalTotal">269</span> جنيه</div>
+</div>
 <button type="submit">تأكيد الطلب</button>
 </form>
+<div id="successMessage"
+     style="display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px;">
+ ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.
+</div>
+
   <p class="note">
 ✔ يمكنك طلب 3 قطع فقط من الموقع  
 ✔ للزيادة اطلب اوردر وسيتم تأكيد العدد على واتساب
@@ -264,7 +271,6 @@ function updatePrice() {
   
 // 🔥 ربط التغييرات
 designSelect.addEventListener("change", updatePrice);
-quantitySelect.addEventListener("change", updatePrice);
 govSelect.addEventListener("change", updatePrice);
 
 // تشغيل أول مرة
@@ -370,11 +376,11 @@ ${names.join(" / ")}
     submitBtn.style.background = "#0F7B65";
     document.getElementById("successMessage").style.display = "block";
     
-    setTimeout(() => {
-      let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-      window.open(url, "_blank");
-    }, 1000);
-
+  setTimeout(() => {
+    let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+    window.open(url, "_blank");
+  }, 1000);
+    
   } catch (error) {
     alert("حصل خطأ حاول تاني");
     submitBtn.disabled = false;
