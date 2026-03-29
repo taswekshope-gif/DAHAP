@@ -310,7 +310,6 @@ async function generateOrderID() {
   return `${prefix}-${counter}`;
 }
 
- // نظام الـ Tags 👑
 let tags = [];
 
 function showMessage(msg) {
@@ -322,7 +321,7 @@ function showMessage(msg) {
     box.style.display = "none";
   }, 2000);
 }
-  
+
 function createTag(text) {
   let tag = document.createElement("div");
   tag.className = "tag";
@@ -339,7 +338,7 @@ function createTag(text) {
 
 let tagInput = document.getElementById("tagInput");
 let tagsBox = document.getElementById("tagsBox");
-  
+
 tagInput.addEventListener("keydown", function (e) {
   if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
@@ -353,7 +352,6 @@ tagInput.addEventListener("keydown", function (e) {
     let namesPerPiece = (design === "مزدوج") ? 2 : 1;
     let max = quantity * namesPerPiece;
 
-    // منع الزيادة
     if (tags.length >= max) {
       showMessage(`❌ الحد الأقصى ${max} أسماء`);
       return;
@@ -367,71 +365,16 @@ tagInput.addEventListener("keydown", function (e) {
   }
 });
 
-    tags.push(value);
-    createTag(value);
-    this.value = "";
 
-    updatePrice();
-  }
-});
-  
-// الأسعار
-const prices = {
-  "عادي": 249,
-  "قلب ❤️": 279,
-  "فراشة 🦋": 299,
-  "تاج 👑": 319,
-  "مزدوج": 349
-};
-
-// الشحن
-const shippingFees = {
-  "قنا": 25,
-  "الأقصر": 25,
-  "البحر الأحمر": 35,
-  "الوادي الجديد": 35,
-  "مطروح": 35,
-  "شمال سيناء": 40,
-  "جنوب سيناء": 40
-};
-
-// عناصر الصفحة
-    let namesPerPiece = (design === "مزدوج") ? 2 : 1;
-    let max = quantity * namesPerPiece;
-
-    if (tags.length >= max) {
-      showMessage(`❌ الحد الأقصى ${max} أسماء`);
-      return;
-    }
-    tags.push(value);
-    createTag(value);
-    this.value = "";
-  }
-  
-let priceSpan = document.getElementById("price");
-let totalSpan = document.getElementById("total");
-
-// 🔥 حساب السعر (مهم)
+// 🔥 حساب السعر
 function updatePrice() {
   let design = document.getElementById("design").value;
   let gov = document.getElementById("governorate").value;
   let quantity = parseInt(document.getElementById("quantity").value) || 1;
 
-  let names = [...tags].map(n => n.trim()).filter(n => n);
-
   let namesPerPiece = (design === "مزدوج") ? 2 : 1;
   let requiredNames = quantity * namesPerPiece;
 
-  // تحديث العرض
-  let container = document.getElementById("tagsBox");
-  let input = document.getElementById("tagInput");
-
-  // placeholder ذكي
-  if (input) {
-    input.placeholder = `اكتب ${requiredNames} اسم`;
-  }
-
-  // السعر
   let price = prices[design] || 249;
   let shipping = shippingFees[gov] || 20;
   let finalTotal = (price * quantity) + shipping;
@@ -440,14 +383,19 @@ function updatePrice() {
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
   document.getElementById("quantityDisplay").innerText = quantity;
+
+  let input = document.getElementById("tagInput");
+  if (input) {
+    input.placeholder = `اكتب ${requiredNames} اسم`;
+  }
 }
-  
+
+
 // ✅ الفورم
 document.getElementById("orderForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   let submitBtn = document.querySelector("#orderForm button");
-
   submitBtn.innerText = "جاري الإرسال...";
   submitBtn.disabled = true;
 
@@ -459,14 +407,14 @@ document.getElementById("orderForm").addEventListener("submit", async function (
     let address = document.getElementById("address").value.trim();
     let design = document.getElementById("design").value;
     let font = document.getElementById("font").value;
-
     let quantity = parseInt(document.getElementById("quantity").value) || 1;
+
     let names = [...tags].map(n => n.trim()).filter(n => n);
 
     let namesPerPiece = (design === "مزدوج") ? 2 : 1;
     let requiredNames = quantity * namesPerPiece;
 
-    // ✅ تحقق نهائي
+    // تحقق الأسماء
     if (names.length !== requiredNames) {
       document.getElementById("chainError").innerText =
         `لازم تدخل ${requiredNames} أسماء بالظبط`;
@@ -477,50 +425,34 @@ document.getElementById("orderForm").addEventListener("submit", async function (
       return;
     }
 
+    // تحقق رقم الهاتف
     if (!/^01[0-9]{9}$/.test(phone)) {
       alert("رقم غير صحيح");
       submitBtn.disabled = false;
       submitBtn.innerText = "تأكيد الطلب";
       return;
     }
-    
+
     let price = prices[design] || 249;
     let total = price * quantity;
     let shipping = shippingFees[gov] || 20;
     let finalTotal = total + shipping;
 
-    if(!/^01[0-9]{9}$/.test(phone)){
-      alert("رقم غير صحيح");
-      submitBtn.disabled = false;
-      submitBtn.innerText = "تأكيد الطلب";
-      return;
+    // ❤️ تنسيق الأسماء
+    let formattedNames = "";
+
+    if (design === "مزدوج") {
+      let pairs = [];
+      for (let i = 0; i < tags.length; i += 2) {
+        pairs.push(tags[i] + " ❤️ " + tags[i+1]);
+      }
+      formattedNames = pairs.join(" | ");
+    } else {
+      formattedNames = tags.join(" / ");
     }
- 
-    // علشان تمنع الطلب لو عدد الأسماء غلط 👇
-let namesPerPiece = (design === "مزدوج") ? 2 : 1;
-let requiredNames = quantity * namesPerPiece;
 
-if (names.length !== requiredNames) {
-  alert(`لازم تكتب ${requiredNames} اسم بالظبط`);
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
-  return;
-}
-    
- // ❤️ تنسيق الاسم حسب التصميم
-  let formattedNames = "";
-
-if (design === "مزدوج") {
-  let pairs = [];
-  for (let i = 0; i < tags.length; i += 2) {
-    pairs.push(tags[i] + " ❤️ " + tags[i+1]);
-  }
-  formattedNames = pairs.join(" | ");
-} else {
-  formattedNames = tags.join(" / ");
-}
     let orderID = await generateOrderID();
-
+    
     await addDoc(collection(db, "orders"), {
       orderID,
       customerName,
