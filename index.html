@@ -214,12 +214,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-  // يخلي أي مسافة = /
-  this.value = this.value.replace(/\s+/g, " / ");
-
-  // يخلي شكل الإدخال نظيف
-  this.value = this.value.replace(/\/+/g, " / ");
   
 // ✅ تايمر
 let duration = 3 * 60 * 60;
@@ -285,6 +279,8 @@ govData[govSelect.value].forEach(c => {
     opt.text=c;
     citySelect.appendChild(opt);
   });
+  
+});
 
 // ✅ توليد كود أوردر مركزي
 async function generateOrderID() {
