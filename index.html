@@ -296,9 +296,11 @@ let designSelect = document.getElementById("design");
   let chainInput = document.getElementById("chainName");
 
 chainInput.addEventListener("input", function() {
-  this.value = this.value.replace(/\s+/g, " / ");
+  this.value = this.value
+    .replace(/\s+/g, " / ")
+    .replace(/\/\s*\/+/g, "/");
 });
-
+  
 let priceSpan = document.getElementById("price");
 let totalSpan = document.getElementById("total");
 
