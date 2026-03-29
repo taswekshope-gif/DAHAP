@@ -56,6 +56,38 @@ button:hover { background:#095c4d; }
   text-align:right;
   display:none;
 }
+  .tags-box {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  min-height:50px;
+}
+
+.tags-box input {
+  border:none;
+  outline:none;
+  flex:1;
+  min-width:120px;
+}
+
+.tag {
+  background:#0F7B65;
+  color:#fff;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.tag span {
+  cursor:pointer;
+  font-weight:bold;
+}
 .note { font-size:14px; color:#555; }
 #successMessage { display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px; }
 </style>
@@ -124,8 +156,11 @@ button:hover { background:#095c4d; }
  <div class="error" id="addressError"></div>
 <select id="design"><option selected>عادي</option><option>قلب ❤️</option><option>فراشة 🦋</option><option>تاج 👑</option><option>مزدوج</option></select>
 <select id="font"><option selected>عربي</option><option>إنجليزي</option></select>
-<input type="text" id="chainName" placeholder="الأسم المطلوب للسلسلة">
- <div class="error" id="chainError"></div>
+<div id="tagsBox" class="tags-box">
+  <input type="text" id="tagInput" placeholder="اكتب الاسم واضغط مسافة أو Enter">
+</div>
+
+<div class="error" id="chainError"></div>
 <p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
 <div class="checkout-box">
 
@@ -271,6 +306,41 @@ async function generateOrderID() {
   return `${prefix}-${counter}`;
 }
 
+ // نظام الـ Tags 👑
+let tagInput = document.getElementById("tagInput");
+let tagsBox = document.getElementById("tagsBox");
+
+let tags = [];
+
+function createTag(text) {
+  let tag = document.createElement("div");
+  tag.className = "tag";
+  tag.innerHTML = `${text} <span>×</span>`;
+
+  tag.querySelector("span").onclick = () => {
+    tags = tags.filter(t => t !== text);
+    tag.remove();
+    updatePrice();
+  };
+
+  tagsBox.insertBefore(tag, tagInput);
+}
+
+tagInput.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+
+    let value = this.value.trim();
+    if (!value) return;
+
+    tags.push(value);
+    createTag(value);
+
+    this.value = "";
+    updatePrice();
+  }
+});
+  
 // الأسعار
 const prices = {
   "عادي": 249,
