@@ -285,7 +285,6 @@ govData[govSelect.value].forEach(c => {
     opt.text=c;
     citySelect.appendChild(opt);
   });
-});
 
 // ✅ توليد كود أوردر مركزي
 async function generateOrderID() {
@@ -340,25 +339,33 @@ function createTag(text) {
 
 let tagInput = document.getElementById("tagInput");
 let tagsBox = document.getElementById("tagsBox");
-tagInput.addEventListener("keydown", function(e) {
+  
+tagInput.addEventListener("keydown", function (e) {
   if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
 
     let value = this.value.trim();
     if (!value) return;
-    
-    let designSelect = document.getElementById("design");
-    let govSelect = document.getElementById("governorate");
+
     let design = document.getElementById("design").value;
     let quantity = parseInt(document.getElementById("quantity").value) || 1;
 
     let namesPerPiece = (design === "مزدوج") ? 2 : 1;
     let max = quantity * namesPerPiece;
 
+    // منع الزيادة
     if (tags.length >= max) {
       showMessage(`❌ الحد الأقصى ${max} أسماء`);
       return;
     }
+
+    tags.push(value);
+    createTag(value);
+    this.value = "";
+
+    updatePrice();
+  }
+});
 
     tags.push(value);
     createTag(value);
@@ -396,96 +403,86 @@ const shippingFees = {
       showMessage(`❌ الحد الأقصى ${max} أسماء`);
       return;
     }
-
     tags.push(value);
     createTag(value);
     this.value = "";
   }
-});
   
 let priceSpan = document.getElementById("price");
 let totalSpan = document.getElementById("total");
 
 // 🔥 حساب السعر (مهم)
 function updatePrice() {
-  let design = designSelect.value;
-  let gov = govSelect.value;
+  let design = document.getElementById("design").value;
+  let gov = document.getElementById("governorate").value;
   let quantity = parseInt(document.getElementById("quantity").value) || 1;
 
-  // 🧠 الأسماء من tags array
   let names = [...tags].map(n => n.trim()).filter(n => n);
 
-  // 🧠 تحديد عدد الأسماء لكل قطعة
   let namesPerPiece = (design === "مزدوج") ? 2 : 1;
   let requiredNames = quantity * namesPerPiece;
 
-  // ❌ لو زاد عدد الأسماء
-  let container = document.getElementById("tagsContainer");
-  container.innerHTML = "";
+  // تحديث العرض
+  let container = document.getElementById("tagsBox");
+  let input = document.getElementById("tagInput");
 
-  tags.forEach((t, i) => {
-    let span = document.createElement("span");
-    span.innerText = t;
-    span.className = "tag";
-    container.appendChild(span);
-}
+  // placeholder ذكي
+  if (input) {
+    input.placeholder = `اكتب ${requiredNames} اسم`;
   }
 
-  // 💰 السعر
+  // السعر
   let price = prices[design] || 249;
   let shipping = shippingFees[gov] || 20;
   let finalTotal = (price * quantity) + shipping;
 
-  // 🧾 UI
   document.getElementById("price").innerText = price;
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
   document.getElementById("quantityDisplay").innerText = quantity;
-
-  // 📝 placeholder ذكي
-  let input = document.getElementById("tagInput");
-  if (input) {
-    input.placeholder = `اكتب ${requiredNames} اسم`;
-  }
 }
   
 // ✅ الفورم
-document.getElementById("orderForm").addEventListener("submit", async function(e){
+document.getElementById("orderForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   let submitBtn = document.querySelector("#orderForm button");
 
   submitBtn.innerText = "جاري الإرسال...";
-  submitBtn.style.background = "#999";
   submitBtn.disabled = true;
 
   try {
-
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
-    let gov = govSelect.value;
+    let gov = document.getElementById("governorate").value;
     let city = document.getElementById("city").value;
     let address = document.getElementById("address").value.trim();
-    let design = designSelect.value;
+    let design = document.getElementById("design").value;
     let font = document.getElementById("font").value;
+
+    let quantity = parseInt(document.getElementById("quantity").value) || 1;
     let names = [...tags].map(n => n.trim()).filter(n => n);
 
-    // ✅ شرط التصميم المزدوج
-let design = document.getElementById("design").value;
-let quantity = parseInt(document.getElementById("quantity").value) || 1;
+    let namesPerPiece = (design === "مزدوج") ? 2 : 1;
+    let requiredNames = quantity * namesPerPiece;
 
-let requiredNames = quantity * (design === "مزدوج" ? 2 : 1);
+    // ✅ تحقق نهائي
+    if (names.length !== requiredNames) {
+      document.getElementById("chainError").innerText =
+        `لازم تدخل ${requiredNames} أسماء بالظبط`;
+      document.getElementById("chainError").style.display = "block";
 
-if (names.length !== requiredNames) {
-  document.getElementById("chainError").innerText =
-    `لازم تدخل ${requiredNames} أسماء بالظبط`;
+      submitBtn.disabled = false;
+      submitBtn.innerText = "تأكيد الطلب";
+      return;
+    }
 
-  document.getElementById("chainError").style.display = "block";
-
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
-  return;
-}
+    if (!/^01[0-9]{9}$/.test(phone)) {
+      alert("رقم غير صحيح");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "تأكيد الطلب";
+      return;
+    }
     
     let price = prices[design] || 249;
     let total = price * quantity;
