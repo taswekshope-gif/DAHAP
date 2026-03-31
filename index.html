@@ -440,13 +440,24 @@ document.getElementById("orderForm").addEventListener("submit", async function (
     let font = document.getElementById("font").value;
     let quantity = parseInt(document.getElementById("quantity").value) || 1;
 
-    let names = [...tags].map(n => n.trim()).filter(n => n);
-
     let namesPerPiece = (design === "مزدوج") ? 2 : 1;
-    let requiredNames = quantity * namesPerPiece;
+let requiredNames = quantity * namesPerPiece;
 
-    // تحقق الأسماء
-    if (names.length !== requiredNames) {
+// كل الأسماء (المكتملة + الحالية)
+let allNames = [
+  ...ordersNames.flat(),
+  ...tags
+];
+
+if (allNames.length !== requiredNames) {
+  document.getElementById("chainError").innerText =
+    `لازم تدخل ${requiredNames} أسماء بالظبط`;
+  document.getElementById("chainError").style.display = "block";
+
+  submitBtn.disabled = false;
+  submitBtn.innerText = "تأكيد الطلب";
+  return;
+}
       document.getElementById("chainError").innerText =
         `لازم تدخل ${requiredNames} أسماء بالظبط`;
       document.getElementById("chainError").style.display = "block";
