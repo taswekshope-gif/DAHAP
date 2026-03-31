@@ -336,50 +336,58 @@ function createTag(text) {
 let tagInput = document.getElementById("tagInput");
 let tagsBox = document.getElementById("tagsBox");
 
-tagInput.addEventListener("keydown", function (e) {
-
-  // يشتغل على Enter أو Space
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-
-    let value = this.value.trim();
-    if (!value) return;
-
-    let design = document.getElementById("design").value;
-    let quantity = parseInt(document.getElementById("quantity").value) || 1;
-
-    let namesPerPiece = (design === "مزدوج") ? 2 : 1;
-    let max = quantity * namesPerPiece;
-
-    if (tags.length >= max) {
-      showMessage(`❌ وصلت للحد المطلوب`);
-      return;
-    }
-
-    tags.push(value);
-    createTag(value);
-    this.value = "";
-
-    // لو كمل العدد
-    if (tags.length === max) {
-      ordersNames.push([...tags]);
-      tags = [];
-
-      document.querySelectorAll(".tag").forEach(t => t.remove());
-      showMessage("✅ تم إضافة طلب جديد");
-    }
-
-    updatePrice();
-  }
-});
-
-tagInput.addEventListener("blur", function () {
-  let value = this.value.trim();
+function addTag(value) {
   if (!value) return;
+
+  let design = document.getElementById("design").value;
+  let quantity = parseInt(document.getElementById("quantity").value) || 1;
+
+  let namesPerPiece = (design === "مزدوج") ? 2 : 1;
+  let max = quantity * namesPerPiece;
+
+  if (tags.length >= max) {
+    showMessage(`❌ وصلت للحد المطلوب`);
+    return;
+  }
 
   tags.push(value);
   createTag(value);
-  this.value = "";
+  tagInput.value = "";
+
+  if (tags.length === max) {
+    ordersNames.push([...tags]);
+    tags = [];
+    document.querySelectorAll(".tag").forEach(t => t.remove());
+    showMessage("✅ تم إضافة طلب جديد");
+  }
+
+  updatePrice();
+}
+
+// Enter
+tagInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    addTag(this.value.trim());
+  }
+});
+
+// Space + الكتابة (مهم للموبايل)
+tagInput.addEventListener("input", function () {
+  if (this.value.includes(" ")) {
+    let parts = this.value.split(" ");
+
+    parts.slice(0, -1).forEach(word => {
+      addTag(word.trim());
+    });
+
+    this.value = parts[parts.length - 1];
+  }
+});
+
+// لما يسيب الحقل
+tagInput.addEventListener("blur", function () {
+  addTag(this.value.trim());
 });
 
   const prices = {
