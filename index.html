@@ -449,6 +449,7 @@ let allNames = [
   ...tags
 ];
 
+// تحقق الأسماء
 if (allNames.length !== requiredNames) {
   document.getElementById("chainError").innerText =
     `لازم تدخل ${requiredNames} أسماء بالظبط`;
@@ -458,14 +459,6 @@ if (allNames.length !== requiredNames) {
   submitBtn.innerText = "تأكيد الطلب";
   return;
 }
-      document.getElementById("chainError").innerText =
-        `لازم تدخل ${requiredNames} أسماء بالظبط`;
-      document.getElementById("chainError").style.display = "block";
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = "تأكيد الطلب";
-      return;
-    }
 
     // تحقق رقم الهاتف
     if (!/^01[0-9]{9}$/.test(phone)) {
