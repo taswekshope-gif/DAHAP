@@ -355,11 +355,12 @@ function addTag(value) {
   tagInput.value = "";
 
   if (tags.length === max) {
-    ordersNames.push([...tags]);
-    tags = [];
-    document.querySelectorAll(".tag").forEach(t => t.remove());
-    showMessage("✅ تم إضافة طلب جديد");
-  }
+  ordersNames.push([...tags]);
+
+  tagInput.disabled = true;
+
+  showMessage("✅ تم تأكيد الأسماء المطلوبة للسلسلة");
+}
 
   updatePrice();
 }
