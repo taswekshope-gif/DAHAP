@@ -307,6 +307,7 @@ async function generateOrderID() {
 }
 
 let tags = [];
+let ordersNames = []; // كل أوردر لوحده
 
 function showMessage(msg) {
   let box = document.getElementById("nameError");
@@ -336,7 +337,7 @@ let tagInput = document.getElementById("tagInput");
 let tagsBox = document.getElementById("tagsBox");
 
 tagInput.addEventListener("keydown", function (e) {
-  if (e.key === "Enter" || e.key === " ") {
+  if (e.key === "Enter") {
     e.preventDefault();
 
     let value = this.value.trim();
@@ -349,13 +350,24 @@ tagInput.addEventListener("keydown", function (e) {
     let max = quantity * namesPerPiece;
 
     if (tags.length >= max) {
-      showMessage(`❌ الحد الأقصى ${max} أسماء`);
+      showMessage(`❌ وصلت للحد المطلوب`);
       return;
     }
 
     tags.push(value);
     createTag(value);
     this.value = "";
+
+    // ✅ لو كمل العدد → نخزن الأوردر ونمسح
+    if (tags.length === max) {
+      ordersNames.push([...tags]); // نخزن النسخة
+      tags = [];
+
+      // مسح الشكل
+      document.querySelectorAll(".tag").forEach(t => t.remove());
+
+      showMessage("✅ تم إضافة طلب جديد");
+    }
 
     updatePrice();
   }
@@ -460,15 +472,26 @@ document.getElementById("orderForm").addEventListener("submit", async function (
     // ❤️ تنسيق الأسماء
     let formattedNames = "";
 
-    if (design === "مزدوج") {
-      let pairs = [];
-      for (let i = 0; i < tags.length; i += 2) {
-        pairs.push(tags[i] + " ❤️ " + tags[i+1]);
-      }
-      formattedNames = pairs.join(" | ");
-    } else {
-      formattedNames = tags.join(" / ");
+let allOrders = [...ordersNames];
+
+// لو فيه أسماء لسه متبعتتش
+if (tags.length > 0) {
+  allOrders.push(tags);
+}
+
+if (design === "مزدوج") {
+  let final = [];
+
+  allOrders.forEach(order => {
+    for (let i = 0; i < order.length; i += 2) {
+      final.push(order[i] + " ❤️ " + order[i + 1]);
     }
+  });
+
+  formattedNames = final.join(" | ");
+} else {
+  formattedNames = allOrders.flat().join(" / ");
+}
 
     let orderID = await generateOrderID();
     
