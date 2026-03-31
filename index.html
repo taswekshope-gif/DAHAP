@@ -337,7 +337,9 @@ let tagInput = document.getElementById("tagInput");
 let tagsBox = document.getElementById("tagsBox");
 
 tagInput.addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
+
+  // يشتغل على Enter أو Space
+  if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
 
     let value = this.value.trim();
@@ -358,19 +360,26 @@ tagInput.addEventListener("keydown", function (e) {
     createTag(value);
     this.value = "";
 
-    // ✅ لو كمل العدد → نخزن الأوردر ونمسح
+    // لو كمل العدد
     if (tags.length === max) {
-      ordersNames.push([...tags]); // نخزن النسخة
+      ordersNames.push([...tags]);
       tags = [];
 
-      // مسح الشكل
       document.querySelectorAll(".tag").forEach(t => t.remove());
-
       showMessage("✅ تم إضافة طلب جديد");
     }
 
     updatePrice();
   }
+});
+
+tagInput.addEventListener("blur", function () {
+  let value = this.value.trim();
+  if (!value) return;
+
+  tags.push(value);
+  createTag(value);
+  this.value = "";
 });
 
   const prices = {
