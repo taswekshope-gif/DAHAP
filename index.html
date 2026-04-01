@@ -321,9 +321,6 @@ function showTagsMessage(msg, success = false) {
   }, 2000);
 }
 
-  tagsBox.insertBefore(tag, tagInput);
-}
-
 let tagInput = document.getElementById("tagInput");
 let tagsBox = document.getElementById("tagsBox");
 
@@ -543,7 +540,6 @@ if (allNames.length !== requiredNames) {
     let finalTotal = total + shipping;
 
     // ❤️ تنسيق الأسماء
-    let formattedNames = "";
 
 let allOrders = [...ordersNames];
 
