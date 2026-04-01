@@ -325,10 +325,13 @@ function createTag(text) {
   tag.innerHTML = `${text} <span>×</span>`;
 
   tag.querySelector("span").onclick = () => {
-    tags = tags.filter(t => t !== text);
-    tag.remove();
-    updatePrice();
-  };
+  tags = tags.filter(t => t !== text);
+  tag.remove();
+
+  tagInput.disabled = false; // ✅ مهم
+
+  updatePrice();
+};
 
   tagsBox.insertBefore(tag, tagInput);
 }
@@ -345,8 +348,9 @@ function addTag(value) {
   let namesPerPiece = (design === "مزدوج") ? 2 : 1;
   let max = quantity * namesPerPiece;
 
+  // ❌ لو وصل للحد → امنع إضافة بس
   if (tags.length >= max) {
-    showMessage(`❌ وصلت للحد المطلوب`);
+    showMessage("❌ وصلت للعدد المطلوب");
     return;
   }
 
@@ -354,13 +358,10 @@ function addTag(value) {
   createTag(value);
   tagInput.value = "";
 
+  // ✅ لما يكمل العدد
   if (tags.length === max) {
-  ordersNames.push([...tags]);
-
-  tagInput.disabled = true;
-
-  showMessage("✅ تم تأكيد الأسماء المطلوبة للسلسلة");
-}
+    showMessage("✅ تم تأكيد الأسماء المطلوبة للسلسلة");
+  }
 
   updatePrice();
 }
