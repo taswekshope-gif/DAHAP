@@ -159,6 +159,7 @@ button:hover { background:#095c4d; }
 <div id="tagsBox" class="tags-box">
   <input type="text" id="tagInput" placeholder="اكتب الاسم واضغط مسافة أو Enter">
 </div>
+<div id="tagsMessage" class="error"></div>
 
 <div class="error" id="chainError"></div>
 <p class="note">⚠️ بعد ملء البيانات سيتم تحويلك لواتساب لتأكيد الطلب</p>
@@ -309,9 +310,10 @@ async function generateOrderID() {
 let tags = [];
 let ordersNames = []; // كل أوردر لوحده
 
-function showMessage(msg) {
-  let box = document.getElementById("nameError");
+function showTagsMessage(msg, success = false) {
+  let box = document.getElementById("tagsMessage");
   box.style.display = "block";
+  box.style.color = success ? "green" : "red";
   box.innerText = msg;
 
   setTimeout(() => {
@@ -319,25 +321,48 @@ function showMessage(msg) {
   }, 2000);
 }
 
-function createTag(text) {
-  let tag = document.createElement("div");
-  tag.className = "tag";
-  tag.innerHTML = `${text} <span>×</span>`;
-
-  tag.querySelector("span").onclick = () => {
-  tags = tags.filter(t => t !== text);
-  tag.remove();
-
-  tagInput.disabled = false; // ✅ مهم
-
-  updatePrice();
-};
-
   tagsBox.insertBefore(tag, tagInput);
 }
 
 let tagInput = document.getElementById("tagInput");
 let tagsBox = document.getElementById("tagsBox");
+
+function createTag() {
+  tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
+
+  let design = document.getElementById("design").value;
+
+  if (design === "مزدوج") {
+    for (let i = 0; i < tags.length; i += 2) {
+      if (tags[i + 1]) {
+        renderTag(`${tags[i]} مع ${tags[i + 1]}`, i, i + 1);
+      } else {
+        renderTag(tags[i], i);
+      }
+    }
+  } else {
+    tags.forEach((t, i) => renderTag(t, i));
+  }
+}
+
+function renderTag(text, index1, index2 = null) {
+  let tag = document.createElement("div");
+  tag.className = "tag";
+  tag.innerHTML = `${text} <span>×</span>`;
+
+  tag.querySelector("span").onclick = () => {
+    if (index2 !== null) {
+      tags.splice(index1, 2);
+    } else {
+      tags.splice(index1, 1);
+    }
+
+    createTag();
+    updatePrice();
+  };
+
+  tagsBox.insertBefore(tag, tagInput);
+}
 
 function addTag(value) {
   if (!value) return;
@@ -348,19 +373,23 @@ function addTag(value) {
   let namesPerPiece = (design === "مزدوج") ? 2 : 1;
   let max = quantity * namesPerPiece;
 
-  // ❌ لو وصل للحد → امنع إضافة بس
   if (tags.length >= max) {
-    showMessage("❌ وصلت للعدد المطلوب");
+    document.getElementById("chainError").innerText = "❌ وصلت للعدد المطلوب";
+    document.getElementById("chainError").style.display = "block";
     return;
   }
 
+  document.getElementById("chainError").style.display = "none";
+
   tags.push(value);
-  createTag(value);
   tagInput.value = "";
 
-  // ✅ لما يكمل العدد
+  createTag();
+
   if (tags.length === max) {
-    showMessage("✅ تم تأكيد الأسماء المطلوبة للسلسلة");
+    document.getElementById("chainError").innerText =
+      "✅ تم تأكيد الأسماء المطلوبة للسلسلة";
+    document.getElementById("chainError").style.display = "block";
   }
 
   updatePrice();
@@ -410,6 +439,22 @@ const shippingFees = {
   "جنوب سيناء": 40
 };
 
+function formatNames(names, design) {
+  if (design === "مزدوج") {
+    let result = [];
+
+    for (let i = 0; i < names.length; i += 2) {
+      if (names[i + 1]) {
+        result.push(names[i] + " مع " + names[i + 1]);
+      }
+    }
+
+    return result.join(" | ");
+  } else {
+    return names.join(" / ");
+  }
+}
+
 // 🔥 حساب السعر
 function updatePrice() {
   let design = document.getElementById("design").value;
@@ -429,10 +474,15 @@ function updatePrice() {
   document.getElementById("quantityDisplay").innerText = quantity;
 
   let input = document.getElementById("tagInput");
-  if (input) {
-    input.placeholder = `اكتب ${requiredNames} اسم`;
-  }
+
+if (input) {
+  let text = requiredNames === 1 
+    ? "اكتب 1 اسم للسلسلة"
+    : `اكتب ${requiredNames} أسماء للسلسلة`;
+
+  input.placeholder = text;
 }
+
 // 🔥 تحديث السعر عند التغيير
 document.getElementById("quantity").addEventListener("change", updatePrice);
 document.getElementById("design").addEventListener("change", updatePrice);
@@ -502,19 +552,8 @@ if (tags.length > 0) {
   allOrders.push(tags);
 }
 
-if (design === "مزدوج") {
-  let final = [];
-
-  allOrders.forEach(order => {
-    for (let i = 0; i < order.length; i += 2) {
-      final.push(order[i] + " ❤️ " + order[i + 1]);
-    }
-  });
-
-  formattedNames = final.join(" | ");
-} else {
-  formattedNames = allOrders.flat().join(" / ");
-}
+let flatNames = allOrders.flat();
+let formattedNames = formatNames(flatNames, design);
 
     let orderID = await generateOrderID();
     
