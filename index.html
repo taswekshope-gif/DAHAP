@@ -384,21 +384,6 @@ document.getElementById("quantity").addEventListener("change", () => {
 
 toggleItems();
 
-function createTag() {
-  tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
-
-  let design = document.querySelectorAll(".design").forEach(select=>{
-  select.addEventListener("change", updatePrice);
-});
-
-  tagsBox.insertBefore(tag, tagInput);
-}
-
-document.querySelectorAll(".itemBox").forEach((box, index) => {
-  let input = box.querySelector(".nameInput");
-  let tagsBox = box.querySelector(".tags-box");
-
-
   function renderTags() {
     tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
 
@@ -511,7 +496,7 @@ function updatePrice() {
 
   let total = 0;
 
-  document.querySelectorAll(".itemBox").forEach((box, index) => {
+  document.querySelectorAll(".itemBox").forEach((box) => {
     if (box.style.display === "none") return;
 
     let design = box.querySelector(".design").value;
@@ -525,11 +510,13 @@ function updatePrice() {
   document.getElementById("price").innerText = total;
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
-  }
 }
+
 // 🔥 تحديث السعر عند التغيير
 document.getElementById("quantity").addEventListener("change", updatePrice);
-document.getElementById("design").addEventListener("change", updatePrice);
+document.querySelectorAll(".design").forEach(select => {
+  select.addEventListener("change", updatePrice);
+});
 document.getElementById("governorate").addEventListener("change", updatePrice);
 
 // تشغيل أول مرة
