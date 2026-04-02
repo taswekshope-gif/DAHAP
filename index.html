@@ -329,6 +329,17 @@ govData[govSelect.value].forEach(c => {
   
 });
 
+window.addEventListener("load", () => {
+  let govSelect = document.getElementById("governorate");
+
+  Object.keys(govData).forEach(g => {
+    let opt = document.createElement("option");
+    opt.value = g;
+    opt.text = g;
+    govSelect.appendChild(opt);
+  });
+});
+
 // ✅ توليد كود أوردر مركزي
 async function generateOrderID() {
   let now = new Date();
@@ -374,10 +385,12 @@ function showTagsMessage(msg, success = false) {
 function toggleItems() {
   let quantity = parseInt(document.getElementById("quantity").value);
 
- document.getElementById("quantity").addEventListener("change", toggleItems);
-toggleItems(); document.querySelectorAll(".itemBox").forEach((box, index) => {
-  let input = box.querySelector(".nameInput");
-  let tagsBox = box.querySelector(".tags-box");
+  document.querySelectorAll(".itemBox").forEach((box, index) => {
+    box.style.display = index < quantity ? "block" : "none";
+  });
+
+  updatePrice();
+}
 
   function renderTags() {
     tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
@@ -464,7 +477,7 @@ function updatePrice() {
 
   let total = 0;
 
- 
+ document.getElementById("quantity").addEventListener("change", toggleItems);
 document.getElementById("quantityDisplay").innerText =
   document.getElementById("quantity").value; document.querySelectorAll(".itemBox").forEach((box) => {
     if (box.style.display === "none") return;
