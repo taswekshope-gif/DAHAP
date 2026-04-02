@@ -425,19 +425,6 @@ function toggleItems() {
   updatePrice();
 }
 
-// Enter
-tagInput.addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    addTag(this.value.trim());
-  }
-});
-
-// Space + الكتابة (مهم للموبايل)
-    this.value = parts[parts.length - 1];
-  }
-});
-
   const prices = {
   "عادي": 249,
   "قلب ❤️": 279,
@@ -455,22 +442,6 @@ const shippingFees = {
   "شمال سيناء": 40,
   "جنوب سيناء": 40
 };
-
-function formatNames(names, design) {
-  if (design === "مزدوج") {
-    let result = [];
-
-    for (let i = 0; i < names.length; i += 2) {
-      if (names[i + 1]) {
-        result.push(names[i] + " مع " + names[i + 1]);
-      }
-    }
-
-    return result.join(" | ");
-  } else {
-    return names.join(" / ");
-  }
-}
 
 // 🔥 حساب السعر
 function updatePrice() {
@@ -570,34 +541,25 @@ document.querySelectorAll(".itemBox").forEach((box) => {
 
 let allOrders = [...ordersNames];
 
-// لو فيه أسماء لسه متبعتتش
-if (tags.length > 0) {
-  allOrders.push(tags);
-}
-
-let flatNames = allOrders.flat();
-let formattedNames = formatNames(flatNames, design);
 
     let orderID = await generateOrderID();
     
     await addDoc(collection(db, "orders"), {
-      orderID,
-      customerName,
-      phone,
-      gov,
-      city,
-      address,
-      design,
-      font,
-      tags: formattedNames,
-      quantity,
-      price,
-      total,
-      shipping,
-      finalTotal,
-      createdAt: new Date(),
-      status: "new"
-    });
+  orderID,
+  customerName,
+  phone,
+  gov,
+  city,
+  address,
+  orderDetails, // 👈 ده الصح
+  quantity,
+  price,
+  total,
+  shipping,
+  finalTotal,
+  createdAt: new Date(),
+  status: "new"
+});
     
 let orderDetails = [];
 
@@ -633,8 +595,6 @@ ${orderDetails.map((item, i) => `
 الأسماء: ${item.names}
 التصميم: ${item.design}
 `).join("\n")}
-
-🔤 الكتابة: ${font}
 
 📦 الكمية: ${quantity}
 💰 سعر القطعة: ${price}
