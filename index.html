@@ -369,20 +369,8 @@ function toggleItems() {
   let quantity = parseInt(document.getElementById("quantity").value);
 
   document.querySelectorAll(".itemBox").forEach((box, index) => {
-    if (index < quantity) {
-      box.style.display = "block";
-    } else {
-      box.style.display = "none";
-    }
-  });
-}
-
-document.getElementById("quantity").addEventListener("change", () => {
-  toggleItems();
-  updatePrice();
-});
-
-toggleItems();
+  let input = box.querySelector(".nameInput");
+  let tagsBox = box.querySelector(".tags-box");
 
   function renderTags() {
     tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
@@ -448,11 +436,6 @@ tagInput.addEventListener("keydown", function (e) {
 // Space + الكتابة (مهم للموبايل)
     this.value = parts[parts.length - 1];
   }
-});
-
-// لما يسيب الحقل
-tagInput.addEventListener("blur", function () {
-  addTag(this.value.trim());
 });
 
   const prices = {
@@ -541,19 +524,21 @@ document.getElementById("orderForm").addEventListener("submit", async function (
     let address = document.getElementById("address").value.trim();
     let quantity = parseInt(document.getElementById("quantity").value) || 1;
 
-    let namesPerPiece = (design === "مزدوج") ? 2 : 1;
 let requiredNames = quantity * namesPerPiece;
 
 // كل الأسماء (المكتملة + الحالية)
-let allNames = [
-  ...ordersNames.flat(),
-  ...tags
-];
+let allNames = [];
+
+document.querySelectorAll(".itemBox").forEach((box, index) => {
+  if (box.style.display === "none") return;
+
+  allNames = allNames.concat(items[index].names);
+});
 
 // تحقق الأسماء
-if (allNames.length !== requiredNames) {
+if (allNames.length === 0) {
   document.getElementById("chainError").innerText =
-    `لازم تدخل ${requiredNames} أسماء بالظبط`;
+    "لازم تدخل اسم واحد على الأقل";
   document.getElementById("chainError").style.display = "block";
 
   submitBtn.disabled = false;
@@ -569,7 +554,14 @@ if (allNames.length !== requiredNames) {
       return;
     }
 
-    let price = prices[design] || 249;
+let price = 0;
+
+document.querySelectorAll(".itemBox").forEach((box) => {
+  if (box.style.display === "none") return;
+
+  let d = box.querySelector(".design").value;
+  price += prices[d] || 249;
+});
     let total = price * quantity;
     let shipping = shippingFees[gov] || 20;
     let finalTotal = total + shipping;
