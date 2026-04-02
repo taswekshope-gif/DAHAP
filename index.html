@@ -263,6 +263,12 @@ setInterval(()=>{
   let m = Math.floor((duration%3600)/60);
   let s = duration%60;
 
+
+document.querySelectorAll(".design").forEach((select, index) => {
+  select.addEventListener("change", function () {
+    items[index].design = this.value;
+  });
+});
   document.getElementById("countdown").innerHTML =
     `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
 
@@ -368,7 +374,8 @@ function showTagsMessage(msg, success = false) {
 function toggleItems() {
   let quantity = parseInt(document.getElementById("quantity").value);
 
-  document.querySelectorAll(".itemBox").forEach((box, index) => {
+ document.getElementById("quantity").addEventListener("change", toggleItems);
+toggleItems(); document.querySelectorAll(".itemBox").forEach((box, index) => {
   let input = box.querySelector(".nameInput");
   let tagsBox = box.querySelector(".tags-box");
 
@@ -390,7 +397,14 @@ function toggleItems() {
     });
   }
 
-  function addName(val) {
+  function formatNames(names, design) {
+  if (design === "مزدوج") {
+    return names.join(" + ");
+  }
+  return names.join(" / ");
+}
+
+function addName(val) {
     if (!val) return;
 
     let design = box.querySelector(".design").value;
@@ -450,7 +464,9 @@ function updatePrice() {
 
   let total = 0;
 
-  document.querySelectorAll(".itemBox").forEach((box) => {
+ 
+document.getElementById("quantityDisplay").innerText =
+  document.getElementById("quantity").value; document.querySelectorAll(".itemBox").forEach((box) => {
     if (box.style.display === "none") return;
 
     let design = box.querySelector(".design").value;
@@ -533,25 +549,25 @@ document.querySelectorAll(".itemBox").forEach((box) => {
   let d = box.querySelector(".design").value;
   price += prices[d] || 249;
 });
-    let total = price * quantity;
     let shipping = shippingFees[gov] || 20;
     let finalTotal = total + shipping;
 
     // ❤️ تنسيق الأسماء
 
-let allOrders = [...ordersNames];
+let orderDetails = [];
 
+document.querySelectorAll(".itemBox").forEach((box, index) => {
+  ...
+});
 
-    let orderID = await generateOrderID();
-    
-    await addDoc(collection(db, "orders"), {
+await addDoc(collection(db, "orders"), {
   orderID,
   customerName,
   phone,
   gov,
   city,
   address,
-  orderDetails, // 👈 ده الصح
+  orderDetails,
   quantity,
   price,
   total,
