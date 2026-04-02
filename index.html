@@ -164,7 +164,9 @@ button:hover { background:#095c4d; }
     <option>مزدوج</option>
   </select>
 
-  <div class="tags-box tagsBox"></div>
+  <div class="tags-box">
+    <input type="text" class="nameInput" placeholder="اكتب اسم السلسه واضغط Enter">
+  </div>
 </div>
 
 <div class="itemBox">
@@ -177,7 +179,9 @@ button:hover { background:#095c4d; }
     <option>مزدوج</option>
   </select>
 
-  <div class="tags-box tagsBox"></div>
+  <div class="tags-box">
+    <input type="text" class="nameInput" placeholder="اكتب اسم السلسه واضغط Enter">
+  </div>
 </div>
 
 <div class="itemBox">
@@ -190,13 +194,11 @@ button:hover { background:#095c4d; }
     <option>مزدوج</option>
   </select>
 
-  <div class="tags-box tagsBox"></div>
+  <div class="tags-box">
+    <input type="text" class="nameInput" placeholder="اكتب اسم السلسه واضغط Enter">
+  </div>
 </div>
 
-<select id="font"><option selected>عربي</option><option>إنجليزي</option></select>
-<div id="tagsBox" class="tags-box">
-  <input type="text" id="tagInput" placeholder="اكتب الاسم واضغط مسافة أو Enter">
-</div>
 <div id="tagsMessage" class="error"></div>
 
 <div class="error" id="chainError"></div>
@@ -363,87 +365,85 @@ function showTagsMessage(msg, success = false) {
   }, 2000);
 }
 
-let tagInput = document.getElementById("tagInput");
-let tagsBox = document.getElementById("tagsBox");
+function toggleItems() {
+  let quantity = parseInt(document.getElementById("quantity").value);
+
+  document.querySelectorAll(".itemBox").forEach((box, index) => {
+    if (index < quantity) {
+      box.style.display = "block";
+    } else {
+      box.style.display = "none";
+    }
+  });
+}
+
+document.getElementById("quantity").addEventListener("change", () => {
+  toggleItems();
+  updatePrice();
+});
+
+toggleItems();
 
 function createTag() {
   tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
 
-  let design = document.getElementById("design").value;
-
-  if (design === "مزدوج") {
-    for (let i = 0; i < tags.length; i += 2) {
-      if (tags[i + 1]) {
-        renderTag(`${tags[i]} مع ${tags[i + 1]}`, i, i + 1);
-      } else {
-        renderTag(tags[i], i);
-      }
-    }
-  } else {
-    tags.forEach((t, i) => renderTag(t, i));
-  }
-}
-
-function renderTag(text, index1, index2 = null) {
-  let tag = document.createElement("div");
-  tag.className = "tag";
-  tag.innerHTML = `${text} <span>×</span>`;
-
-  tag.querySelector("span").onclick = () => {
-    if (index2 !== null) {
-      tags.splice(index1, 2);
-    } else {
-      tags.splice(index1, 1);
-    }
-
-    createTag();
-    updatePrice();
-  };
+  let design = document.querySelectorAll(".design").forEach(select=>{
+  select.addEventListener("change", updatePrice);
+});
 
   tagsBox.insertBefore(tag, tagInput);
 }
 
-function addTag(value) {
-  if (!value) return;
+document.querySelectorAll(".itemBox").forEach((box, index) => {
+  let input = box.querySelector(".nameInput");
+  let tagsBox = box.querySelector(".tags-box");
 
-  let itemBoxes = document.querySelectorAll(".itemBox");
 
-let orderDetails = [];
-let total = 0;
+  function renderTags() {
+    tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
 
-itemBoxes.forEach((box, index) => {
-  let design = box.querySelector(".design").value;
-  let names = items[index].names;
+    items[index].names.forEach((name, i) => {
+      let tag = document.createElement("div");
+      tag.className = "tag";
+      tag.innerHTML = `${name} <span>×</span>`;
 
-  if (names.length === 0) return;
+      tag.querySelector("span").onclick = () => {
+        items[index].names.splice(i, 1);
+        renderTags();
+        updatePrice();
+      };
 
-  let price = prices[design] || 249;
-  total += price;
+      tagsBox.insertBefore(tag, input);
+    });
+  }
 
-  orderDetails.push({
-    design,
-    names: formatNames(names, design),
-    price
+  function addName(val) {
+    if (!val) return;
+
+    let design = box.querySelector(".design").value;
+    let max = design === "مزدوج" ? 2 : 1;
+
+    if (items[index].names.length >= max) return;
+
+    items[index].names.push(val);
+    input.value = "";
+    renderTags();
+    updatePrice();
+  }
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addName(input.value.trim());
+    }
+  });
+
+  input.addEventListener("blur", () => {
+    addName(input.value.trim());
   });
 });
 
-  let namesPerPiece = (design === "مزدوج") ? 2 : 1;
-  let max = quantity * namesPerPiece;
-
-  if (tags.length >= max) {
-    document.getElementById("chainError").innerText = "❌ وصلت للعدد المطلوب";
-    document.getElementById("chainError").style.display = "block";
-    return;
-  }
-
   document.getElementById("chainError").style.display = "none";
-
-  tags.push(value);
-  tagInput.value = "";
-
-  createTag();
-
-  if (tags.length === max) {
     document.getElementById("chainError").innerText =
       "✅ تم تأكيد الأسماء المطلوبة للسلسلة";
     document.getElementById("chainError").style.display = "block";
@@ -461,14 +461,6 @@ tagInput.addEventListener("keydown", function (e) {
 });
 
 // Space + الكتابة (مهم للموبايل)
-tagInput.addEventListener("input", function () {
-  if (this.value.includes(" ")) {
-    let parts = this.value.split(" ");
-
-    parts.slice(0, -1).forEach(word => {
-      addTag(word.trim());
-    });
-
     this.value = parts[parts.length - 1];
   }
 });
@@ -514,31 +506,26 @@ function formatNames(names, design) {
 
 // 🔥 حساب السعر
 function updatePrice() {
-  let design = document.getElementById("design").value;
   let gov = document.getElementById("governorate").value;
-  let quantity = parseInt(document.getElementById("quantity").value) || 1;
-
-  let namesPerPiece = (design === "مزدوج") ? 2 : 1;
-  let requiredNames = quantity * namesPerPiece;
-
-  let price = prices[design] || 249;
   let shipping = shippingFees[gov] || 20;
+
+  let total = 0;
+
+  document.querySelectorAll(".itemBox").forEach((box, index) => {
+    if (box.style.display === "none") return;
+
+    let design = box.querySelector(".design").value;
+    let price = prices[design] || 249;
+
+    total += price;
+  });
+
   let finalTotal = total + shipping;
- 
-  document.getElementById("price").innerText = price;
+
+  document.getElementById("price").innerText = total;
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
-  document.getElementById("quantityDisplay").innerText = quantity;
-
-  let input = document.getElementById("tagInput");
-
-if (input) {
-  let text = requiredNames === 1 
-    ? "اكتب 1 اسم للسلسلة"
-    : `اكتب ${requiredNames} أسماء للسلسلة`;
-
-  input.placeholder = text;
- }
+  }
 }
 // 🔥 تحديث السعر عند التغيير
 document.getElementById("quantity").addEventListener("change", updatePrice);
@@ -635,6 +622,22 @@ let formattedNames = formatNames(flatNames, design);
       status: "new"
     });
     
+let orderDetails = [];
+
+document.querySelectorAll(".itemBox").forEach((box, index) => {
+  if (box.style.display === "none") return;
+
+  let design = box.querySelector(".design").value;
+  let names = items[index].names;
+
+  if (names.length === 0) return;
+
+  orderDetails.push({
+    design,
+    names: formatNames(names, design)
+  });
+});
+
     // ✅ واتساب
 let message = `DAHAP
 كود الطلب: ${orderID}
