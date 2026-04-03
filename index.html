@@ -522,7 +522,13 @@ input.addEventListener("keydown", e => {
 
 // كليك برا
 input.addEventListener("blur", () => {
-  addName(input.value.trim());
+  let value = input.value.trim();
+
+  value.split(" ").forEach(name => {
+    if (name.trim()) {
+      addName(name.trim());
+    }
+  });
 });
 
 // كليك على البوكس كله
