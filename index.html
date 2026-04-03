@@ -44,6 +44,10 @@ button:hover { background:#095c4d; }
   font-size:15px;
 }
 
+.itemBox {
+  display: none;
+}
+
 .total {
   font-size:18px;
   font-weight:bold;
@@ -359,10 +363,6 @@ let items = [
   { design: "عادي", names: [] }
 ];
 let ordersNames = []; // كل أوردر لوحده
-
-.itemBox {
-  display: none;
-}
 
 function showTagsMessage(msg, success = false) {
   let box = document.getElementById("tagsMessage");
