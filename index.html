@@ -360,6 +360,10 @@ let items = [
 ];
 let ordersNames = []; // كل أوردر لوحده
 
+.itemBox {
+  display: none;
+}
+
 function showTagsMessage(msg, success = false) {
   let box = document.getElementById("tagsMessage");
   box.style.display = "block";
@@ -380,7 +384,7 @@ function toggleItems() {
     } else {
       box.style.display = "none";
 
-      // مهم: تفريغ البيانات لو مخفية
+      // تفريغ البيانات لو مخفية
       if (items[index]) {
         items[index].names = [];
       }
