@@ -119,13 +119,12 @@ button:hover { background:#095c4d; }
 <section class="hero">
 <img src="images/logo.png" style="width:120px; margin-bottom:15px;">
 <h1>DAHAP</h1>
-<h2>سلسلة باسمك بتصميم مميز</h2>
-<p>قطعة أنيقة مصممة باسمك أو اسم تحبيه</p>
-<a class="btn" href="#order">اطلبي الآن</a>
-</section>
+<h2>سلسلة باسمك… لمسة تميزك ✨</h2>
+<p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتتصمم مخصوص ليكي 💖</p>
+<a class="btn" href="#order">اطلبي سلسلتك الآن 💎</a>
 
 <section class="container">
-<h2>أشكال من شغلنا</h2>
+<h2>أنواع تصميم السلسلة</h2>
 <div class="gallery">
   <div class="item"><img src="images/1.jpg"><span>عادي</span></div>
   <div class="item"><img src="images/2.jpg"><span>قلب ❤️</span></div>
@@ -137,11 +136,32 @@ button:hover { background:#095c4d; }
 
 <section class="container">
 <h2>ليه تختارينا؟</h2>
-<p>✔ تصميم مخصوص – ✔ جودة عالية – ✔ هدية مثالية</p>
+<p>
+✔ تصميم باسمك حسب الطلب 💖 <br>
+✔ خامة عالية تدوم سنين ✨ <br>
+✔ هدية مميزة لأي مناسبة 🎁 <br>
+✔ بتوصل لحد باب البيت 🚚
+</p>
 </section>
 
+<section class="container">
+<h2>آراء العملاء 💬</h2>
+<p>⭐⭐⭐⭐⭐</p>
+<p>“السلسلة جميلة جدًا وجودة ممتازة 💖”</p>
+<p>“وصلت بسرعة والتصميم تحفة 👌”</p>
+</section>
+
+<p style="color:red; font-weight:bold;">
+🔥 الكمية محدودة – احجزي قبل ما العرض يخلص!
+</p>
+
+<p class="note">
+💝 مناسبة هدية عيد ميلاد أو ذكرى مميزة
+</p>
+
 <section class="offer">
-<h2>عرض خاص</h2>
+<h2>🔥 عرض لفترة محدودة</h2>
+<p>متفوتيش الفرصة وخلي اسمِك معاكى دايمًا 💖</p>
 <p><del>349 جنيه</del> <strong>249 جنيه</strong></p>
 <div class="timer" id="countdown"></div>
 </section>
@@ -178,10 +198,10 @@ button:hover { background:#095c4d; }
  <div class="error" id="addressError"></div>
 <!-- السلسلة 1 -->
 <div class="itemBox">
-  <h4>السلسلة 1</h4>
+  <h4>💎 السلسلة الأولى</h4>
 
   <div class="field-group">
-    <label>نوع التصميم للسلسلة :</label>
+    <label>اختاري التصميم اللي يعجبك 💖</label>
     <select class="design">
       <option>عادي</option>
       <option>قلب ❤️</option>
@@ -192,7 +212,7 @@ button:hover { background:#095c4d; }
   </div>
 
   <div class="field-group">
-    <label>لغة الكتابة للسلسلة :</label>
+    <label>لغة كتابة الاسم ✍️</label>
     <select class="lang">
       <option value="عربي">عربي</option>
       <option value="English">English</option>
@@ -207,7 +227,7 @@ button:hover { background:#095c4d; }
 
 <!-- السلسلة 2 -->
 <div class="itemBox">
-  <h4>السلسلة 2</h4>
+    <h4>💎 السلسلة الثانية</h4>
 
   <div class="field-group">
     <select class="design">
@@ -234,7 +254,7 @@ button:hover { background:#095c4d; }
 
 <!-- السلسلة 3 -->
 <div class="itemBox">
-  <h4>السلسلة 3</h4>
+  <h4>💎 السلسلة الثالثة</h4>
 
   <div class="field-group">
     <select class="design">
@@ -254,7 +274,7 @@ button:hover { background:#095c4d; }
   </div>
 
   <div class="tags-box">
-    <input type="text" class="nameInput" placeholder="اكتب الاسم واضغط Enter أو مسافة">
+    <input type="text" class="nameInput" placeholder="اكتبي الاسم اللي عايزاه على السلسلة 💕">
   </div>
 </div>
 
@@ -595,7 +615,6 @@ document.querySelectorAll(".lang").forEach((select, index) => {
     updatePrice();
   });
 });
-
 
 // ✅ الفورم
 document.getElementById("orderForm").addEventListener("submit", async function (e) {
