@@ -373,13 +373,18 @@ function showTagsMessage(msg, success = false) {
 
 function toggleItems() {
   let quantity = parseInt(document.getElementById("quantity").value);
-document.getElementById("price").innerText = (total / qty).toFixed(0);
 
-document.getElementById("chainError").style.display = "none";
-    document.getElementById("chainError").innerText =
-      "✅ تم تأكيد الأسماء المطلوبة للسلسلة";
   document.querySelectorAll(".itemBox").forEach((box, index) => {
-    box.style.display = index < quantity ? "block" : "none";
+    if (index < quantity) {
+      box.style.display = "block";
+    } else {
+      box.style.display = "none";
+
+      // مهم: تفريغ البيانات لو مخفية
+      if (items[index]) {
+        items[index].names = [];
+      }
+    }
   });
 
   updatePrice();
@@ -487,11 +492,10 @@ window.addEventListener("DOMContentLoaded", () => {
   toggleItems();
   updatePrice();
 
-  // الكمية
   document.getElementById("quantity").addEventListener("change", () => {
     toggleItems();
-    updatePrice();
   });
+});
 
   // التصميمات
   document.querySelectorAll(".design").forEach(select => {
