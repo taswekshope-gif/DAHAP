@@ -44,8 +44,26 @@ button:hover { background:#095c4d; }
   font-size:15px;
 }
 
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.field-group label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
 .itemBox {
-  display: none;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 15px;
 }
 
 .total {
@@ -158,67 +176,85 @@ button:hover { background:#095c4d; }
 
 <input type="text" id="address" placeholder="اسم الشارع + رقم(العمارة-الدور-الشقه) + علامة مميزة" required>
  <div class="error" id="addressError"></div>
+<!-- السلسلة 1 -->
 <div class="itemBox">
   <h4>السلسلة 1</h4>
-<label>نوع التصميم للسلسلة :</label>
-<select class="design">
-    <option>عادي</option>
-    <option>قلب ❤️</option>
-    <option>فراشة 🦋</option>
-    <option>تاج 👑</option>
-    <option>مزدوج</option>
-  </select>
 
-<label>لغة الكتابة للسلسلة :</label>
-<select class="lang">
-  <option value="عربي">عربي</option>
-  <option value="English">English</option>
-</select>
+  <div class="field-group">
+    <label>نوع التصميم للسلسلة :</label>
+    <select class="design">
+      <option>عادي</option>
+      <option>قلب ❤️</option>
+      <option>فراشة 🦋</option>
+      <option>تاج 👑</option>
+      <option>مزدوج</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label>لغة الكتابة للسلسلة :</label>
+    <select class="lang">
+      <option value="عربي">عربي</option>
+      <option value="English">English</option>
+    </select>
+  </div>
 
   <div class="tags-box">
-    <input type="text" class="nameInput" placeholder="اكتب الاسم المطلوب للسلسه واضغط Enter">
+    <input type="text" class="nameInput" placeholder="اكتب الاسم واضغط Enter أو مسافة">
   </div>
 </div>
 
+
+<!-- السلسلة 2 -->
 <div class="itemBox">
   <h4>السلسلة 2</h4>
-  <select class="design">
-    <option>عادي</option>
-    <option>قلب ❤️</option>
-    <option>فراشة 🦋</option>
-    <option>تاج 👑</option>
-    <option>مزدوج</option>
-  </select>
 
-<select class="lang">
-  <option value="عربي">عربي</option>
-  <option value="English">English</option>
-</select>
+  <div class="field-group">
+    <select class="design">
+      <option>عادي</option>
+      <option>قلب ❤️</option>
+      <option>فراشة 🦋</option>
+      <option>تاج 👑</option>
+      <option>مزدوج</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <select class="lang">
+      <option value="عربي">عربي</option>
+      <option value="English">English</option>
+    </select>
+  </div>
 
   <div class="tags-box">
-    <input type="text" class="nameInput" placeholder="اكتب الاسم المطلوب للسلسلة واضغط  Enter">
+    <input type="text" class="nameInput" placeholder="اكتب الاسم واضغط Enter أو مسافة">
   </div>
 </div>
 
-<label>نوع التصميم للسلسلة :</label>
+
+<!-- السلسلة 3 -->
 <div class="itemBox">
   <h4>السلسلة 3</h4>
-  <select class="design">
-    <option>عادي</option>
-    <option>قلب ❤️</option>
-    <option>فراشة 🦋</option>
-    <option>تاج 👑</option>
-    <option>مزدوج</option>
-  </select>
 
-<label>لغة الكتابة للسلسلة :</label>
-<select class="lang">
-  <option value="عربي">عربي</option>
-  <option value="English">English</option>
-</select>
+  <div class="field-group">
+    <select class="design">
+      <option>عادي</option>
+      <option>قلب ❤️</option>
+      <option>فراشة 🦋</option>
+      <option>تاج 👑</option>
+      <option>مزدوج</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <select class="lang">
+      <option value="عربي">عربي</option>
+      <option value="English">English</option>
+    </select>
+  </div>
 
   <div class="tags-box">
-    <input type="text" class="nameInput" placeholder="اكتب الاسم المطلوب للسلسلة واضغط Enter">
+    <input type="text" class="nameInput" placeholder="اكتب الاسم واضغط Enter أو مسافة">
   </div>
 </div>
 
