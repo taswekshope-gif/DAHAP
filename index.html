@@ -385,7 +385,34 @@ function showTagsMessage(msg, success = false) {
 function toggleItems() {
   let quantity = parseInt(document.getElementById("quantity").value);
 
-  document.querySelectorAll(".itemBox").forEach((box, index) => {
+  document.getElementById("chainError").style.display = "none";
+    document.getElementById("chainError").innerText =
+      "✅ تم تأكيد الأسماء المطلوبة للسلسلة";
+    document.getElementById("chainError").style.display = "block";
+  }
+
+  updatePrice();
+}
+
+  const prices = {
+  "عادي": 249,
+  "قلب ❤️": 279,
+  "فراشة 🦋": 299,
+  "تاج 👑": 319,
+  "مزدوج": 349
+};
+
+const shippingFees = {
+  "قنا": 25,
+  "الأقصر": 25,
+  "البحر الأحمر": 35,
+  "الوادي الجديد": 35,
+  "مطروح": 35,
+  "شمال سيناء": 40,
+  "جنوب سيناء": 40
+};
+
+document.querySelectorAll(".itemBox").forEach((box, index) => {
 
   let input = box.querySelector(".nameInput");
   let tagsBox = box.querySelector(".tags-box");
@@ -435,33 +462,6 @@ function toggleItems() {
 
 });
 
-  document.getElementById("chainError").style.display = "none";
-    document.getElementById("chainError").innerText =
-      "✅ تم تأكيد الأسماء المطلوبة للسلسلة";
-    document.getElementById("chainError").style.display = "block";
-  }
-
-  updatePrice();
-}
-
-  const prices = {
-  "عادي": 249,
-  "قلب ❤️": 279,
-  "فراشة 🦋": 299,
-  "تاج 👑": 319,
-  "مزدوج": 349
-};
-
-const shippingFees = {
-  "قنا": 25,
-  "الأقصر": 25,
-  "البحر الأحمر": 35,
-  "الوادي الجديد": 35,
-  "مطروح": 35,
-  "شمال سيناء": 40,
-  "جنوب سيناء": 40
-};
-
 // 🔥 حساب السعر
 function updatePrice() {
   let gov = document.getElementById("governorate").value;
@@ -469,7 +469,6 @@ function updatePrice() {
 
   let total = 0;
 
- document.getElementById("quantity").addEventListener("change", toggleItems);
 document.getElementById("quantityDisplay").innerText =
   document.getElementById("quantity").value; document.querySelectorAll(".itemBox").forEach((box) => {
     if (box.style.display === "none") return;
@@ -487,6 +486,8 @@ document.getElementById("quantityDisplay").innerText =
   document.getElementById("finalTotal").innerText = finalTotal;
 }
 
+document.getElementById("quantity").addEventListener("change", toggleItems);
+
 // 🔥 تحديث السعر عند التغيير
 document.getElementById("quantity").addEventListener("change", updatePrice);
 document.querySelectorAll(".design").forEach(select => {
@@ -498,6 +499,7 @@ document.getElementById("governorate").addEventListener("change", updatePrice);
 updatePrice();
 
 // ✅ الفورم
+let orderID = await generateOrderID();
 document.getElementById("orderForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -574,8 +576,6 @@ await addDoc(collection(db, "orders"), {
   createdAt: new Date(),
   status: "new"
 });
-    
-let orderDetails = [];
 
 document.querySelectorAll(".itemBox").forEach((box, index) => {
   if (box.style.display === "none") return;
