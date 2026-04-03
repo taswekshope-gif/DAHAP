@@ -349,6 +349,7 @@ async function generateOrderID() {
 
   let prefix = yy + mm + dd;
 
+let orderID = await generateOrderID();
   const q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(1));
   const snapshot = await getDocs(q);
 
@@ -386,11 +387,9 @@ function toggleItems() {
   let quantity = parseInt(document.getElementById("quantity").value);
 
   document.querySelectorAll(".itemBox").forEach((box, index) => {
-    box.style.display = index < quantity ? "block" : "none";
-  });
 
-  updatePrice();
-}
+  let input = box.querySelector(".nameInput");
+  let tagsBox = box.querySelector(".tags-box");
 
   function renderTags() {
     tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
@@ -410,14 +409,7 @@ function toggleItems() {
     });
   }
 
-  function formatNames(names, design) {
-  if (design === "مزدوج") {
-    return names.join(" + ");
-  }
-  return names.join(" / ");
-}
-
-function addName(val) {
+  function addName(val) {
     if (!val) return;
 
     let design = box.querySelector(".design").value;
@@ -441,6 +433,7 @@ function addName(val) {
   input.addEventListener("blur", () => {
     addName(input.value.trim());
   });
+
 });
 
   document.getElementById("chainError").style.display = "none";
@@ -488,7 +481,7 @@ document.getElementById("quantityDisplay").innerText =
     total += price;
   });
 
-  let finalTotal = total + shipping;
+  let finalTotal = price + shipping;
 
   document.getElementById("price").innerText = total;
   document.getElementById("shipping").innerText = shipping;
@@ -501,9 +494,6 @@ document.querySelectorAll(".design").forEach(select => {
   select.addEventListener("change", updatePrice);
 });
 document.getElementById("governorate").addEventListener("change", updatePrice);
-
-// تشغيل أول مرة
-updatePrice();
 
 // تشغيل أول مرة
 updatePrice();
@@ -524,11 +514,8 @@ document.getElementById("orderForm").addEventListener("submit", async function (
     let address = document.getElementById("address").value.trim();
     let quantity = parseInt(document.getElementById("quantity").value) || 1;
 
-let requiredNames = quantity * namesPerPiece;
-
 // كل الأسماء (المكتملة + الحالية)
 let allNames = [];
-
 document.querySelectorAll(".itemBox").forEach((box, index) => {
   if (box.style.display === "none") return;
 
