@@ -385,11 +385,12 @@ function showTagsMessage(msg, success = false) {
 function toggleItems() {
   let quantity = parseInt(document.getElementById("quantity").value);
 
-  document.getElementById("chainError").style.display = "none";
+document.getElementById("chainError").style.display = "none";
     document.getElementById("chainError").innerText =
       "✅ تم تأكيد الأسماء المطلوبة للسلسلة";
-    document.getElementById("chainError").style.display = "block";
-  }
+  document.querySelectorAll(".itemBox").forEach((box, index) => {
+    box.style.display = index < quantity ? "block" : "none";
+  });
 
   updatePrice();
 }
@@ -499,9 +500,10 @@ document.getElementById("governorate").addEventListener("change", updatePrice);
 updatePrice();
 
 // ✅ الفورم
-let orderID = await generateOrderID();
 document.getElementById("orderForm").addEventListener("submit", async function (e) {
   e.preventDefault();
+
+let orderID = await generateOrderID();
 
   let submitBtn = document.querySelector("#orderForm button");
   submitBtn.innerText = "جاري الإرسال...";
