@@ -553,14 +553,9 @@ document.querySelectorAll(".itemBox").forEach((box) => {
   price += prices[d] || 249;
 });
     let shipping = shippingFees[gov] || 20;
-    let finalTotal = total + shipping;
+    let finalTotal = price + shipping;
 
     // ❤️ تنسيق الأسماء
-
-let orderDetails = [];
-
-document.querySelectorAll(".itemBox").forEach((box, index) => {
-});
 
 await addDoc(collection(db, "orders"), {
   orderID,
@@ -572,7 +567,7 @@ await addDoc(collection(db, "orders"), {
   orderDetails,
   quantity,
   price,
-  total,
+  total: price,
   shipping,
   finalTotal,
   createdAt: new Date(),
@@ -589,7 +584,7 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
 
   orderDetails.push({
     design,
-    names: formatNames(names, design)
+names: names.join(" - ")
   });
 });
 
