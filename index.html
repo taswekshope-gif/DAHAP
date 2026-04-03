@@ -349,7 +349,6 @@ async function generateOrderID() {
 
   let prefix = yy + mm + dd;
 
-let orderID = await generateOrderID();
   const q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(1));
   const snapshot = await getDocs(q);
 
