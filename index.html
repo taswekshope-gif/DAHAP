@@ -506,18 +506,17 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
 
   // Enter + Space
 input.addEventListener("keydown", e => {
-  if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
-  e.preventDefault();
-
-  let value = input.value.trim();
-
-  // لو فيه مسافات جوه الكلام قسمهم
-  value.split(" ").forEach(name => {
-    addName(name.trim());
-  });
-} {
+  if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
-    addName(input.value.trim());
+
+    let value = input.value.trim();
+
+    // يقسم الأسماء لو فيها مسافات
+    value.split(" ").forEach(name => {
+      if (name.trim()) {
+        addName(name.trim());
+      }
+    });
   }
 });
 
