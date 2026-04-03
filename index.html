@@ -482,26 +482,29 @@ document.getElementById("quantityDisplay").innerText =
 // 🔥 تحديث السعر عند التغيير
 // 🔥 تشغيل بعد تحميل الصفحة
 
+// تشغيل أول مرة بعد تحميل الصفحة
 window.addEventListener("DOMContentLoaded", () => {
   toggleItems();
-});
   updatePrice();
-});
 
-  const quantity = document.getElementById("quantity");
-  const governorate = document.getElementById("governorate");
-  const designs = document.querySelectorAll(".design");
-
-  // تغيير الكمية
-  quantity.addEventListener("change", () => {
+  // الكمية
+  document.getElementById("quantity").addEventListener("change", () => {
     toggleItems();
     updatePrice();
   });
 
-  // تغيير التصميم
-  designs.forEach(select => {
-    select.addEventListener("change", updatePrice);
+  // التصميمات
+  document.querySelectorAll(".design").forEach(select => {
+    select.addEventListener("change", () => {
+      updatePrice();
+    });
   });
+
+  // المحافظة
+  document.getElementById("governorate").addEventListener("change", () => {
+    updatePrice();
+  });
+});
 
   // تغيير المحافظة
   governorate.addEventListener("change", updatePrice);
