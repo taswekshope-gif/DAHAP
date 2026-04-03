@@ -168,8 +168,13 @@ button:hover { background:#095c4d; }
     <option>مزدوج</option>
   </select>
 
+<select class="lang">
+  <option value="عربي">عربي</option>
+  <option value="English">English</option>
+</select>
+
   <div class="tags-box">
-    <input type="text" class="nameInput" placeholder="اكتب اسم السلسه واضغط Enter">
+    <input type="text" class="nameInput" placeholder="اكتب الاسم المطلوب للسلسه واضغط Enter">
   </div>
 </div>
 
@@ -183,8 +188,13 @@ button:hover { background:#095c4d; }
     <option>مزدوج</option>
   </select>
 
+<select class="lang">
+  <option value="عربي">عربي</option>
+  <option value="English">English</option>
+</select>
+
   <div class="tags-box">
-    <input type="text" class="nameInput" placeholder="اكتب اسم السلسه واضغط Enter">
+    <input type="text" class="nameInput" placeholder="اكتب الاسم المطلوب للسلسلة واضغط  Enter">
   </div>
 </div>
 
@@ -198,8 +208,13 @@ button:hover { background:#095c4d; }
     <option>مزدوج</option>
   </select>
 
+<select class="lang">
+  <option value="عربي">عربي</option>
+  <option value="English">English</option>
+</select>
+
   <div class="tags-box">
-    <input type="text" class="nameInput" placeholder="اكتب اسم السلسه واضغط Enter">
+    <input type="text" class="nameInput" placeholder="اكتب الاسم المطلوب للسلسلة واضغط Enter">
   </div>
 </div>
 
@@ -358,9 +373,9 @@ async function generateOrderID() {
 }
 
 let items = [
-  { design: "عادي", names: [] },
-  { design: "عادي", names: [] },
-  { design: "عادي", names: [] }
+  { design: "عادي", names: [], lang: "عربي" },
+  { design: "عادي", names: [], lang: "عربي" },
+  { design: "عادي", names: [], lang: "عربي" }
 ];
 let ordersNames = []; // كل أوردر لوحده
 
@@ -449,16 +464,23 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
     updatePrice();
   }
 
-  input.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addName(input.value.trim());
-    }
-  });
-
-  input.addEventListener("blur", () => {
+  // Enter + Space
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
     addName(input.value.trim());
-  });
+  }
+});
+
+// كليك برا
+input.addEventListener("blur", () => {
+  addName(input.value.trim());
+});
+
+// كليك على البوكس كله
+tagsBox.addEventListener("click", () => {
+  input.focus();
+ });
 
 });
 
@@ -507,6 +529,12 @@ window.addEventListener("DOMContentLoaded", () => {
       updatePrice();
     });
   });
+
+document.querySelectorAll(".lang").forEach((select, index) => {
+  select.addEventListener("change", function () {
+    items[index].lang = this.value;
+  });
+});
 
   // المحافظة
   document.getElementById("governorate").addEventListener("change", () => {
@@ -586,10 +614,13 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
 
   if (names.length === 0) return;
 
-  orderDetails.push({
-    design,
-    names: names.join(" - ")
-  });
+  let lang = box.querySelector(".lang").value;
+
+orderDetails.push({
+  design,
+  names: names.join(" - "),
+  lang
+ });
 });
 
  await addDoc(collection(db, "orders"), {
@@ -624,9 +655,10 @@ ${address}
 
 ${orderDetails.map((item, i) => `
 سلسلة ${i + 1}:
-الأسماء: ${item.names}
-التصميم: ${item.design}
+🏷️ الأسماء: ${item.names}
+🎨 التصميم: ${item.design}
 `).join("\n")}
+🌍 اللغة: ${item.lang}
 
 📦 الكمية: ${quantity}
 💰 سعر القطعة: ${price}
