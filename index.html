@@ -160,7 +160,8 @@ button:hover { background:#095c4d; }
  <div class="error" id="addressError"></div>
 <div class="itemBox">
   <h4>السلسلة 1</h4>
-  <select class="design">
+<label>نوع التصميم للسلسلة :</label>
+<select class="design">
     <option>عادي</option>
     <option>قلب ❤️</option>
     <option>فراشة 🦋</option>
@@ -168,6 +169,7 @@ button:hover { background:#095c4d; }
     <option>مزدوج</option>
   </select>
 
+<label>لغة الكتابة للسلسلة :</label>
 <select class="lang">
   <option value="عربي">عربي</option>
   <option value="English">English</option>
@@ -198,6 +200,7 @@ button:hover { background:#095c4d; }
   </div>
 </div>
 
+<label>نوع التصميم للسلسلة :</label>
 <div class="itemBox">
   <h4>السلسلة 3</h4>
   <select class="design">
@@ -208,6 +211,7 @@ button:hover { background:#095c4d; }
     <option>مزدوج</option>
   </select>
 
+<label>لغة الكتابة للسلسلة :</label>
 <select class="lang">
   <option value="عربي">عربي</option>
   <option value="English">English</option>
@@ -466,7 +470,16 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
 
   // Enter + Space
 input.addEventListener("keydown", e => {
-  if (e.key === "Enter" || e.key === " ") {
+  if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+  e.preventDefault();
+
+  let value = input.value.trim();
+
+  // لو فيه مسافات جوه الكلام قسمهم
+  value.split(" ").forEach(name => {
+    addName(name.trim());
+  });
+} {
     e.preventDefault();
     addName(input.value.trim());
   }
@@ -652,13 +665,12 @@ ${gov} - ${city}
 ${address}
 
 💎 الطلب:
-
 ${orderDetails.map((item, i) => `
 سلسلة ${i + 1}:
 🏷️ الأسماء: ${item.names}
 🎨 التصميم: ${item.design}
-`).join("\n")}
 🌍 اللغة: ${item.lang}
+`).join("\n")}
 
 📦 الكمية: ${quantity}
 💰 سعر القطعة: ${price}
