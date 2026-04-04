@@ -3,9 +3,9 @@
 
     <img src="images/logo.png" class="logo">
 
-    <h1 class="brand">DAHAP</h1>
-
     <div class="top-text">SPECIAL FOR YOU</div>
+
+    <h1 class="brand">DAHAP</h1>
 
   </div>
 </header>
@@ -35,31 +35,20 @@ html { scroll-behavior: smooth; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
 }
 
 /* اللوجو */
 .logo {
-  width: 28px; /* صغير وشيك */
+  width: 28px;
 }
 
-/* دهبي لامع */
-.brand {
-  font-size: 16px;
-  font-weight: bold;
-
-  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  letter-spacing: 1px;
-}
-
-/* الجملة */
+/* الجملة في النص */
 .top-text {
-  font-size: 10px;
+  font-size: 13px;   /* 👈 أكبر شوية */
   font-weight: bold;
   white-space: nowrap;
+
+  text-align: center;
 
   background: linear-gradient(90deg, #D4AF37, #FFD700, #FFF3B0, #FFD700);
   background-size: 200%;
@@ -68,9 +57,22 @@ html { scroll-behavior: smooth; }
 
   animation: shine 4s linear infinite;
   letter-spacing: 1px;
+
+  flex: 1; /* يخليها في النص */
 }
 
-/* الانيميشن */
+/* البراند */
+.brand {
+  font-size: 15px;
+  font-weight: bold;
+  white-space: nowrap;
+
+  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* انيميشن دهبي */
 @keyframes shine {
   0% { background-position: 0%; }
   100% { background-position: 200%; }
