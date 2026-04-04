@@ -1,7 +1,7 @@
 <header class="header">
   <div class="header-container">
-    <img src="images/logo.png" class="logo">
     <h1 class="brand">DAHAP</h1>
+    <img src="images/logo.png" class="logo">
   </div>
 </header>
 <!DOCTYPE html>
@@ -27,11 +27,10 @@ html { scroll-behavior: smooth; }
 .header-container {
   max-width: 900px;
   margin: auto;
-  padding: 6px 12px; /* رفيع جداً */
+  padding: 6px 12px;
   display: flex;
   align-items: center;
-  justify-content: center; /* في النص */
-  gap: 8px;
+  justify-content: space-between;
 }
 
 /* اللوجو */
@@ -87,6 +86,8 @@ html { scroll-behavior: smooth; }
   color:#fff;
   font-size:20px;
   font-weight:bold;
+ pointer-events: none; /* يمنع أي ضغط */
+  user-select: none;    /* يمنع تحديده */
 }
 
 /* سكشن الوصف */
