@@ -1,12 +1,13 @@
 <header class="header">
-
-  <div class="top-text">SPECIAL FOR YOU</div>
-
   <div class="header-container">
-    <h1 class="brand">DAHAP</h1>
-    <img src="images/logo.png" class="logo">
-  </div>
 
+    <img src="images/logo.png" class="logo">
+
+    <h1 class="brand">DAHAP</h1>
+
+    <div class="top-text">SPECIAL FOR YOU</div>
+
+  </div>
 </header>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -25,36 +26,16 @@ html { scroll-behavior: smooth; }
   background: #000;
 }
 
-/* الجملة فوق */
-.top-text {
-  text-align: center;
-  font-size: 11px; /* صغير عشان ميكبرش الهيدر */
-  font-weight: bold;
-  padding: 3px 0;
-
-  background: linear-gradient(90deg, #D4AF37, #FFD700, #FFF3B0, #FFD700);
-  background-size: 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  animation: shine 4s linear infinite;
-  letter-spacing: 1px;
-}
-
-/* حركة بسيطة */
-@keyframes shine {
-  0% { background-position: 0%; }
-  100% { background-position: 200%; }
-}
-
 /* الكونتينر */
 .header-container {
   max-width: 900px;
   margin: auto;
-  padding: 5px 12px; /* رفيع */
+  padding: 6px 10px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 
 /* اللوجو */
@@ -72,6 +53,27 @@ html { scroll-behavior: smooth; }
   -webkit-text-fill-color: transparent;
 
   letter-spacing: 1px;
+}
+
+/* الجملة */
+.top-text {
+  font-size: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+
+  background: linear-gradient(90deg, #D4AF37, #FFD700, #FFF3B0, #FFD700);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: shine 4s linear infinite;
+  letter-spacing: 1px;
+}
+
+/* الانيميشن */
+@keyframes shine {
+  0% { background-position: 0%; }
+  100% { background-position: 200%; }
 }
 @media (max-width:768px){
   .hero {
