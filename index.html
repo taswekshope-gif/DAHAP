@@ -14,72 +14,64 @@ html { scroll-behavior: smooth; }
   width: 100%;
   aspect-ratio: 3 / 2;
   background: url('images/header.jpg') center/cover no-repeat;
-  background-color: #000;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  border-radius: 10px;
+  justify-content: flex-start;
+  border-radius: 12px;
   overflow: hidden;
 }
 
-.hero-content {
-  background: rgba(0,0,0,0.4);
-  padding: 20px;
-  border-radius: 12px;
-  backdrop-filter: blur(5px);
-}
-
+/* طبقة خفيفة فقط */
 .hero::before {
   content:'';
   position:absolute;
   width:100%;
   height:100%;
-   background: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.25); /* خففناها */
   top:0;
   left:0;
- border-radius:10px; }
+}
 
-  .hero h1 {
-    font-size: 1.8rem;
-  }
-
-  .hero h2,
-.hero p {
-  color: #fff;
+/* مهم جدا عشان يظهر فوق */
+.top-bar,
+.hero-content {
+  position: relative;
+  z-index: 2;
 }
 
 @media (max-width:768px){
+
+  .hero {
+    aspect-ratio: 3 / 2;
+  }
+
   .brand {
     font-size:18px;
   }
 
   .logo {
-    width:50px;
+    width:45px;
   }
 
-  .hero-content {
-    padding:15px;
+  .intro h2 {
+    font-size:1.4rem;
   }
 
-  .hero h2 {
-    font-size:1.2rem;
-  }
-
-  .hero p {
+  .intro p {
     font-size:14px;
   }
-}
 
   .btn {
-    padding: 12px 18px;
-    font-size: 14px;
+    width:100%;
   }
+
 }
+
 .container {
-  padding: 15px;
-  max-width: 700px;
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
 }
 .gallery {
   display:flex;
@@ -89,22 +81,20 @@ html { scroll-behavior: smooth; }
 }
 
 .top-bar {
-  position: absolute;
-  top: 15px;
-  left: 20px;
-  right: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px 20px;
 }
 
 .logo {
-  width: 60px;
+  width: 55px;
 }
 
 .brand {
-  font-size: 22px;
-  color: #D4AF37;
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
 }
 
 .item {
@@ -230,15 +220,16 @@ button:hover { background:#095c4d; }
 <body>
 
 <section class="hero">
-<div class="top-bar">
-  <img src="images/logo.png" class="logo">
-  <h1 class="brand">DAHAP</h1>
-</div>
- <div class="hero-content">
+  <div class="top-bar">
+    <img src="images/logo.png" class="logo">
+    <h1 class="brand">DAHAP</h1>
+  </div>
+</section>
+
+<section class="container intro">
   <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
   <p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتتصمم مخصوص ليكي 💖</p>
   <a class="btn" href="#order">اطلبي سلسلتك الآن 💎</a>
-</div>
 </section>
 
 <section class="container">
