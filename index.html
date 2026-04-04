@@ -1,8 +1,12 @@
 <header class="header">
+  
+  <div class="top-text">SPECIAL FOR YOU</div>
+
   <div class="header-container">
     <h1 class="brand">DAHAP</h1>
     <img src="images/logo.png" class="logo">
   </div>
+
 </header>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -31,6 +35,25 @@ html { scroll-behavior: smooth; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* النص العلوي */
+.top-text {
+  text-align: center;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 0;
+
+  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  letter-spacing: 2px;
+}
+
+/* نخلي الهيدر متقسم */
+.header {
+  background: #000;
 }
 
 /* اللوجو */
