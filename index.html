@@ -1,5 +1,5 @@
 <header class="header">
-  
+
   <div class="top-text">SPECIAL FOR YOU</div>
 
   <div class="header-container">
@@ -18,42 +18,43 @@
 <style>
 body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
 html { scroll-behavior: smooth; }
-/* الهيدر الرفيع */
+
+/* الهيدر */
 .header {
-  position: sticky;
-  top: 0;
   width: 100%;
-  background: #000; /* فخم */
-  z-index: 999;
+  background: #000;
+}
+
+/* الجملة فوق */
+.top-text {
+  text-align: center;
+  font-size: 11px; /* صغير عشان ميكبرش الهيدر */
+  font-weight: bold;
+  padding: 3px 0;
+
+  background: linear-gradient(90deg, #D4AF37, #FFD700, #FFF3B0, #FFD700);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: shine 4s linear infinite;
+  letter-spacing: 1px;
+}
+
+/* حركة بسيطة */
+@keyframes shine {
+  0% { background-position: 0%; }
+  100% { background-position: 200%; }
 }
 
 /* الكونتينر */
 .header-container {
   max-width: 900px;
   margin: auto;
-  padding: 6px 12px;
+  padding: 5px 12px; /* رفيع */
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-/* النص العلوي */
-.top-text {
-  text-align: center;
-  font-size: 13px;
-  font-weight: bold;
-  padding: 4px 0;
-
-  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  letter-spacing: 2px;
-}
-
-/* نخلي الهيدر متقسم */
-.header {
-  background: #000;
 }
 
 /* اللوجو */
