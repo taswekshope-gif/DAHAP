@@ -1,7 +1,7 @@
 <header class="header">
   <div class="header-container">
-    <h1 class="brand">DAHAP</h1>
     <img src="images/logo.png" class="logo">
+    <h1 class="brand">DAHAP</h1>
   </div>
 </header>
 <!DOCTYPE html>
@@ -14,35 +14,41 @@
 <style>
 body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
 html { scroll-behavior: smooth; }
-/* الهيدر */
+/* الهيدر الرفيع */
 .header {
   position: sticky;
   top: 0;
   width: 100%;
-  background: #fff;
+  background: #000; /* فخم */
   z-index: 999;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
+/* الكونتينر */
 .header-container {
   max-width: 900px;
   margin: auto;
-  padding: 12px 15px;
+  padding: 6px 12px; /* رفيع جداً */
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center; /* في النص */
+  gap: 8px;
 }
 
 /* اللوجو */
 .logo {
-  width: 45px;
+  width: 28px; /* صغير وشيك */
 }
 
-/* اسم البراند */
+/* دهبي لامع */
 .brand {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
-  color: #0F7B65;
+
+  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  letter-spacing: 1px;
 }
 @media (max-width:768px){
   .hero {
