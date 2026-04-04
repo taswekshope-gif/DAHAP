@@ -44,11 +44,14 @@ html { scroll-behavior: smooth; }
 
 /* الجملة في النص */
 .top-text {
-  font-size: 13px;   /* 👈 أكبر شوية */
+  font-size: 17px;   /* 👈 أكبر شوية */
   font-weight: bold;
   white-space: nowrap;
 
   text-align: center;
+
+pointer-events: none; /* يمنع أي ضغط */
+  user-select: none;    /* يمنع تحديده */
 
   background: linear-gradient(90deg, #D4AF37, #FFD700, #FFF3B0, #FFD700);
   background-size: 200%;
