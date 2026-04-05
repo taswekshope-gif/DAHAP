@@ -85,30 +85,37 @@ pointer-events: none; /* يمنع أي ضغط */
 }
 @media (max-width:768px){
   .hero {
-    aspect-ratio: 1 / 1;
-  }
+aspect-ratio: 1 / 1;
 }
-
-
+}
 .container { padding:20px; text-align:center; max-width:900px; margin:auto; }
 
+.hero {
+width: 100%;
+height: 220px;
+background: url('images/header.jpg') center/cover no-repeat;
+position: relative;
 
-  .hero {
-  width: 100%;
-  height: 260px;
-  background: url('images/header.jpg') center/cover no-repeat;
-  border-radius: 0 0 20px 20px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+
+text-align: center;
+color: white;
+border-radius: 0 0 20px 20px;
+overflow: hidden;
 }
 
 .hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
+content: '';
+position: absolute;
+inset: 0;
+background: rgba(0,0,0,0.4);
 }
 .hero * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
 
 /* اللوجو */
