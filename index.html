@@ -87,32 +87,23 @@ pointer-events: none; /* يمنع أي ضغط */
 }
 .container { padding:20px; text-align:center; max-width:900px; margin:auto; }
 
-.hero {
+  .hero {
   width: 100%;
-  height: 220px;
+  height: 260px;
   background: url('images/header.jpg') center/cover no-repeat;
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  text-align: center;
-  color: white;
   border-radius: 0 0 20px 20px;
-  overflow: hidden;
+  position: relative;
 }
 
+/* طبقة خفيفة جدا */
 .hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-}
-.hero * {
-  position: relative;
-  z-index: 2;
+  content:'';
+  position:absolute;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.2);
+  top:0;
+  left:0;
 }
 
 /* اللوجو */
