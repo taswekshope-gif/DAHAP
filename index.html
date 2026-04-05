@@ -139,9 +139,20 @@ pointer-events: none; /* يمنع أي ضغط */
   position: relative;
 }
   .btn {
-    padding: 12px 18px;
-    font-size: 14px;
-  }
+  background: linear-gradient(135deg, #0F7B65, #12a37f);
+  color: #fff;
+  padding: 14px;
+  border-radius: 12px;
+  display: inline-block;
+  text-decoration: none;
+  font-weight: bold;
+  width: 100%;
+  max-width: 300px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.03);
 }
 /* موبايل */
 @media (max-width:768px){
