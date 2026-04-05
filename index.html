@@ -21,9 +21,17 @@ body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; 
 html { scroll-behavior: smooth; }
 
 /* الهيدر */
-.header {
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  background: #000;
+  z-index: 1000;
+  height: 70px;
+}
+
+body {
+  padding-top: 70px;
 }
 
 /* الكونتينر */
