@@ -872,8 +872,6 @@ let orderID = await generateOrderID();
   submitBtn.innerText = "جاري الإرسال...";
   submitBtn.disabled = true;
 
-const orderID = "DAHAP-" + Date.now().toString().slice(-6);
-
   try {
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
@@ -900,6 +898,9 @@ if (allNames.length === 0) {
   submitBtn.innerText = "تأكيد الطلب";
   return;
 }
+
+const orderID = "DAHAP-" + Date.now().toString().slice(-6);
+
 
     // تحقق رقم الهاتف
     if (!/^01[0-9]{9}$/.test(phone)) {
