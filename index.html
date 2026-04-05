@@ -872,6 +872,8 @@ let orderID = await generateOrderID();
   submitBtn.innerText = "جاري الإرسال...";
   submitBtn.disabled = true;
 
+const orderID = "DAHAP-" + Date.now().toString().slice(-6);
+
   try {
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
