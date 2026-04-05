@@ -952,8 +952,17 @@ orderDetails.push({
   total: price,
   shipping,
   finalTotal,
-  createdAt: new Date(),
-  status: "new"
+});
+
+const now = new Date();
+
+const formattedDate = now.toLocaleString('ar-EG', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
 });
 
     // ✅ واتساب
@@ -980,18 +989,8 @@ ${orderDetails.map((item, i) => `
 🚚 الشحن: ${shipping}
 💵 الإجمالي: ${finalTotal}
 
-const now = new Date();
-
-const formattedDate = now.toLocaleString('ar-EG', {
-  weekday: 'long',   // اليوم (الاثنين)
-  year: 'numeric',   // السنة (2026)
-  month: 'long',     // الشهر (أبريل)
-  day: 'numeric',    // اليوم (5)
-  hour: '2-digit',   // الساعة
-  minute: '2-digit'  // الدقيقة
-});
-
-`🕒 وقت الطلب: ${formattedDate}`;
+🕒 وقت الطلب: ${formattedDate}
+`;
   
     // نجاح
     submitBtn.innerText = "✅ تم إرسال الطلب";
