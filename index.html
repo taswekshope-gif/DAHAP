@@ -794,25 +794,26 @@ tagsBox.addEventListener("click", () => {
 
 // 🔥 حساب السعر
 function updatePrice() {
+  let quantity = parseInt(document.getElementById("quantity").value) || 1;
   let gov = document.getElementById("governorate").value;
+
   let shipping = shippingFees[gov] || 20;
 
   let total = 0;
 
-document.getElementById("quantityDisplay").innerText =
-
-  document.getElementById("quantity").value;
- document.querySelectorAll(".itemBox").forEach((box) => {
-    if (box.style.display === "none") return;
+  // نلف على عدد القطع بس
+  for (let i = 0; i < quantity; i++) {
+    let box = document.querySelectorAll(".itemBox")[i];
 
     let design = box.querySelector(".design").value;
     let price = prices[design] || 249;
 
     total += price;
-  });
+  }
 
   let finalTotal = total + shipping;
 
+  document.getElementById("quantityDisplay").innerText = quantity;
   document.getElementById("price").innerText = total;
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
@@ -897,14 +898,11 @@ if (allNames.length === 0) {
 
 let price = 0;
 
-document.querySelectorAll(".itemBox").forEach((box) => {
-  items.forEach((item, i) => {
-  if (i >= quantity) item.names = [];
-});
-
+for (let i = 0; i < quantity; i++) {
+  let box = document.querySelectorAll(".itemBox")[i];
   let d = box.querySelector(".design").value;
   price += prices[d] || 249;
-});
+}
     let shipping = shippingFees[gov] || 20;
     let finalTotal = price + shipping;
 
