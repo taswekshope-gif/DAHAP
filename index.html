@@ -992,9 +992,14 @@ ${orderDetails.map((item, i) => `
     document.getElementById("successMessage").style.display = "block";
     
   setTimeout(() => {
-    let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
-  }, 1000);
+  let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+
+  let a = document.createElement("a");
+  a.href = url;
+  a.target = "_self";
+  document.body.appendChild(a);
+  a.click();
+}, 1000);
     
   } catch (error) {
     alert("حصل خطأ حاول تاني");
