@@ -9,22 +9,18 @@
 
   </div>
 </header>
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سلسلة باسمك - DAHAP</title>
+<title>لسلة باسمك - DAHAP</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 <style>
 body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
 html { scroll-behavior: smooth; }
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+.container { padding:20px; text-align:center; max-width:900px; margin:auto; }
 /* الهيدر */
 .header {
    width: 100%;
@@ -66,7 +62,6 @@ pointer-events: none; /* يمنع أي ضغط */
 
   flex: 1; /* يخليها في النص */
 }
-
 /* البراند */
 .brand {
   font-size: 15px;
@@ -144,43 +139,11 @@ pointer-events: none; /* يمنع أي ضغط */
 .header-container {
   position: relative;
 }
-
-/* سكشن الوصف */
-.intro {
-  text-align:center;
-  padding:25px 15px;
-  max-width:600px;
-  margin:auto;
+  .btn {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
 }
-
-.intro h2 {
-  font-size:1.6rem;
-  margin-bottom:10px;
-}
-
-.intro p {
-  color:#555;
-  margin-bottom:15px;
-}
-
-/* زر */
-.btn {
-  background: linear-gradient(135deg, #0F7B65, #12a37f);
-  color: #fff;
-  padding: 14px;
-  border-radius: 12px;
-  display: inline-block;
-  text-decoration: none;
-  font-weight: bold;
-  width: 100%;
-  max-width: 300px;
-  transition: 0.3s;
-}
-
-.btn:hover {
-  transform: scale(1.03);
-}
-
 /* موبايل */
 @media (max-width:768px){
   .hero {
@@ -210,36 +173,36 @@ pointer-events: none; /* يمنع أي ضغط */
   margin: auto;
   text-align: center;
 }
-.gallery {  
-  display:flex;  
-  overflow-x:auto;  
-  gap:10px;  
-  padding:10px 5px;  
-}  
-  
-.item {  
-  min-width:140px;  
-}  
-form {  
-  width:100%;  
-  max-width:100%;  
-}  
-input, select, button {  
-  width:100%;  
-  font-size:16px;  
-}  
-.checkout-box {  
-  position: sticky;  
-  bottom: 10px;  
-  background:#fff;  
-  z-index: 5;  
+.gallery {
+  display:flex;
+  overflow-x:auto;
+  gap:10px;
+  padding:10px 5px;
 }
 
+.item {
+  min-width:140px;
+}
+form {
+  width:100%;
+  max-width:100%;
+}
+input, select, button {
+  width:100%;
+  font-size:16px;
+}
+.checkout-box {
+  position: sticky;
+  bottom: 10px;
+  background:#fff;
+  z-index: 5;
+}
 .hero * { position:relative; }
 .hero h1 { color:#D4AF37; font-size:3rem; margin-bottom:10px; }
 .hero h2 { font-size:2rem; margin-bottom:10px; }
 .btn { background:#0F7B65; color:#fff; padding:15px 25px; border-radius:8px; display:inline-block; margin-top:20px; text-decoration:none; font-weight:bold; }
 .btn:hover { background:#095c4d; }
+.gallery { display:flex; overflow-x:auto; gap:15px; padding:10px; }
 .item { min-width:160px; text-align:center; }
 .item img { width:100%; border-radius:10px; transition:0.3s; }
 .item img:hover { transform:scale(1.05); }
@@ -339,12 +302,12 @@ button:hover { background:#095c4d; }
 </head>
 <body>
 
-<section class="hero"></section>
-
-<section class="intro">
-  <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
-  <p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتصميم مخصوص ليكي 💖</p>
-  <a href="#order" class="btn">اطلبي الآن 💎</a>
+<section class="hero">
+<img src="images/logo.png" style="width:120px; margin-bottom:15px;">
+<h1>DAHAP</h1>
+<h2>سلسلة باسمك… لمسة تميزك ✨</h2>
+<p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتتصمم مخصوص ليكي 💖</p>
+<a class="btn" href="#order">اطلبي سلسلتك الآن 💎</a>
 </section>
 
 <section class="container">
@@ -386,10 +349,7 @@ button:hover { background:#095c4d; }
 <section class="offer">
 <h2>🔥 عرض لفترة محدودة</h2>
 <p>متفوتيش الفرصة وخلي اسمِك معاكى دايمًا 💖</p>
-<p>
-  <del>349 جنيه</del>
-  <strong style="color:#0F7B65;">249 جنيه</strong>
-</p>
+<p><del>349 جنيه</del> <strong>249 جنيه</strong></p>
 <div class="timer" id="countdown"></div>
 </section>
 
