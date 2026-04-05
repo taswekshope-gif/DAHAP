@@ -794,7 +794,18 @@ tagsBox.addEventListener("click", () => {
 
 // 🔥 حساب السعر
 function updatePrice() {
-  let quantity = parseInt(document.getElementById("quantity").value) || 1;
+  let quantity = parseInt(document.getElementById("quantity").value);
+
+// تغيير النص حسب الكمية
+let label = document.getElementById("priceLabel");
+
+if (quantity === 1) {
+  label.innerText = "سعر القطعة";
+} else if (quantity === 2) {
+  label.innerText = "سعر القطعتين";
+} else if (quantity === 3) {
+  label.innerText = "سعر 3 قطع";
+}
   let gov = document.getElementById("governorate").value;
 
   let shipping = shippingFees[gov] || 20;
