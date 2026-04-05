@@ -204,14 +204,29 @@ pointer-events: none; /* يمنع أي ضغط */
   text-align: center;
 }
 .gallery {
-  display:flex;
-  overflow-x:auto;
-  gap:10px;
-  padding:10px 5px;
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
 .item {
-  min-width:140px;
+  min-width: 160px;
+  text-align: center;
+  scroll-snap-align: center;
+  transition: 0.3s;
+}
+
+.item img {
+  width: 100%;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.item:hover img {
+  transform: scale(1.05);
 }
 form {
   width:100%;
@@ -227,12 +242,24 @@ input, select, button {
   background:#fff;
   z-index: 5;
 }
+.fixed-btn {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  background: #25D366;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  z-index: 999;
+}
 .hero * { position:relative; }
 .hero h1 { color:#D4AF37; font-size:3rem; margin-bottom:10px; }
 .hero h2 { font-size:2rem; margin-bottom:10px; }
 .btn { background:#0F7B65; color:#fff; padding:15px 25px; border-radius:8px; display:inline-block; margin-top:20px; text-decoration:none; font-weight:bold; }
 .btn:hover { background:#095c4d; }
-.gallery { display:flex; overflow-x:auto; gap:15px; padding:10px; }
 .item { min-width:160px; text-align:center; }
 .item img { width:100%; border-radius:10px; transition:0.3s; }
 .item img:hover { transform:scale(1.05); }
@@ -332,13 +359,19 @@ button:hover { background:#095c4d; }
 </head>
 <body>
 
-<section class="hero"></section>
+<section class="hero">
+  <h1>💎 سلسلة باسمك بسعر 249 جنيه</h1>
+  <h2>تصميم خاص ليكي خلال 24 ساعة ✨</h2>
+  <a href="#order" class="btn">اطلبي الآن 💬</a>
+</section>
 
 <section class="intro">
   <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
   <p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتصميم مخصوص ليكي 💖</p>
   <a href="#order" class="btn">اطلبي الآن 💎</a>
 </section>
+
+<a href="#order" class="fixed-btn">💎 اطلبي الآن</a>
 
 <section class="container">
 <h2>أنواع تصميم السلسلة</h2>
@@ -379,7 +412,10 @@ button:hover { background:#095c4d; }
 <section class="offer">
 <h2>🔥 عرض لفترة محدودة</h2>
 <p>متفوتيش الفرصة وخلي اسمِك معاكى دايمًا 💖</p>
-<p><del>349 جنيه</del> <strong>249 جنيه</strong></p>
+<p>
+  <del>349 جنيه</del>
+  <strong style="color:#0F7B65;">249 جنيه</strong>
+</p>
 <div class="timer" id="countdown"></div>
 </section>
 
