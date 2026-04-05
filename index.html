@@ -9,7 +9,6 @@
 
   </div>
 </header>
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -20,6 +19,12 @@
 <style>
 body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
 html { scroll-behavior: smooth; }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 /* الهيدر */
 .header {
    width: 100%;
@@ -61,6 +66,7 @@ pointer-events: none; /* يمنع أي ضغط */
 
   flex: 1; /* يخليها في النص */
 }
+
 /* البراند */
 .brand {
   font-size: 15px;
@@ -138,7 +144,27 @@ pointer-events: none; /* يمنع أي ضغط */
 .header-container {
   position: relative;
 }
-  .btn {
+
+/* سكشن الوصف */
+.intro {
+  text-align:center;
+  padding:25px 15px;
+  max-width:600px;
+  margin:auto;
+}
+
+.intro h2 {
+  font-size:1.6rem;
+  margin-bottom:10px;
+}
+
+.intro p {
+  color:#555;
+  margin-bottom:15px;
+}
+
+/* زر */
+.btn {
   background: linear-gradient(135deg, #0F7B65, #12a37f);
   color: #fff;
   padding: 14px;
@@ -154,6 +180,7 @@ pointer-events: none; /* يمنع أي ضغط */
 .btn:hover {
   transform: scale(1.03);
 }
+
 /* موبايل */
 @media (max-width:768px){
   .hero {
@@ -183,36 +210,36 @@ pointer-events: none; /* يمنع أي ضغط */
   margin: auto;
   text-align: center;
 }
-.gallery {
-  display:flex;
-  overflow-x:auto;
-  gap:10px;
-  padding:10px 5px;
+.gallery {  
+  display:flex;  
+  overflow-x:auto;  
+  gap:10px;  
+  padding:10px 5px;  
+}  
+  
+.item {  
+  min-width:140px;  
+}  
+form {  
+  width:100%;  
+  max-width:100%;  
+}  
+input, select, button {  
+  width:100%;  
+  font-size:16px;  
+}  
+.checkout-box {  
+  position: sticky;  
+  bottom: 10px;  
+  background:#fff;  
+  z-index: 5;  
 }
 
-.item {
-  min-width:140px;
-}
-form {
-  width:100%;
-  max-width:100%;
-}
-input, select, button {
-  width:100%;
-  font-size:16px;
-}
-.checkout-box {
-  position: sticky;
-  bottom: 10px;
-  background:#fff;
-  z-index: 5;
-}
 .hero * { position:relative; }
 .hero h1 { color:#D4AF37; font-size:3rem; margin-bottom:10px; }
 .hero h2 { font-size:2rem; margin-bottom:10px; }
 .btn { background:#0F7B65; color:#fff; padding:15px 25px; border-radius:8px; display:inline-block; margin-top:20px; text-decoration:none; font-weight:bold; }
 .btn:hover { background:#095c4d; }
-.gallery { display:flex; overflow-x:auto; gap:15px; padding:10px; }
 .item { min-width:160px; text-align:center; }
 .item img { width:100%; border-radius:10px; transition:0.3s; }
 .item img:hover { transform:scale(1.05); }
@@ -359,7 +386,10 @@ button:hover { background:#095c4d; }
 <section class="offer">
 <h2>🔥 عرض لفترة محدودة</h2>
 <p>متفوتيش الفرصة وخلي اسمِك معاكى دايمًا 💖</p>
-<p><del>349 جنيه</del> <strong>249 جنيه</strong></p>
+<p>
+  <del>349 جنيه</del>
+  <strong style="color:#0F7B65;">249 جنيه</strong>
+</p>
 <div class="timer" id="countdown"></div>
 </section>
 
