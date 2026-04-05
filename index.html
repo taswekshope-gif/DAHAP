@@ -980,8 +980,18 @@ ${orderDetails.map((item, i) => `
 🚚 الشحن: ${shipping}
 💵 الإجمالي: ${finalTotal}
 
-🕒 Order Time: ${new Date().toLocaleString('en-EG')}
-`;
+const now = new Date();
+
+const formattedDate = now.toLocaleString('ar-EG', {
+  weekday: 'long',   // اليوم (الاثنين)
+  year: 'numeric',   // السنة (2026)
+  month: 'long',     // الشهر (أبريل)
+  day: 'numeric',    // اليوم (5)
+  hour: '2-digit',   // الساعة
+  minute: '2-digit'  // الدقيقة
+});
+
+`🕒 وقت الطلب: ${formattedDate}`;
   
     // نجاح
     submitBtn.innerText = "✅ تم إرسال الطلب";
