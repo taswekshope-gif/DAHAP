@@ -202,26 +202,27 @@ pointer-events: none; /* يمنع أي ضغط */
 }
 
 .gallery {
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-}
-
-.gallery-track {
   display: flex;
+  overflow: hidden;
   gap: 12px;
-  will-change: transform;
+  padding: 10px 5px;
+  touch-action: pan-y; /* مهم للسحب */
+  user-select: none;
 }
 
 .item {
-  flex: 0 0 140px; /* 👈 مهم */
+  min-width: 160px;
+  flex-shrink: 0;
+  text-align: center;
+  user-select: none;
 }
 
 .item img {
   width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 12px;
+  border-radius: 10px;
+  pointer-events: none; /* يمنع السحب كصورة */
+  user-drag: none;
+  -webkit-user-drag: none;
 }
 
 /* dots احترافي */
@@ -377,22 +378,18 @@ button:hover { background:#095c4d; }
 
 <script>
 window.addEventListener("load", () => {
-  const track = document.getElementById("track");
-  const dotsContainer = document.getElementById("dots");
+  const track = document.querySelector(".gallery");
 
-  if (!track || !dotsContainer) return;
+  if (!track) return;
 
-  const items = Array.from(track.children);
-
-  // تكرار للانفينيتي
+  // نكرر العناصر لعمل infinite loop
   track.innerHTML += track.innerHTML;
 
   let position = 0;
-  let speed = 0.4;
+  let speed = 0.5; // سرعة الحركة
   let isDown = false;
   let startX = 0;
-
-  const itemWidth = 152;
+  let lastX = 0;
 
   // dots
   dotsContainer.innerHTML = "";
@@ -414,14 +411,13 @@ window.addEventListener("load", () => {
 
   function animate() {
     if (!isDown) {
-      position += speed;
-      track.style.transform = `translateX(-${position}px)`;
+      position -= speed; // 👈 اتجاه الشمال (مهم)
+      track.style.transform = `translateX(${position}px)`;
 
-      if (position >= track.scrollWidth / 2) {
+      // إعادة loop
+      if (Math.abs(position) >= track.scrollWidth / 2) {
         position = 0;
       }
-
-      updateDots();
     }
 
     requestAnimationFrame(animate);
@@ -429,40 +425,47 @@ window.addEventListener("load", () => {
 
   animate();
 
-  // ===== DRAG =====
-  track.addEventListener("mousedown", (e) => {
-    isDown = true;
-    startX = e.pageX;
-  });
-
-  window.addEventListener("mouseup", () => {
-    isDown = false;
-  });
-
-  window.addEventListener("mousemove", (e) => {
-    if (!isDown) return;
-
-    let move = e.pageX - startX;
-    position -= move * 1.2;
-    startX = e.pageX;
-  });
-
-  // موبايل
+  // ====== DRAG (سحب حر) ======
   track.addEventListener("touchstart", (e) => {
     isDown = true;
-    startX = e.touches[0].pageX;
+    startX = e.touches[0].clientX;
+    lastX = startX;
+  });
+
+  track.addEventListener("touchmove", (e) => {
+    let x = e.touches[0].clientX;
+    let move = x - lastX;
+
+    position += move; // تحريك بأي اتجاه
+    track.style.transform = `translateX(${position}px)`;
+
+    lastX = x;
   });
 
   track.addEventListener("touchend", () => {
     isDown = false;
   });
 
-  track.addEventListener("touchmove", (e) => {
+  // ====== Mouse drag (للكمبيوتر) ======
+  track.addEventListener("mousedown", (e) => {
+    isDown = true;
+    startX = e.clientX;
+    lastX = startX;
+  });
+
+  window.addEventListener("mousemove", (e) => {
     if (!isDown) return;
 
-    let move = e.touches[0].pageX - startX;
-    position -= move * 1.2;
-    startX = e.touches[0].pageX;
+    let move = e.clientX - lastX;
+    position += move;
+
+    track.style.transform = `translateX(${position}px)`;
+
+    lastX = e.clientX;
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDown = false;
   });
 });
 </script>
