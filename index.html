@@ -210,7 +210,7 @@ pointer-events: none; /* يمنع أي ضغط */
 
 .gallery-track {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   width: max-content;
   will-change: transform;
   align-items: center;
@@ -218,16 +218,16 @@ pointer-events: none; /* يمنع أي ضغط */
 
 .item {
   flex: 0 0 auto;
-  width: 150px;
+  width: 200px;
   transition: 0.35s ease;
-  opacity: 0.5;
-  transform: scale(0.85);
+  opacity: 0.6;
+  transform: scale(0.9);
 }
 
 /* الصورة الأساسية */
 .item.active {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.15);
   z-index: 3;
 }
 
@@ -240,30 +240,9 @@ pointer-events: none; /* يمنع أي ضغط */
 /* تثبيت شكل الصور */
 .item img {
   width: 100%;
-  height: 150px;
+  height: 200px; /* أكبر */
   object-fit: cover;
-  border-radius: 14px;
-}
-
-/* تأثير الجوانب */
-.gallery::before,
-.gallery::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 70px;
-  height: 100%;
-  z-index: 2;
-}
-
-.gallery::before {
-  right: 0;
-  background: linear-gradient(to left, #fff, transparent);
-}
-
-.gallery::after {
-  left: 0;
-  background: linear-gradient(to right, #fff, transparent);
+  border-radius: 16px;
 }
 
 .dots {
@@ -433,9 +412,10 @@ window.addEventListener("load", () => {
   const itemWidth = items[0].offsetWidth + 16;
   const originalCount = items.length / 2;
 
-  // ⭐ نبدأ من آخر عنصر (الصورة 5)
-  let position = -itemWidth * (originalCount - 1);
+  // ⭐ نبدأ من أول صورة
+let position = 0;
 
+updateUI();
   // ===== DOTS =====
   dotsContainer.innerHTML = "";
 
