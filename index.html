@@ -17,6 +17,28 @@
 <title>سلسلة باسمك - DAHAP</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 <style>
+<script>
+window.addEventListener("load", () => {
+  const gallery = document.querySelector(".gallery");
+
+  let speed = 0.5; // السرعة
+  let scroll = 0;
+
+  function autoScroll() {
+    scroll += speed;
+    gallery.scrollLeft = scroll;
+
+    // يرجع لنص الجاليري بدل ما يرجع صفر (عشان ميقطعش)
+    if (scroll >= gallery.scrollWidth / 2) {
+      scroll = 0;
+    }
+
+    requestAnimationFrame(autoScroll);
+  }
+
+  autoScroll();
+});
+</script>
 body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
 html { scroll-behavior: smooth; }
 
@@ -204,18 +226,12 @@ pointer-events: none; /* يمنع أي ضغط */
   overflow: hidden;
   gap: 12px;
   padding: 10px 5px;
-  scroll-behavior: smooth;
 }
 
 .item {
   min-width: 160px;
   flex-shrink: 0;
   text-align: center;
-}
-
-.item img {
-  width: 100%;
-  border-radius: 10px;
 }
 
 form {  
@@ -356,27 +372,6 @@ button:hover { background:#095c4d; }
   <p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتصميم مخصوص ليكي 💖</p>
   <a href="#order" class="btn">اطلبي الآن 💎</a>
 </section>
-
-<script>
-const gallery = document.querySelector(".gallery");
-
-let scrollAmount = 0;
-
-function autoScroll() {
-  if (!gallery) return;
-
-  scrollAmount += 0.3; // 👈 السرعة (قللها لو عايز أبطأ)
-  gallery.scrollLeft = scrollAmount;
-
-  if (scrollAmount >= gallery.scrollWidth - gallery.clientWidth) {
-    scrollAmount = 0;
-  }
-
-  requestAnimationFrame(autoScroll);
-}
-
-autoScroll();
-</script>
 
 <section class="container">
 <h2>أنواع تصميم السلسلة</h2>
