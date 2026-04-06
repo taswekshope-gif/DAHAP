@@ -380,20 +380,24 @@ window.addEventListener("load", () => {
   const track = document.getElementById("track");
   const dotsContainer = document.getElementById("dots");
 
-  if (!track) return;
+  if (!track || !dotsContainer) return;
 
-  const originalItems = Array.from(track.children);
+  const items = Array.from(track.children);
 
+  // تكرار للانفينيتي
   track.innerHTML += track.innerHTML;
 
   let position = 0;
-  let speed = 0.5;
+  let speed = 0.4;
+  let isDown = false;
+  let startX = 0;
 
   const itemWidth = 152;
 
   // dots
-  originalItems.forEach((_, i) => {
-    let dot = document.createElement("span");
+  dotsContainer.innerHTML = "";
+  items.forEach((_, i) => {
+    const dot = document.createElement("span");
     if (i === 0) dot.classList.add("active");
     dotsContainer.appendChild(dot);
   });
@@ -401,54 +405,63 @@ window.addEventListener("load", () => {
   const dots = dotsContainer.querySelectorAll("span");
 
   function updateDots() {
-    let index = Math.floor(position / itemWidth) % originalItems.length;
+    let index = Math.floor(position / itemWidth) % items.length;
+    if (index < 0) index = 0;
+
     dots.forEach(d => d.classList.remove("active"));
-    dots[index].classList.add("active");
+    if (dots[index]) dots[index].classList.add("active");
   }
 
   function animate() {
-    position += speed;
+    if (!isDown) {
+      position += speed;
+      track.style.transform = `translateX(-${position}px)`;
 
-    track.style.transform = `translateX(-${position}px)`;
+      if (position >= track.scrollWidth / 2) {
+        position = 0;
+      }
 
-    if (position >= track.scrollWidth / 2) {
-      position = 0;
+      updateDots();
     }
 
-    updateDots();
     requestAnimationFrame(animate);
   }
 
   animate();
-});
 
-  // 👇 Drag (سحب)
-  let isDown = false;
-  let startX = 0;
-
-  track.addEventListener("mousedown", e => {
+  // ===== DRAG =====
+  track.addEventListener("mousedown", (e) => {
     isDown = true;
     startX = e.pageX;
   });
 
-  window.addEventListener("mouseup", () => isDown = false);
+  window.addEventListener("mouseup", () => {
+    isDown = false;
+  });
 
-  window.addEventListener("mousemove", e => {
+  window.addEventListener("mousemove", (e) => {
     if (!isDown) return;
 
     let move = e.pageX - startX;
-    position -= move * 0.6;
+    position -= move * 1.2;
     startX = e.pageX;
   });
 
-  // 📱 موبايل
-  track.addEventListener("touchstart", e => {
+  // موبايل
+  track.addEventListener("touchstart", (e) => {
+    isDown = true;
     startX = e.touches[0].pageX;
   });
 
-  track.addEventListener("touchmove", e => {
+  track.addEventListener("touchend", () => {
+    isDown = false;
+  });
+
+  track.addEventListener("touchmove", (e) => {
+    if (!isDown) return;
+
     let move = e.touches[0].pageX - startX;
-    position -= move * 0.6;
+    position -= move * 1.2;
     startX = e.touches[0].pageX;
   });
 });
