@@ -407,15 +407,13 @@ window.addEventListener("load", () => {
   let isDown = false;
   let startX = 0;
 
-  const items = track.querySelectorAll(".item");
+  const galleryItems = track.querySelectorAll(".item"); // 🔥 غير الاسم
 
-  const itemWidth = items[0].offsetWidth + 16;
-  const originalCount = items.length / 2;
+  const itemWidth = galleryItems[0].offsetWidth + 20;
+  const originalCount = galleryItems.length / 2;
 
-  // ⭐ نبدأ من أول صورة
-let position = 0;
+  let position = 0;
 
-updateUI();
   // ===== DOTS =====
   dotsContainer.innerHTML = "";
 
@@ -430,17 +428,16 @@ updateUI();
     let index =
       Math.floor(Math.abs(position) / itemWidth) % originalCount;
 
-    items.forEach(el => {
+    galleryItems.forEach(el => {
       el.classList.remove("active", "near");
     });
 
     let center = index + originalCount;
 
-    if (items[center]) items[center].classList.add("active");
-    if (items[center - 1]) items[center - 1].classList.add("near");
-    if (items[center + 1]) items[center + 1].classList.add("near");
+    if (galleryItems[center]) galleryItems[center].classList.add("active");
+    if (galleryItems[center - 1]) galleryItems[center - 1].classList.add("near");
+    if (galleryItems[center + 1]) galleryItems[center + 1].classList.add("near");
 
-    // dots
     dots.forEach(d => d.classList.remove("active"));
     if (dots[index]) dots[index].classList.add("active");
   }
@@ -449,13 +446,8 @@ updateUI();
     if (!isDown) {
       position += speed;
 
-      if (position >= 0) {
-        position -= track.scrollWidth / 2;
-      }
-
-      if (position <= -track.scrollWidth / 2) {
-        position += track.scrollWidth / 2;
-      }
+      if (position >= 0) position -= track.scrollWidth / 2;
+      if (position <= -track.scrollWidth / 2) position += track.scrollWidth / 2;
 
       track.style.transform = `translateX(${position}px)`;
 
@@ -465,7 +457,7 @@ updateUI();
     requestAnimationFrame(animate);
   }
 
-  updateUI(); // 👈 مهم جداً علشان البداية صح
+  updateUI();
   animate();
 
   // ===== TOUCH =====
@@ -861,7 +853,7 @@ async function generateOrderID() {
   return `${prefix}-${counter}`;
 }
 
-let items = [
+let orderItems = [
   { design: "عادي", names: [], lang: "عربي" },
   { design: "عادي", names: [], lang: "عربي" },
   { design: "عادي", names: [], lang: "عربي" }
