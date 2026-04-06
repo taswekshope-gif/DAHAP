@@ -212,13 +212,20 @@ pointer-events: none; /* يمنع أي ضغط */
   gap: 12px;
   width: max-content;
   will-change: transform;
+  align-items: center;
 }
 
 .item {
   flex: 0 0 auto;
-  width: 42vw;        /* موبايل طبيعي */
-  max-width: 180px;   /* ما تكبرش قوي */
-  text-align: center;
+  width: 160px; /* ثبات الحجم */
+  opacity: 0.5;
+  transform: scale(0.85);
+  transition: 0.3s;
+}
+
+.item.active {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .item img {
@@ -227,6 +234,26 @@ pointer-events: none; /* يمنع أي ضغط */
   aspect-ratio: 1 / 1;   /* شكل مربع مرتب */
   object-fit: cover;
   border-radius: 12px;
+}
+
+.gallery::before,
+.gallery::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 100%;
+  z-index: 2;
+}
+
+.gallery::before {
+  right: 0;
+  background: linear-gradient(to left, #fff, transparent);
+}
+
+.gallery::after {
+  left: 0;
+  background: linear-gradient(to right, #fff, transparent);
 }
 
 .dots {
