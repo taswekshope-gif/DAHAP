@@ -8,7 +8,6 @@
     <h1 class="brand">DAHAP</h1>
 
   </div>
-
 </header>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -407,9 +406,9 @@ window.addEventListener("load", () => {
   }
 
   function animate() {
-    position += speed; // 👉 يمين
+    position -= speed; // 👉 يمين
 
-    track.style.transform = `translateX(-${position}px)`;
+    track.style.transform = `translateX(${position}px)`;
 
     if (position >= track.scrollWidth / 2) {
       position = 0;
