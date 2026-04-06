@@ -385,7 +385,7 @@ window.addEventListener("load", () => {
 
   if (!track) return;
 
-  // 🔁 نكرر العناصر مرة واحدة بس
+  // 🔁 تكرار العناصر (عشان اللوب)
   track.innerHTML += track.innerHTML;
 
   let position = 0;
@@ -395,11 +395,14 @@ window.addEventListener("load", () => {
 
   const items = track.querySelectorAll(".item");
 
-  // ✅ حساب عرض العنصر
   const itemWidth = items[0].offsetWidth + 12;
+  const originalCount = items.length / 2;
+
+  // ⭐ نبدأ من النص عشان الصور تبان من الجانبين
+  position = -itemWidth * originalCount;
 
   // ===== DOTS =====
-  const originalCount = items.length / 2;
+  dotsContainer.innerHTML = "";
 
   for (let i = 0; i < originalCount; i++) {
     let dot = document.createElement("span");
@@ -409,27 +412,44 @@ window.addEventListener("load", () => {
 
   const dots = dotsContainer.querySelectorAll("span");
 
-  function updateDots() {
+  // ===== تحديث الصور + الدوتس =====
+  function updateUI() {
     let index =
       Math.floor(Math.abs(position) / itemWidth) % originalCount;
 
+    // الصور
+    items.forEach(el => el.classList.remove("active"));
+
+    let centerIndex = index + originalCount;
+
+    if (items[centerIndex]) {
+      items[centerIndex].classList.add("active");
+    }
+
+    // الدوتس
     dots.forEach(d => d.classList.remove("active"));
-    if (dots[index]) dots[index].classList.add("active");
+    if (dots[index]) {
+      dots[index].classList.add("active");
+    }
   }
 
   // ===== الحركة =====
   function animate() {
     if (!isDown) {
-      position += speed; // 👉 الاتجاه اللي انت عايزه
+      position += speed;
 
-      // ✨ السر هنا 👇
-      if (position >= track.scrollWidth / 2) {
+      // لف لا نهائي من الاتجاهين
+      if (position >= 0) {
         position -= track.scrollWidth / 2;
+      }
+
+      if (position <= -track.scrollWidth / 2) {
+        position += track.scrollWidth / 2;
       }
 
       track.style.transform = `translateX(${position}px)`;
 
-      updateDots();
+      updateUI();
     }
 
     requestAnimationFrame(animate);
