@@ -205,7 +205,7 @@ pointer-events: none; /* يمنع أي ضغط */
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: 20px 0;
+  padding: 30px 0;
 }
 
 .gallery-track {
@@ -219,35 +219,39 @@ pointer-events: none; /* يمنع أي ضغط */
 .item {
   flex: 0 0 auto;
   width: 150px;
-  transition: 0.4s ease;
-  opacity: 0.4;
-  transform: scale(0.8);
+  transition: 0.35s ease;
+  opacity: 0.5;
+  transform: scale(0.85);
 }
 
-/* الصورة اللي في النص */
+/* الصورة الأساسية */
 .item.active {
   opacity: 1;
-  transform: scale(1.05);
+  transform: scale(1.1);
+  z-index: 3;
 }
 
-/* اللي جنبها */
+/* الصور اللي جنبها */
 .item.near {
-  opacity: 0.7;
-  transform: scale(0.9);
+  opacity: 0.8;
+  transform: scale(0.95);
 }
 
+/* تثبيت شكل الصور */
 .item img {
   width: 100%;
+  height: 150px;
+  object-fit: cover;
   border-radius: 14px;
 }
 
-/* تأثير الجانبين */
+/* تأثير الجوانب */
 .gallery::before,
 .gallery::after {
   content: "";
   position: absolute;
   top: 0;
-  width: 60px;
+  width: 70px;
   height: 100%;
   z-index: 2;
 }
@@ -420,7 +424,6 @@ window.addEventListener("load", () => {
 
   track.innerHTML += track.innerHTML;
 
-  let position = 0;
   let speed = 0.5;
   let isDown = false;
   let startX = 0;
@@ -430,15 +433,14 @@ window.addEventListener("load", () => {
   const itemWidth = items[0].offsetWidth + 16;
   const originalCount = items.length / 2;
 
-  // ⭐ نبدأ من النص
-  position = -itemWidth * originalCount;
+  // ⭐ نبدأ من آخر عنصر (الصورة 5)
+  let position = -itemWidth * (originalCount - 1);
 
   // ===== DOTS =====
   dotsContainer.innerHTML = "";
 
   for (let i = 0; i < originalCount; i++) {
     let dot = document.createElement("span");
-    if (i === 0) dot.classList.add("active");
     dotsContainer.appendChild(dot);
   }
 
@@ -483,9 +485,10 @@ window.addEventListener("load", () => {
     requestAnimationFrame(animate);
   }
 
+  updateUI(); // 👈 مهم جداً علشان البداية صح
   animate();
 
-  // TOUCH
+  // ===== TOUCH =====
   track.addEventListener("touchstart", (e) => {
     isDown = true;
     startX = e.touches[0].clientX;
@@ -502,7 +505,7 @@ window.addEventListener("load", () => {
     isDown = false;
   });
 
-  // MOUSE
+  // ===== MOUSE =====
   track.addEventListener("mousedown", (e) => {
     isDown = true;
     startX = e.clientX;
