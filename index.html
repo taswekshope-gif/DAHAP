@@ -8,6 +8,7 @@
     <h1 class="brand">DAHAP</h1>
 
   </div>
+
 </header>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -17,28 +18,6 @@
 <title>سلسلة باسمك - DAHAP</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 <style>
-<script>
-window.addEventListener("load", () => {
-  const gallery = document.querySelector(".gallery");
-
-  let speed = 0.5; // السرعة
-  let scroll = 0;
-
-  function autoScroll() {
-    scroll += speed;
-    gallery.scrollLeft = scroll;
-
-    // يرجع لنص الجاليري بدل ما يرجع صفر (عشان ميقطعش)
-    if (scroll >= gallery.scrollWidth / 2) {
-      scroll = 0;
-    }
-
-    requestAnimationFrame(autoScroll);
-  }
-
-  autoScroll();
-});
-</script>
 body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
 html { scroll-behavior: smooth; }
 
@@ -222,16 +201,32 @@ pointer-events: none; /* يمنع أي ضغط */
   text-align: center;
 }
 .gallery {
-  display: flex;
   overflow: hidden;
+  width: 100%;
+  cursor: grab;
+}
+
+.gallery:active {
+  cursor: grabbing;
+}
+
+.gallery-track {
+  display: flex;
   gap: 12px;
-  padding: 10px 5px;
+  will-change: transform;
 }
 
 .item {
   min-width: 160px;
   flex-shrink: 0;
   text-align: center;
+}
+
+.item img {
+  width: 100%;
+  border-radius: 10px;
+  user-select: none;
+  pointer-events: none;
 }
 
 form {  
@@ -363,6 +358,82 @@ button:hover { background:#095c4d; }
 #successMessage { display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px; }
 </style>
 </head>
+
+<script>
+window.addEventListener("load", () => {
+  const gallery = document.querySelector(".gallery");
+  const track = document.querySelector(".gallery-track");
+
+  // تكرار الصور (loop)
+  track.innerHTML += track.innerHTML;
+
+  let scroll = 0;
+  let speed = 0.5;
+  let isPaused = false;
+
+  function autoScroll() {
+    if (!isPaused) {
+      scroll += speed;
+      track.style.transform = `translateX(-${scroll}px)`;
+
+      if (scroll >= track.scrollWidth / 2) {
+        scroll = 0;
+      }
+    }
+
+    requestAnimationFrame(autoScroll);
+  }
+
+  autoScroll();
+
+  // 👇 وقف لما يلمس
+  gallery.addEventListener("touchstart", () => isPaused = true);
+  gallery.addEventListener("mousedown", () => isPaused = true);
+
+  // 👇 يرجع يشتغل لما يسيب
+  gallery.addEventListener("touchend", () => isPaused = false);
+  gallery.addEventListener("mouseup", () => isPaused = false);
+
+  // 👇 سحب بالإيد
+  let startX = 0;
+  let isDragging = false;
+
+  gallery.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    startX = e.pageX;
+  });
+
+  gallery.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+
+    let move = e.pageX - startX;
+    scroll -= move * 0.5;
+    track.style.transform = `translateX(-${scroll}px)`;
+    startX = e.pageX;
+  });
+
+  gallery.addEventListener("mouseup", () => isDragging = false);
+  gallery.addEventListener("mouseleave", () => isDragging = false);
+
+  // موبايل
+  gallery.addEventListener("touchstart", (e) => {
+    isDragging = true;
+    startX = e.touches[0].pageX;
+  });
+
+  gallery.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+
+    let move = e.touches[0].pageX - startX;
+    scroll -= move * 0.5;
+    track.style.transform = `translateX(-${scroll}px)`;
+    startX = e.touches[0].pageX;
+  });
+
+  gallery.addEventListener("touchend", () => isDragging = false);
+});
+</script>
+
 <body>
 
 <section class="hero"></section>
@@ -376,29 +447,33 @@ button:hover { background:#095c4d; }
 <section class="container">
 <h2>أنواع تصميم السلسلة</h2>
 <div class="gallery">
-  <div class="item">
-    <img src="images/1.jpg" loading="eager">
-    <span>عادي</span>
-  </div>
+  <div class="gallery-track">
 
-  <div class="item">
-    <img src="images/2.jpg" loading="eager">
-    <span>قلب ❤️</span>
-  </div>
+    <div class="item">
+      <img src="images/1.jpg" loading="eager">
+      <span>عادي</span>
+    </div>
 
-  <div class="item">
-    <img src="images/3.jpg" loading="lazy">
-    <span>فراشة 🦋</span>
-  </div>
+    <div class="item">
+      <img src="images/2.jpg" loading="eager">
+      <span>قلب ❤️</span>
+    </div>
 
-  <div class="item">
-    <img src="images/4.jpg" loading="lazy">
-    <span>تاج 👑</span>
-  </div>
+    <div class="item">
+      <img src="images/3.jpg" loading="lazy">
+      <span>فراشة 🦋</span>
+    </div>
 
-  <div class="item">
-    <img src="images/5.jpg" loading="lazy">
-    <span>مزدوج</span>
+    <div class="item">
+      <img src="images/4.jpg" loading="lazy">
+      <span>تاج 👑</span>
+    </div>
+
+    <div class="item">
+      <img src="images/5.jpg" loading="lazy">
+      <span>مزدوج</span>
+    </div>
+
   </div>
 </div>
 </section>
