@@ -354,6 +354,28 @@ button:hover { background:#095c4d; }
   <a href="#order" class="btn">اطلبي الآن 💎</a>
 </section>
 
+<script>
+const gallery = document.querySelector(".gallery");
+
+let scrollAmount = 0;
+
+function autoScroll() {
+  if (!gallery) return;
+
+  scrollAmount += 1;
+  gallery.scrollLeft = scrollAmount;
+
+  // لما يوصل للآخر يرجع للأول
+  if (scrollAmount >= gallery.scrollWidth - gallery.clientWidth) {
+    scrollAmount = 0;
+  }
+
+  requestAnimationFrame(autoScroll);
+}
+
+autoScroll();
+</script>
+
 <section class="container">
 <h2>أنواع تصميم السلسلة</h2>
 <div class="gallery">
