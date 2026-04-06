@@ -405,17 +405,17 @@ window.addEventListener("load", () => {
   }
 
   function animate() {
-    position -= speed; // 👉 يمين
+  position += speed; // 👈 خليه موجب
 
-    track.style.transform = `translateX(${position}px)`;
+  track.style.transform = `translateX(-${position}px)`; // 👈 ناقص هنا
 
-    if (position >= track.scrollWidth / 2) {
-      position = 0;
-    }
-
-    updateDots();
-    requestAnimationFrame(animate);
+  if (position >= track.scrollWidth / 2) {
+    position = 0; // 👈 يرجع من الأول بس بشكل seamless
   }
+
+  updateDots();
+  requestAnimationFrame(animate);
+}
 
   animate();
 
