@@ -215,17 +215,18 @@ pointer-events: none; /* يمنع أي ضغط */
 }
 
 .item {
-  min-width: 160px;
   flex: 0 0 auto;
+  width: 42vw;        /* موبايل طبيعي */
+  max-width: 180px;   /* ما تكبرش قوي */
   text-align: center;
-  user-select: none;
 }
 
 .item img {
   width: 100%;
-  border-radius: 10px;
-  pointer-events: none;
-  -webkit-user-drag: none;
+  height: auto;
+  aspect-ratio: 1 / 1;   /* شكل مربع مرتب */
+  object-fit: cover;
+  border-radius: 12px;
 }
 
 .dots {
@@ -415,7 +416,7 @@ window.addEventListener("load", () => {
   // ====== ANIMATION ======
   function animate() {
     if (!isDown) {
-      position -= speed;
+      position += speed;
 
       track.style.transform = `translateX(${position}px)`;
 
