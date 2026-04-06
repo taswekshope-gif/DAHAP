@@ -228,26 +228,24 @@ pointer-events: none; /* يمنع أي ضغط */
   -webkit-user-drag: none;
 }
 
-/* dots احترافي */
 .dots {
   display: flex;
   justify-content: center;
-  margin-top: 12px;
-  gap: 8px;
+  gap: 6px;
+  margin-top: 10px;
 }
 
 .dots span {
-  width: 6px;
-  height: 6px;
-  background: #ccc;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  background: #ccc;
   transition: 0.3s;
 }
 
-.dots .active {
-  width: 18px;
-  border-radius: 10px;
-  background: #0F7B65;
+.dots span.active {
+  background: #000;
+  transform: scale(1.3);
 }
 
 form {  
@@ -381,46 +379,52 @@ button:hover { background:#095c4d; }
 
 <script>
 window.addEventListener("load", () => {
-  const track = document.querySelector(".gallery");
+  const track = document.getElementById("track");
+  const dotsContainer = document.getElementById("dots");
 
   if (!track) return;
 
-  // نكرر العناصر لعمل infinite loop
-  track.innerHTML += track.innerHTML;
-
+  // ====== SETUP ======
   let position = 0;
-  let speed = 0.5; // سرعة الحركة
+  let speed = 0.5;
   let isDown = false;
   let startX = 0;
-  let lastX = 0;
 
-  // dots
-  dotsContainer.innerHTML = "";
+  const items = track.querySelectorAll(".item");
+
+  // ====== CREATE DOTS ======
   items.forEach((_, i) => {
-    const dot = document.createElement("span");
+    let dot = document.createElement("span");
     if (i === 0) dot.classList.add("active");
     dotsContainer.appendChild(dot);
   });
 
   const dots = dotsContainer.querySelectorAll("span");
 
+  // ====== UPDATE DOTS ======
   function updateDots() {
-    let index = Math.floor(position / itemWidth) % items.length;
-    if (index < 0) index = 0;
+    const itemWidth = items[0].offsetWidth + 12; // width + gap
+
+    let index =
+      Math.round(Math.abs(position) / itemWidth) % items.length;
 
     dots.forEach(d => d.classList.remove("active"));
     if (dots[index]) dots[index].classList.add("active");
   }
 
+  // ====== ANIMATION ======
   function animate() {
     if (!isDown) {
-      position -= speed; // 👈 اتجاه الشمال (مهم)
+      position -= speed;
+
       track.style.transform = `translateX(${position}px)`;
 
-      // إعادة loop
+      // loop
       if (Math.abs(position) >= track.scrollWidth / 2) {
         position = 0;
       }
+
+      updateDots();
     }
 
     requestAnimationFrame(animate);
@@ -428,43 +432,41 @@ window.addEventListener("load", () => {
 
   animate();
 
-  // ====== DRAG (سحب حر) ======
+  // ====== TOUCH CONTROL ======
   track.addEventListener("touchstart", (e) => {
     isDown = true;
     startX = e.touches[0].clientX;
-    lastX = startX;
   });
 
   track.addEventListener("touchmove", (e) => {
     let x = e.touches[0].clientX;
-    let move = x - lastX;
+    let move = x - startX;
 
-    position += move; // تحريك بأي اتجاه
+    position += move;
     track.style.transform = `translateX(${position}px)`;
 
-    lastX = x;
+    startX = x;
   });
 
   track.addEventListener("touchend", () => {
     isDown = false;
   });
 
-  // ====== Mouse drag (للكمبيوتر) ======
+  // ====== MOUSE DRAG ======
   track.addEventListener("mousedown", (e) => {
     isDown = true;
     startX = e.clientX;
-    lastX = startX;
   });
 
   window.addEventListener("mousemove", (e) => {
     if (!isDown) return;
 
-    let move = e.clientX - lastX;
-    position += move;
+    let move = e.clientX - startX;
 
+    position += move;
     track.style.transform = `translateX(${position}px)`;
 
-    lastX = e.clientX;
+    startX = e.clientX;
   });
 
   window.addEventListener("mouseup", () => {
