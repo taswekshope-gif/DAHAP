@@ -379,15 +379,16 @@ window.addEventListener("load", () => {
   const track = document.getElementById("track");
   const dotsContainer = document.getElementById("dots");
 
+  if (!track) return;
+
   const originalItems = Array.from(track.children);
 
-  // 🔁 تكرار لا نهائي
   track.innerHTML += track.innerHTML;
 
   let position = 0;
-  let speed = 0.4; // 👈 السرعة (قللها لو عايز أبطأ)
+  let speed = 0.5;
 
-  const itemWidth = 152; // 140 + gap
+  const itemWidth = 152;
 
   // dots
   originalItems.forEach((_, i) => {
@@ -405,19 +406,20 @@ window.addEventListener("load", () => {
   }
 
   function animate() {
-  position += speed; // 👈 خليه موجب
+    position += speed;
 
-  track.style.transform = `translateX(-${position}px)`; // 👈 ناقص هنا
+    track.style.transform = `translateX(-${position}px)`;
 
-  if (position >= track.scrollWidth / 2) {
-    position = 0; // 👈 يرجع من الأول بس بشكل seamless
+    if (position >= track.scrollWidth / 2) {
+      position = 0;
+    }
+
+    updateDots();
+    requestAnimationFrame(animate);
   }
 
-  updateDots();
-  requestAnimationFrame(animate);
-}
-
   animate();
+});
 
   // 👇 Drag (سحب)
   let isDown = false;
