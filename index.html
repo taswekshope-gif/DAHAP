@@ -200,21 +200,21 @@ pointer-events: none; /* يمنع أي ضغط */
   margin: auto;
   text-align: center;
 }
+
 .gallery {
   overflow: hidden;
   position: relative;
+  width: 100%;
 }
 
 .gallery-track {
   display: flex;
-  gap: 10px;
-  transition: transform 0.3s ease;
+  gap: 12px;
+  will-change: transform;
 }
 
 .item {
-  min-width: 140px;
-  max-width: 140px;
-  text-align: center;
+  flex: 0 0 140px; /* 👈 مهم */
 }
 
 .item img {
@@ -224,23 +224,25 @@ pointer-events: none; /* يمنع أي ضغط */
   border-radius: 12px;
 }
 
-/* dots */
+/* dots احترافي */
 .dots {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
-  gap: 6px;
+  margin-top: 12px;
+  gap: 8px;
 }
 
 .dots span {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: #ccc;
   border-radius: 50%;
-  display: inline-block;
+  transition: 0.3s;
 }
 
 .dots .active {
+  width: 18px;
+  border-radius: 10px;
   background: #0F7B65;
 }
 
@@ -378,51 +380,50 @@ button:hover { background:#095c4d; }
 window.addEventListener("load", () => {
   const track = document.getElementById("track");
   const dotsContainer = document.getElementById("dots");
-  const items = document.querySelectorAll(".item");
 
-  // 🔁 تكرار الصور عشان infinite
+  const originalItems = Array.from(track.children);
+
+  // 🔁 تكرار لا نهائي
   track.innerHTML += track.innerHTML;
 
-  let index = 0;
   let position = 0;
-  let itemWidth = 150; // عرض العنصر + gap
-  let speed = 0.3;
+  let speed = 0.4; // 👈 السرعة (قللها لو عايز أبطأ)
 
-  // ✅ dots
-  const total = items.length;
-  for (let i = 0; i < total; i++) {
+  const itemWidth = 152; // 140 + gap
+
+  // dots
+  originalItems.forEach((_, i) => {
     let dot = document.createElement("span");
     if (i === 0) dot.classList.add("active");
     dotsContainer.appendChild(dot);
-  }
+  });
 
   const dots = dotsContainer.querySelectorAll("span");
 
-  function updateDots(i) {
+  function updateDots() {
+    let index = Math.floor(position / itemWidth) % originalItems.length;
     dots.forEach(d => d.classList.remove("active"));
-    dots[i % total].classList.add("active");
+    dots[index].classList.add("active");
   }
 
-  // 🚀 auto scroll يمين
-  function autoScroll() {
-    position += speed;
+  function animate() {
+    position += speed; // 👉 يمين
+
     track.style.transform = `translateX(-${position}px)`;
 
-    if (position >= itemWidth * total) {
+    if (position >= track.scrollWidth / 2) {
       position = 0;
     }
 
-    index = Math.floor(position / itemWidth);
-    updateDots(index);
-
-    requestAnimationFrame(autoScroll);
+    updateDots();
+    requestAnimationFrame(animate);
   }
 
-  autoScroll();
+  animate();
 
-  // 🖐️ drag (سحب)
+  // 👇 Drag (سحب)
   let isDown = false;
-  let startX;
+  let startX = 0;
 
   track.addEventListener("mousedown", e => {
     isDown = true;
@@ -433,9 +434,9 @@ window.addEventListener("load", () => {
 
   window.addEventListener("mousemove", e => {
     if (!isDown) return;
+
     let move = e.pageX - startX;
-    position -= move * 0.5;
-    track.style.transform = `translateX(-${position}px)`;
+    position -= move * 0.6;
     startX = e.pageX;
   });
 
@@ -446,11 +447,9 @@ window.addEventListener("load", () => {
 
   track.addEventListener("touchmove", e => {
     let move = e.touches[0].pageX - startX;
-    position -= move * 0.5;
-    track.style.transform = `translateX(-${position}px)`;
+    position -= move * 0.6;
     startX = e.touches[0].pageX;
   });
-
 });
 </script>
 
