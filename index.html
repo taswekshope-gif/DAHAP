@@ -399,126 +399,123 @@ button:hover { background:#095c4d; }
 </head>
 
 <script>
-window.addEventListener("load", () => {
+window.addEventListener("DOMContentLoaded", () => {
   const track = document.getElementById("track");
   const dotsContainer = document.getElementById("dots");
 
-  if (!track) return;
+  const items = track.querySelectorAll(".item");
+  const total = items.length;
 
-  track.innerHTML += track.innerHTML;
-
-  let speed = 0.5;
-  let isDown = false;
+  let current = 0;
   let startX = 0;
+  let isDragging = false;
+  let autoTimer;
 
-let autoPlay = true;
-let autoTimeout;
+  const itemWidth = items[0].offsetWidth + 20;
 
-  const galleryItems = track.querySelectorAll(".item"); // 🔥 غير الاسم
-
-  const itemWidth = galleryItems[0].offsetWidth + 20;
-  const originalCount = galleryItems.length / 2;
-
-  let position = 0;
-
-  // ===== DOTS =====
+  // ===== إنشاء الدوتس =====
   dotsContainer.innerHTML = "";
-
-  for (let i = 0; i < originalCount; i++) {
-    let dot = document.createElement("span");
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement("span");
     dotsContainer.appendChild(dot);
   }
 
   const dots = dotsContainer.querySelectorAll("span");
 
-  function updateUI() {
-    let index = Math.floor((-position) / itemWidth) % originalCount;
-if (index < 0) index += originalCount;
+  // ===== تحديث الشكل =====
+  function updateSlider() {
+    track.style.transform = `translateX(${-(current * itemWidth)}px)`;
 
-    galleryItems.forEach(el => {
-      el.classList.remove("active", "near");
-    });
+    items.forEach(el => el.classList.remove("active", "near"));
 
-    let center = index + originalCount;
-
-    if (galleryItems[center]) galleryItems[center].classList.add("active");
-    if (galleryItems[center - 1]) galleryItems[center - 1].classList.add("near");
-    if (galleryItems[center + 1]) galleryItems[center + 1].classList.add("near");
+    if (items[current]) items[current].classList.add("active");
+    if (items[current - 1]) items[current - 1].classList.add("near");
+    if (items[current + 1]) items[current + 1].classList.add("near");
 
     dots.forEach(d => d.classList.remove("active"));
-    if (dots[index]) dots[index].classList.add("active");
+    if (dots[current]) dots[current].classList.add("active");
   }
 
-  function animate() {
-  if (!isDown && autoPlay) {
-    position += speed;
-
-    if (position >= 0) position -= track.scrollWidth / 2;
-    if (position <= -track.scrollWidth / 2) position += track.scrollWidth / 2;
-
-    track.style.transform = `translateX(${position}px)`;
-
-    updateUI();
+  // ===== التنقل =====
+  function nextSlide() {
+    current = (current + 1) % total;
+    updateSlider();
   }
 
-  requestAnimationFrame(animate);
-}
+  function prevSlide() {
+    current = (current - 1 + total) % total;
+    updateSlider();
+  }
 
-  updateUI();
-  animate();
+  // ===== autoplay =====
+  function startAuto() {
+    stopAuto();
+    autoTimer = setTimeout(function autoLoop() {
+      nextSlide();
+      autoTimer = setTimeout(autoLoop, 2000); // كل صورة تقف 2 ثانية
+    }, 5000); // يبدأ بعد 5 ثواني
+  }
 
-function resumeAuto() {
-  clearTimeout(autoTimeout);
-  autoTimeout = setTimeout(() => {
-    autoPlay = true;
-  }, 2000); // 👈 ثانيتين
-}
+  function stopAuto() {
+    clearTimeout(autoTimer);
+  }
 
-  // ===== TOUCH =====
+  // ===== السحب =====
   track.addEventListener("touchstart", (e) => {
-    isDown = true;
+    isDragging = true;
     startX = e.touches[0].clientX;
+    stopAuto();
   });
 
-  track.addEventListener("touchmove", (e) => {
-    let move = e.touches[0].clientX - startX;
-    position += move;
-    track.style.transform = `translateX(${position}px)`;
-    startX = e.touches[0].clientX;
+  track.addEventListener("touchend", (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+
+    let endX = e.changedTouches[0].clientX;
+    let diff = endX - startX;
+
+    if (diff > 50) {
+      prevSlide();
+    } else if (diff < -50) {
+      nextSlide();
+    }
+
+    startAuto();
   });
 
-  track.addEventListener("touchstart", (e) => {
-  isDown = true;
-  autoPlay = false; // 👈 وقف الأوتو
-  startX = e.touches[0].clientX;
-});
-
-track.addEventListener("touchend", () => {
-  isDown = false;
-  resumeAuto(); // 👈 رجع الأوتو بعد ثانيتين
-});
-
-  // ===== MOUSE =====
+  // ===== ماوس =====
   track.addEventListener("mousedown", (e) => {
-  isDown = true;
-  autoPlay = false; // 👈 وقف الأوتو
-  startX = e.clientX;
-});
-
-window.addEventListener("mouseup", () => {
-  isDown = false;
-  resumeAuto(); // 👈 رجع الأوتو
-});
-
-    let move = e.clientX - startX;
-    position += move;
-    track.style.transform = `translateX(${position}px)`;
+    isDragging = true;
     startX = e.clientX;
+    stopAuto();
   });
 
-  window.addEventListener("mouseup", () => {
-    isDown = false;
+  window.addEventListener("mouseup", (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+
+    let diff = e.clientX - startX;
+
+    if (diff > 50) {
+      prevSlide();
+    } else if (diff < -50) {
+      nextSlide();
+    }
+
+    startAuto();
   });
+
+  // ===== ضغط على الدوتس =====
+  dots.forEach((dot, index) => {
+    dot.addEventListener("click", () => {
+      current = index;
+      updateSlider();
+      startAuto();
+    });
+  });
+
+  updateSlider();
+  startAuto();
 });
 </script>
 
