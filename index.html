@@ -408,12 +408,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const gap = 20;
   let itemWidth;
 
-  // 🧠 نحسب العرض بعد ما الصفحة تجهز
+  // 🧠 حساب العرض
   function calculateWidth() {
     itemWidth = items[0].offsetWidth + gap;
   }
 
-  // 📍 توسيط العنصر في النص
+  // 📍 توسيط العنصر
   function getOffset() {
     const containerWidth = track.parentElement.offsetWidth;
     return (containerWidth / 2) - (itemWidth / 2);
@@ -436,15 +436,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const getDots = () => dotsContainer.querySelectorAll("span");
 
-  // 🔥 الدالة الأساسية (كل حاجة منها)
+  // 🔥 الحركة الأساسية (RTL FIX)
   function goTo(index) {
     current = index;
 
     const offset = getOffset();
-    const x = offset - (current * itemWidth);
+
+    // 👇 أهم سطر (عكس الاتجاه)
+    const x = offset + (current * itemWidth);
 
     track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
-    track.style.transform = `translate3d(${x}px,0,0)`;
+    track.style.transform = `translate3d(${-x}px,0,0)`;
 
     updateUI();
     restartAuto();
@@ -463,6 +465,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (dots[current]) dots[current].classList.add("active");
   }
 
+  // 👉 الاتجاه الطبيعي في RTL
   function next() {
     goTo((current + 1) % items.length);
   }
@@ -471,12 +474,12 @@ window.addEventListener("DOMContentLoaded", () => {
     goTo((current - 1 + items.length) % items.length);
   }
 
-  // ===== autoplay =====
+  // ===== autoplay الذكي =====
   function startAuto() {
     stopAuto();
     autoTimer = setInterval(() => {
-      next(); // 👉 متناسق مع الدوتس
-    }, 3000);
+      next(); // 👉 يمشي زي الدوتس
+    }, 2800);
   }
 
   function stopAuto() {
@@ -488,7 +491,7 @@ window.addEventListener("DOMContentLoaded", () => {
     setTimeout(startAuto, 4000);
   }
 
-  // ===== drag (خفيف بدون لاج) =====
+  // ===== drag (RTL متظبط) =====
   let startX = 0;
   let isDragging = false;
 
@@ -504,12 +507,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let diff = e.changedTouches[0].clientX - startX;
 
-    if (diff < -50) next();
-    else if (diff > 50) prev();
+    // 👇 عكسنا الاتجاه
+    if (diff < -50) prev();
+    else if (diff > 50) next();
     else goTo(current);
   });
 
-  // 🖱️ دعم الماوس
+  // 🖱️ ماوس
   track.addEventListener("mousedown", e => {
     isDragging = true;
     startX = e.clientX;
@@ -522,12 +526,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let diff = e.clientX - startX;
 
-    if (diff < -50) next();
-    else if (diff > 50) prev();
+    if (diff < -50) prev();
+    else if (diff > 50) next();
     else goTo(current);
   });
 
-  // 📱 إعادة الحساب عند تغيير الشاشة
+  // 📱 resize fix
   window.addEventListener("resize", () => {
     calculateWidth();
     goTo(current);
@@ -536,7 +540,10 @@ window.addEventListener("DOMContentLoaded", () => {
   // ===== init =====
   calculateWidth();
   createDots();
+
+  // 👇 يبدأ من اليمين (أول صورة)
   goTo(0);
+
   startAuto();
 
 });
