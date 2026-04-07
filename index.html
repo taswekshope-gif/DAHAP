@@ -211,17 +211,14 @@ pointer-events: none; /* يمنع أي ضغط */
 .gallery-track {
   display: flex;
   gap: 20px;
-  width: max-content;
   will-change: transform;
-  align-items: center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); /* 🔥 سموث */
 }
 
 .item {
   flex: 0 0 auto;
   width: 200px;
-  transition: 0.35s ease;
-  opacity: 1;
-  transform: scale(0.9);
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
 /* الصورة الأساسية */
@@ -408,23 +405,28 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let current = 0;
   let startX = 0;
+  let currentTranslate = 0;
+  let prevTranslate = 0;
   let isDragging = false;
+  let animationID;
   let autoTimer;
 
   const itemWidth = items[0].offsetWidth + 20;
 
-  // ===== إنشاء الدوتس =====
+  // ===== dots =====
   dotsContainer.innerHTML = "";
   for (let i = 0; i < total; i++) {
-    const dot = document.createElement("span");
+    let dot = document.createElement("span");
     dotsContainer.appendChild(dot);
   }
 
   const dots = dotsContainer.querySelectorAll("span");
 
-  // ===== تحديث الشكل =====
-  function updateSlider() {
-    track.style.transform = `translateX(${-(current * itemWidth)}px)`;
+  function updateUI() {
+    currentTranslate = -current * itemWidth;
+    prevTranslate = currentTranslate;
+
+    track.style.transform = `translate3d(${currentTranslate}px,0,0)`;
 
     items.forEach(el => el.classList.remove("active", "near"));
 
@@ -436,85 +438,83 @@ window.addEventListener("DOMContentLoaded", () => {
     if (dots[current]) dots[current].classList.add("active");
   }
 
-  // ===== التنقل =====
-  function nextSlide() {
+  function next() {
     current = (current + 1) % total;
-    updateSlider();
+    updateUI();
   }
 
-  function prevSlide() {
+  function prev() {
     current = (current - 1 + total) % total;
-    updateSlider();
+    updateUI();
   }
 
   // ===== autoplay =====
   function startAuto() {
     stopAuto();
-    autoTimer = setTimeout(function autoLoop() {
-      nextSlide();
-      autoTimer = setTimeout(autoLoop, 2000); // كل صورة تقف 2 ثانية
-    }, 5000); // يبدأ بعد 5 ثواني
+    autoTimer = setTimeout(function loop() {
+      next();
+      autoTimer = setTimeout(loop, 2000);
+    }, 5000);
   }
 
   function stopAuto() {
     clearTimeout(autoTimer);
   }
 
-  // ===== السحب =====
-  track.addEventListener("touchstart", (e) => {
+  // ===== drag animation (بدون لاج) =====
+  function animation() {
+    track.style.transform = `translate3d(${currentTranslate}px,0,0)`;
+    if (isDragging) requestAnimationFrame(animation);
+  }
+
+  function touchStart(x) {
     isDragging = true;
-    startX = e.touches[0].clientX;
+    startX = x;
     stopAuto();
-  });
+    animationID = requestAnimationFrame(animation);
+    track.style.transition = "none"; // مهم عشان السحب يبقى فوري
+  }
 
-  track.addEventListener("touchend", (e) => {
+  function touchMove(x) {
     if (!isDragging) return;
+    const diff = x - startX;
+    currentTranslate = prevTranslate + diff;
+  }
+
+  function touchEnd(x) {
     isDragging = false;
+    cancelAnimationFrame(animationID);
 
-    let endX = e.changedTouches[0].clientX;
-    let diff = endX - startX;
+    const moved = x - startX;
 
-    if (diff > 50) {
-      prevSlide();
-    } else if (diff < -50) {
-      nextSlide();
-    }
+    if (moved < -50) next();
+    else if (moved > 50) prev();
+    else updateUI();
 
+    track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
     startAuto();
-  });
+  }
 
-  // ===== ماوس =====
-  track.addEventListener("mousedown", (e) => {
-    isDragging = true;
-    startX = e.clientX;
-    stopAuto();
-  });
+  // ===== touch =====
+  track.addEventListener("touchstart", e => touchStart(e.touches[0].clientX));
+  track.addEventListener("touchmove", e => touchMove(e.touches[0].clientX));
+  track.addEventListener("touchend", e => touchEnd(e.changedTouches[0].clientX));
 
-  window.addEventListener("mouseup", (e) => {
-    if (!isDragging) return;
-    isDragging = false;
+  // ===== mouse =====
+  track.addEventListener("mousedown", e => touchStart(e.clientX));
+  window.addEventListener("mousemove", e => touchMove(e.clientX));
+  window.addEventListener("mouseup", e => touchEnd(e.clientX));
 
-    let diff = e.clientX - startX;
-
-    if (diff > 50) {
-      prevSlide();
-    } else if (diff < -50) {
-      nextSlide();
-    }
-
-    startAuto();
-  });
-
-  // ===== ضغط على الدوتس =====
-  dots.forEach((dot, index) => {
+  // ===== dots click =====
+  dots.forEach((dot, i) => {
     dot.addEventListener("click", () => {
-      current = index;
-      updateSlider();
+      current = i;
+      updateUI();
       startAuto();
     });
   });
 
-  updateSlider();
+  updateUI();
   startAuto();
 });
 </script>
