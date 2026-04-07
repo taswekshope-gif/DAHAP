@@ -398,7 +398,6 @@ button:hover { background:#095c4d; }
 
 <script>
 window.addEventListener("DOMContentLoaded", () => {
-
   const track = document.getElementById("track");
   const items = Array.from(document.querySelectorAll(".item"));
   const dotsContainer = document.getElementById("dots");
@@ -406,12 +405,11 @@ window.addEventListener("DOMContentLoaded", () => {
   if (!track || !items.length) return;
 
   let current = 0;
-  let isDragging = false;
   let startX = 0;
-  let autoPlay;
+  let isDragging = false;
+  let itemWidth = 0;
 
   const gap = 20;
-  let itemWidth = 0;
 
   // =====================
   // حساب المقاس
@@ -428,144 +426,115 @@ window.addEventListener("DOMContentLoaded", () => {
 
     items.forEach((_, i) => {
       const dot = document.createElement("span");
-
       dot.onclick = () => goTo(i);
-
       dotsContainer.appendChild(dot);
     });
   }
 
-  function dots() {
-    return dotsContainer.querySelectorAll("span");
+  function updateDots() {
+    const dots = dotsContainer.querySelectorAll("span");
+
+    dots.forEach(d => d.classList.remove("active"));
+    if (dots[current]) dots[current].classList.add("active");
   }
 
   // =====================
-  // الحركة الأساسية (FIXED RTL)
+  // أهم جزء (CENTER FIX + NO LAG)
   // =====================
   function goTo(index) {
-  current = (index + items.length) % items.length;
+    current = (index + items.length) % items.length;
 
-  const containerWidth = track.parentElement.offsetWidth;
+    const containerWidth = track.parentElement.offsetWidth;
 
-  const center = Math.floor(items.length / 2);
+    const offset = (containerWidth - itemWidth) / 2;
 
-  // 🔥 أهم فكرة: نخلي الحالي في النص بصريًا
-  const baseOffset = (containerWidth / 2) - (itemWidth / 2);
+    const x = offset - current * itemWidth;
 
-  const x = baseOffset - (current * itemWidth);
+    track.style.transition = "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)";
+    track.style.transform = `translate3d(${x}px,0,0)`;
 
-  track.style.transition = "transform 0.6s cubic-bezier(0.22,1,0.36,1)";
-  track.style.transform = `translate3d(${x}px,0,0)`;
-
-  updateUI();
-  restartAuto();
-}
+    updateUI();
+  }
 
   // =====================
   // UI
   // =====================
   function updateUI() {
-    const d = dots();
-
     items.forEach(i => i.classList.remove("active", "near"));
 
     if (items[current]) items[current].classList.add("active");
     if (items[current - 1]) items[current - 1].classList.add("near");
     if (items[current + 1]) items[current + 1].classList.add("near");
 
-    d.forEach(x => x.classList.remove("active"));
-    if (d[current]) d[current].classList.add("active");
+    updateDots();
   }
 
   // =====================
-  // الاتجاه الصح
+  // next / prev (RTL FIX)
   // =====================
   function next() {
-    goTo(current - 1); // يمين -> شمال بصريًا
-  }
-
-  function prev() {
     goTo(current + 1);
   }
 
-  // =====================
-  // Auto Scroll (FIXED)
-  // =====================
-  function startAuto() {
-    stopAuto();
-    autoPlay = setInterval(() => {
-      next();
-    }, 2200);
-  }
-
-  function stopAuto() {
-    clearInterval(autoPlay);
-  }
-
-  function restartAuto() {
-    stopAuto();
-    setTimeout(startAuto, 2500);
+  function prev() {
+    goTo(current - 1);
   }
 
   // =====================
-  // Drag (Smooth + no lag)
+  // DRAG (Smooth)
   // =====================
-  function onStart(x) {
+  function startDrag(x) {
     isDragging = true;
     startX = x;
-    stopAuto();
     track.style.transition = "none";
   }
 
-  function onMove(x) {
+  function moveDrag(x) {
     if (!isDragging) return;
 
     const diff = x - startX;
 
-    const baseOffset = (track.parentElement.offsetWidth - itemWidth) / 2;
-    const xPos = baseOffset - (current * itemWidth) + diff;
+    const containerWidth = track.parentElement.offsetWidth;
+    const offset = (containerWidth - itemWidth) / 2;
+
+    const xPos = offset - current * itemWidth + diff;
 
     track.style.transform = `translate3d(${xPos}px,0,0)`;
   }
 
-  function onEnd(x) {
+  function endDrag(x) {
     if (!isDragging) return;
     isDragging = false;
 
     const diff = x - startX;
 
-    if (diff < -60) next();
-    else if (diff > 60) prev();
+    if (diff < -50) next();
+    else if (diff > 50) prev();
     else goTo(current);
   }
 
   // =====================
-  // Events
+  // EVENTS
   // =====================
-  track.addEventListener("touchstart", e => onStart(e.touches[0].clientX));
-  track.addEventListener("touchmove", e => onMove(e.touches[0].clientX));
-  track.addEventListener("touchend", e => onEnd(e.changedTouches[0].clientX));
+  track.addEventListener("touchstart", e => startDrag(e.touches[0].clientX));
+  track.addEventListener("touchmove", e => moveDrag(e.touches[0].clientX));
+  track.addEventListener("touchend", e => endDrag(e.changedTouches[0].clientX));
 
-  track.addEventListener("mousedown", e => onStart(e.clientX));
-  window.addEventListener("mousemove", e => onMove(e.clientX));
-  window.addEventListener("mouseup", e => onEnd(e.clientX));
+  track.addEventListener("mousedown", e => startDrag(e.clientX));
+  window.addEventListener("mousemove", e => moveDrag(e.clientX));
+  window.addEventListener("mouseup", e => endDrag(e.clientX));
 
   // =====================
-  // resize
+  // INIT
   // =====================
   window.addEventListener("resize", () => {
     updateSize();
     goTo(current);
   });
 
-  // =====================
-  // init
-  // =====================
   updateSize();
   createDots();
   goTo(0);
-  startAuto();
-
 });
 </script>
 
