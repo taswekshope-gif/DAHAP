@@ -398,36 +398,41 @@ button:hover { background:#095c4d; }
 <script>
 window.addEventListener("DOMContentLoaded", () => {
   const track = document.getElementById("track");
+  const items = document.querySelectorAll(".item");
   const dotsContainer = document.getElementById("dots");
-
-  const items = track.querySelectorAll(".item");
-  const total = items.length;
 
   let current = 0;
   let startX = 0;
+  let isDragging = false;
   let currentTranslate = 0;
   let prevTranslate = 0;
-  let isDragging = false;
   let animationID;
   let autoTimer;
 
-  const itemWidth = items[0].offsetWidth + 20;
+  const gap = 20;
+  const itemWidth = items[0].offsetWidth + gap;
+
+  // ====== CENTER FIX (الصورة في النص) ======
+  function getCenterOffset() {
+    const containerWidth = track.parentElement.offsetWidth;
+    return (containerWidth / 2) - (itemWidth / 2);
+  }
 
   // ===== dots =====
   dotsContainer.innerHTML = "";
-  for (let i = 0; i < total; i++) {
+  items.forEach((_, i) => {
     let dot = document.createElement("span");
+    dot.addEventListener("click", () => {
+      current = i;
+      moveToSlide();
+      restartAuto();
+    });
     dotsContainer.appendChild(dot);
-  }
+  });
 
   const dots = dotsContainer.querySelectorAll("span");
 
   function updateUI() {
-    currentTranslate = -current * itemWidth;
-    prevTranslate = currentTranslate;
-
-    track.style.transform = `translate3d(${currentTranslate}px,0,0)`;
-
     items.forEach(el => el.classList.remove("active", "near"));
 
     if (items[current]) items[current].classList.add("active");
@@ -438,30 +443,44 @@ window.addEventListener("DOMContentLoaded", () => {
     if (dots[current]) dots[current].classList.add("active");
   }
 
-  function next() {
-    current = (current + 1) % total;
+  function moveToSlide() {
+    const offset = getCenterOffset();
+    currentTranslate = offset - (current * itemWidth);
+    prevTranslate = currentTranslate;
+
+    track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
+    track.style.transform = `translate3d(${currentTranslate}px,0,0)`;
+
     updateUI();
   }
 
+  function next() {
+    current = (current + 1) % items.length;
+    moveToSlide();
+  }
+
   function prev() {
-    current = (current - 1 + total) % total;
-    updateUI();
+    current = (current - 1 + items.length) % items.length;
+    moveToSlide();
   }
 
   // ===== autoplay =====
   function startAuto() {
-    stopAuto();
-    autoTimer = setTimeout(function loop() {
-      next();
-      autoTimer = setTimeout(loop, 2000);
-    }, 5000);
+    autoTimer = setInterval(() => {
+      next(); // 👉 يمشي مع اتجاه الدوتس
+    }, 2500);
   }
 
   function stopAuto() {
-    clearTimeout(autoTimer);
+    clearInterval(autoTimer);
   }
 
-  // ===== drag animation (بدون لاج) =====
+  function restartAuto() {
+    stopAuto();
+    setTimeout(startAuto, 5000); // 👈 يبدأ بعد 5 ثواني
+  }
+
+  // ===== drag =====
   function animation() {
     track.style.transform = `translate3d(${currentTranslate}px,0,0)`;
     if (isDragging) requestAnimationFrame(animation);
@@ -472,7 +491,7 @@ window.addEventListener("DOMContentLoaded", () => {
     startX = x;
     stopAuto();
     animationID = requestAnimationFrame(animation);
-    track.style.transition = "none"; // مهم عشان السحب يبقى فوري
+    track.style.transition = "none";
   }
 
   function touchMove(x) {
@@ -487,34 +506,24 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const moved = x - startX;
 
-    if (moved < -50) next();
-    else if (moved > 50) prev();
-    else updateUI();
+    if (moved < -50) next();      // 👉 سحب شمال
+    else if (moved > 50) prev();  // 👉 سحب يمين
+    else moveToSlide();
 
-    track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
-    startAuto();
+    restartAuto();
   }
 
-  // ===== touch =====
+  // ===== events =====
   track.addEventListener("touchstart", e => touchStart(e.touches[0].clientX));
   track.addEventListener("touchmove", e => touchMove(e.touches[0].clientX));
   track.addEventListener("touchend", e => touchEnd(e.changedTouches[0].clientX));
 
-  // ===== mouse =====
   track.addEventListener("mousedown", e => touchStart(e.clientX));
   window.addEventListener("mousemove", e => touchMove(e.clientX));
   window.addEventListener("mouseup", e => touchEnd(e.clientX));
 
-  // ===== dots click =====
-  dots.forEach((dot, i) => {
-    dot.addEventListener("click", () => {
-      current = i;
-      updateUI();
-      startAuto();
-    });
-  });
-
-  updateUI();
+  // ===== init =====
+  moveToSlide();
   startAuto();
 });
 </script>
