@@ -411,6 +411,9 @@ window.addEventListener("load", () => {
   let isDown = false;
   let startX = 0;
 
+let autoPlay = true;
+let autoTimeout;
+
   const galleryItems = track.querySelectorAll(".item"); // 🔥 غير الاسم
 
   const itemWidth = galleryItems[0].offsetWidth + 20;
@@ -429,8 +432,8 @@ window.addEventListener("load", () => {
   const dots = dotsContainer.querySelectorAll("span");
 
   function updateUI() {
-    let index =
-      Math.floor(Math.abs(position) / itemWidth) % originalCount;
+    let index = Math.floor((-position) / itemWidth) % originalCount;
+if (index < 0) index += originalCount;
 
     galleryItems.forEach(el => {
       el.classList.remove("active", "near");
@@ -447,22 +450,29 @@ window.addEventListener("load", () => {
   }
 
   function animate() {
-    if (!isDown) {
-      position += speed;
+  if (!isDown && autoPlay) {
+    position += speed;
 
-      if (position >= 0) position -= track.scrollWidth / 2;
-      if (position <= -track.scrollWidth / 2) position += track.scrollWidth / 2;
+    if (position >= 0) position -= track.scrollWidth / 2;
+    if (position <= -track.scrollWidth / 2) position += track.scrollWidth / 2;
 
-      track.style.transform = `translateX(${position}px)`;
+    track.style.transform = `translateX(${position}px)`;
 
-      updateUI();
-    }
-
-    requestAnimationFrame(animate);
+    updateUI();
   }
+
+  requestAnimationFrame(animate);
+}
 
   updateUI();
   animate();
+
+function resumeAuto() {
+  clearTimeout(autoTimeout);
+  autoTimeout = setTimeout(() => {
+    autoPlay = true;
+  }, 2000); // 👈 ثانيتين
+}
 
   // ===== TOUCH =====
   track.addEventListener("touchstart", (e) => {
@@ -477,18 +487,28 @@ window.addEventListener("load", () => {
     startX = e.touches[0].clientX;
   });
 
-  track.addEventListener("touchend", () => {
-    isDown = false;
-  });
+  track.addEventListener("touchstart", (e) => {
+  isDown = true;
+  autoPlay = false; // 👈 وقف الأوتو
+  startX = e.touches[0].clientX;
+});
+
+track.addEventListener("touchend", () => {
+  isDown = false;
+  resumeAuto(); // 👈 رجع الأوتو بعد ثانيتين
+});
 
   // ===== MOUSE =====
   track.addEventListener("mousedown", (e) => {
-    isDown = true;
-    startX = e.clientX;
-  });
+  isDown = true;
+  autoPlay = false; // 👈 وقف الأوتو
+  startX = e.clientX;
+});
 
-  window.addEventListener("mousemove", (e) => {
-    if (!isDown) return;
+window.addEventListener("mouseup", () => {
+  isDown = false;
+  resumeAuto(); // 👈 رجع الأوتو
+});
 
     let move = e.clientX - startX;
     position += move;
