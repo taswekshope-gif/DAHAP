@@ -213,7 +213,7 @@ pointer-events: none; /* يمنع أي ضغط */
 
   gap: 20px;
   will-change: transform;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0,0,0); cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .item {
@@ -443,21 +443,23 @@ window.addEventListener("DOMContentLoaded", () => {
   // الحركة الأساسية (FIXED RTL)
   // =====================
   function goTo(index) {
-    current = (index + items.length) % items.length;
+  current = (index + items.length) % items.length;
 
-    const containerWidth = track.parentElement.offsetWidth;
+  const containerWidth = track.parentElement.offsetWidth;
 
-    // 🔥 أهم تعديل (بداية من اليمين + تمركز صح)
-    const baseOffset = (containerWidth - itemWidth) / 2;
+  const center = Math.floor(items.length / 2);
 
-    const x = baseOffset - (current * itemWidth);
+  // 🔥 أهم فكرة: نخلي الحالي في النص بصريًا
+  const baseOffset = (containerWidth / 2) - (itemWidth / 2);
 
-    track.style.transition = "transform 0.6s cubic-bezier(0.22,1,0.36,1)";
-    track.style.transform = `translate3d(${x}px,0,0)`;
+  const x = baseOffset - (current * itemWidth);
 
-    updateUI();
-    restartAuto();
-  }
+  track.style.transition = "transform 0.6s cubic-bezier(0.22,1,0.36,1)";
+  track.style.transform = `translate3d(${x}px,0,0)`;
+
+  updateUI();
+  restartAuto();
+}
 
   // =====================
   // UI
@@ -479,11 +481,11 @@ window.addEventListener("DOMContentLoaded", () => {
   // الاتجاه الصح
   // =====================
   function next() {
-    goTo(current + 1); // يمين -> شمال بصريًا
+    goTo(current - 1); // يمين -> شمال بصريًا
   }
 
   function prev() {
-    goTo(current - 1);
+    goTo(current + 1);
   }
 
   // =====================
