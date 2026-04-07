@@ -405,6 +405,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let current = 0;
   let autoTimer;
+  let resumeTimer;
 
   const gap = 20;
   let itemWidth;
@@ -446,7 +447,9 @@ window.addEventListener("DOMContentLoaded", () => {
     // 👇 أهم سطر (عكس الاتجاه)
     const x = offset - (current * itemWidth);
 
-    track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
+    let duration = (index === 0 && current === items.length - 1) ? 1.2 : 0.5;
+
+track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
     track.style.transform = `translate3d(${x}px,0,0)`;
 
     updateUI();
@@ -481,18 +484,30 @@ window.addEventListener("DOMContentLoaded", () => {
 // 🚫 منع أي تفاعل على الصور (Click + Hold + Menu)
 document.querySelectorAll(".item").forEach(img => {
 
-  // منع الضغط العادي
+  img.addEventListener("touchstart", () => {
+    stopAuto();
+
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(startAuto, 5000); // ⏱️ يرجع بعد 5 ثواني
+  });
+
+  img.addEventListener("mousedown", () => {
+    stopAuto();
+
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(startAuto, 5000);
+  });
+
+  // منع أي تفاعل
   img.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
   });
 
-  // منع الضغط المطوّل (long press menu)
   img.addEventListener("contextmenu", (e) => {
     e.preventDefault();
   });
 
-  // منع السحب اللي بيعمل preview في بعض الموبايلات
   img.addEventListener("dragstart", (e) => {
     e.preventDefault();
   });
