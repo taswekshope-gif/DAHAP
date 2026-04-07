@@ -478,6 +478,27 @@ window.addEventListener("DOMContentLoaded", () => {
     goTo((current - 1 + items.length) % items.length);
   }
 
+// 🚫 منع أي تفاعل على الصور (Click + Hold + Menu)
+document.querySelectorAll(".item").forEach(img => {
+
+  // منع الضغط العادي
+  img.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  // منع الضغط المطوّل (long press menu)
+  img.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+  });
+
+  // منع السحب اللي بيعمل preview في بعض الموبايلات
+  img.addEventListener("dragstart", (e) => {
+    e.preventDefault();
+  });
+
+});
+
   // ===== autoplay الذكي =====
   function startAuto() {
     stopAuto();
