@@ -210,7 +210,7 @@ pointer-events: none; /* يمنع أي ضغط */
 
 .gallery-track {
   display: flex;
-  flex-direction: row-reverse; /* 🔥 الحل السحري */
+
   gap: 20px;
   will-change: transform;
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -445,20 +445,21 @@ window.addEventListener("DOMContentLoaded", () => {
   // الحركة الأساسية (RTL FIX بدون عكس تصميم)
   // ===============================
   function goTo(index) {
-    current = (index + items.length) % items.length;
+  current = (index + items.length) % items.length;
 
-    const containerWidth = track.parentElement.offsetWidth;
-    const offset = (containerWidth / 2) - (itemWidth / 2);
+  const containerWidth = track.parentElement.offsetWidth;
+  const offset = containerWidth - itemWidth; 
+  const centerOffset = offset / 2;
 
-    // 🔥 السر هنا: بدون row-reverse + RTL طبيعي
-    const x = offset - (current * itemWidth);
+  // 🔥 هنا الفرق الحقيقي
+  const x = centerOffset - (current * itemWidth);
 
-    track.style.transition = "transform 0.55s cubic-bezier(0.22,1,0.36,1)";
-    track.style.transform = `translate3d(${x}px,0,0)`;
+  track.style.transition = "transform 0.55s cubic-bezier(0.22,1,0.36,1)";
+  track.style.transform = `translate3d(${x}px,0,0)`;
 
-    updateUI();
-    restartAuto();
-  }
+  updateUI();
+  restartAuto();
+}
 
   // ===============================
   // تحديث UI (active + dots)
