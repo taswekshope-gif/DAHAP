@@ -210,9 +210,10 @@ pointer-events: none; /* يمنع أي ضغط */
 
 .gallery-track {
   display: flex;
+  flex-direction: row-reverse; /* 🔥 الحل السحري */
   gap: 20px;
   will-change: transform;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); /* 🔥 سموث */
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .item {
@@ -443,10 +444,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const offset = getOffset();
 
     // 👇 أهم سطر (عكس الاتجاه)
-    const x = offset + (current * itemWidth);
+    const x = offset - (current * itemWidth);
 
     track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
-    track.style.transform = `translate3d(${-x}px,0,0)`;
+    track.style.transform = `translate3d(${x}px,0,0)`;
 
     updateUI();
     restartAuto();
@@ -508,8 +509,8 @@ window.addEventListener("DOMContentLoaded", () => {
     let diff = e.changedTouches[0].clientX - startX;
 
     // 👇 عكسنا الاتجاه
-    if (diff < -50) prev();
-    else if (diff > 50) next();
+    if (diff < -50) next();
+   else if (diff > 50) prev();
     else goTo(current);
   });
 
