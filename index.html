@@ -406,96 +406,94 @@ window.addEventListener("DOMContentLoaded", () => {
   if (!track || !items.length) return;
 
   let current = 0;
-  let startX = 0;
   let isDragging = false;
+  let startX = 0;
   let autoPlay;
 
   const gap = 20;
   let itemWidth = 0;
 
-  // ===============================
-  // حساب العرض الحقيقي
-  // ===============================
+  // =====================
+  // حساب المقاس
+  // =====================
   function updateSize() {
     itemWidth = items[0].offsetWidth + gap;
   }
 
-  // ===============================
-  // إنشاء الدوتس
-  // ===============================
+  // =====================
+  // الدوتس
+  // =====================
   function createDots() {
     dotsContainer.innerHTML = "";
 
     items.forEach((_, i) => {
       const dot = document.createElement("span");
 
-      dot.addEventListener("click", () => {
-        goTo(i);
-      });
+      dot.onclick = () => goTo(i);
 
       dotsContainer.appendChild(dot);
     });
   }
 
-  function getDots() {
+  function dots() {
     return dotsContainer.querySelectorAll("span");
   }
 
-  // ===============================
-  // الحركة الأساسية (RTL FIX بدون عكس تصميم)
-  // ===============================
+  // =====================
+  // الحركة الأساسية (FIXED RTL)
+  // =====================
   function goTo(index) {
-  current = (index + items.length) % items.length;
+    current = (index + items.length) % items.length;
 
-  const containerWidth = track.parentElement.offsetWidth;
-  const offset = containerWidth - itemWidth; 
-  const centerOffset = offset / 2;
+    const containerWidth = track.parentElement.offsetWidth;
 
-  // 🔥 هنا الفرق الحقيقي
-  const x = centerOffset - (current * itemWidth);
+    // 🔥 أهم تعديل (بداية من اليمين + تمركز صح)
+    const baseOffset = (containerWidth - itemWidth) / 2;
 
-  track.style.transition = "transform 0.55s cubic-bezier(0.22,1,0.36,1)";
-  track.style.transform = `translate3d(${x}px,0,0)`;
+    const x = baseOffset - (current * itemWidth);
 
-  updateUI();
-  restartAuto();
-}
+    track.style.transition = "transform 0.6s cubic-bezier(0.22,1,0.36,1)";
+    track.style.transform = `translate3d(${x}px,0,0)`;
 
-  // ===============================
-  // تحديث UI (active + dots)
-  // ===============================
+    updateUI();
+    restartAuto();
+  }
+
+  // =====================
+  // UI
+  // =====================
   function updateUI() {
-    const dots = getDots();
+    const d = dots();
 
-    items.forEach(el => el.classList.remove("active", "near"));
+    items.forEach(i => i.classList.remove("active", "near"));
 
     if (items[current]) items[current].classList.add("active");
     if (items[current - 1]) items[current - 1].classList.add("near");
     if (items[current + 1]) items[current + 1].classList.add("near");
 
-    dots.forEach(d => d.classList.remove("active"));
-    if (dots[current]) dots[current].classList.add("active");
+    d.forEach(x => x.classList.remove("active"));
+    if (d[current]) d[current].classList.add("active");
   }
 
-  // ===============================
-  // Next / Prev (RTL طبيعي)
-  // ===============================
+  // =====================
+  // الاتجاه الصح
+  // =====================
   function next() {
-    goTo(current - 1);
+    goTo(current + 1); // يمين -> شمال بصريًا
   }
 
   function prev() {
-    goTo(current + 1);
+    goTo(current - 1);
   }
 
-  // ===============================
-  // Auto smooth scroll (بدون lag)
-  // ===============================
+  // =====================
+  // Auto Scroll (FIXED)
+  // =====================
   function startAuto() {
     stopAuto();
     autoPlay = setInterval(() => {
       next();
-    }, 2500);
+    }, 2200);
   }
 
   function stopAuto() {
@@ -504,12 +502,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function restartAuto() {
     stopAuto();
-    setTimeout(startAuto, 3000);
+    setTimeout(startAuto, 2500);
   }
 
-  // ===============================
-  // Drag (touch + mouse احترافي)
-  // ===============================
+  // =====================
+  // Drag (Smooth + no lag)
+  // =====================
   function onStart(x) {
     isDragging = true;
     startX = x;
@@ -522,7 +520,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const diff = x - startX;
 
-    track.style.transform = `translate3d(${diff}px,0,0)`;
+    const baseOffset = (track.parentElement.offsetWidth - itemWidth) / 2;
+    const xPos = baseOffset - (current * itemWidth) + diff;
+
+    track.style.transform = `translate3d(${xPos}px,0,0)`;
   }
 
   function onEnd(x) {
@@ -536,27 +537,28 @@ window.addEventListener("DOMContentLoaded", () => {
     else goTo(current);
   }
 
-  // Touch
+  // =====================
+  // Events
+  // =====================
   track.addEventListener("touchstart", e => onStart(e.touches[0].clientX));
   track.addEventListener("touchmove", e => onMove(e.touches[0].clientX));
   track.addEventListener("touchend", e => onEnd(e.changedTouches[0].clientX));
 
-  // Mouse
   track.addEventListener("mousedown", e => onStart(e.clientX));
   window.addEventListener("mousemove", e => onMove(e.clientX));
   window.addEventListener("mouseup", e => onEnd(e.clientX));
 
-  // ===============================
-  // Resize fix
-  // ===============================
+  // =====================
+  // resize
+  // =====================
   window.addEventListener("resize", () => {
     updateSize();
     goTo(current);
   });
 
-  // ===============================
-  // INIT
-  // ===============================
+  // =====================
+  // init
+  // =====================
   updateSize();
   createDots();
   goTo(0);
