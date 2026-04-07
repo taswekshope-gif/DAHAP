@@ -454,17 +454,20 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateUI() {
-    const dots = getDots();
+  const dots = getDots();
 
-    items.forEach(el => el.classList.remove("active", "near"));
+  items.forEach(el => el.classList.remove("active", "near"));
 
-    if (items[current]) items[current].classList.add("active");
-    if (items[current - 1]) items[current - 1].classList.add("near");
-    if (items[current + 1]) items[current + 1].classList.add("near");
+  if (items[current]) items[current].classList.add("active");
+  if (items[current - 1]) items[current - 1].classList.add("near");
+  if (items[current + 1]) items[current + 1].classList.add("near");
 
-    dots.forEach(d => d.classList.remove("active"));
-    if (dots[current]) dots[current].classList.add("active");
-  }
+  // ⭐ هنا السر (عكس بصري للدوتس فقط)
+  const reversedIndex = (items.length - 1) - current;
+
+  dots.forEach(d => d.classList.remove("active"));
+  if (dots[reversedIndex]) dots[reversedIndex].classList.add("active");
+}
 
   // 👉 الاتجاه الطبيعي في RTL
   function next() {
