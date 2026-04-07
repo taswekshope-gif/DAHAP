@@ -509,8 +509,8 @@ window.addEventListener("DOMContentLoaded", () => {
     let diff = e.changedTouches[0].clientX - startX;
 
     // 👇 عكسنا الاتجاه
-    if (diff < -50) prev();
-   else if (diff > 50) next();
+    if (diff < -50) next();
+   else if (diff > 50) prev();
     else goTo(current);
   });
 
