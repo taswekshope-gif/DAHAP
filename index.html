@@ -397,42 +397,62 @@ button:hover { background:#095c4d; }
 
 <script>
 window.addEventListener("DOMContentLoaded", () => {
+
   const track = document.getElementById("track");
   const items = document.querySelectorAll(".item");
   const dotsContainer = document.getElementById("dots");
 
   let current = 0;
-  let startX = 0;
-  let isDragging = false;
-  let currentTranslate = 0;
-  let prevTranslate = 0;
-  let animationID;
   let autoTimer;
 
   const gap = 20;
-  const itemWidth = items[0].offsetWidth + gap;
+  let itemWidth;
 
-  // ====== CENTER FIX (الصورة في النص) ======
-  function getCenterOffset() {
+  // 🧠 نحسب العرض بعد ما الصفحة تجهز
+  function calculateWidth() {
+    itemWidth = items[0].offsetWidth + gap;
+  }
+
+  // 📍 توسيط العنصر في النص
+  function getOffset() {
     const containerWidth = track.parentElement.offsetWidth;
     return (containerWidth / 2) - (itemWidth / 2);
   }
 
   // ===== dots =====
-  dotsContainer.innerHTML = "";
-  items.forEach((_, i) => {
-    let dot = document.createElement("span");
-    dot.addEventListener("click", () => {
-      current = i;
-      moveToSlide();
-      restartAuto();
-    });
-    dotsContainer.appendChild(dot);
-  });
+  function createDots() {
+    dotsContainer.innerHTML = "";
 
-  const dots = dotsContainer.querySelectorAll("span");
+    items.forEach((_, i) => {
+      let dot = document.createElement("span");
+
+      dot.addEventListener("click", () => {
+        goTo(i);
+      });
+
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  const getDots = () => dotsContainer.querySelectorAll("span");
+
+  // 🔥 الدالة الأساسية (كل حاجة منها)
+  function goTo(index) {
+    current = index;
+
+    const offset = getOffset();
+    const x = offset - (current * itemWidth);
+
+    track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
+    track.style.transform = `translate3d(${x}px,0,0)`;
+
+    updateUI();
+    restartAuto();
+  }
 
   function updateUI() {
+    const dots = getDots();
+
     items.forEach(el => el.classList.remove("active", "near"));
 
     if (items[current]) items[current].classList.add("active");
@@ -443,32 +463,20 @@ window.addEventListener("DOMContentLoaded", () => {
     if (dots[current]) dots[current].classList.add("active");
   }
 
-  function moveToSlide() {
-    const offset = getCenterOffset();
-    currentTranslate = offset - (current * itemWidth);
-    prevTranslate = currentTranslate;
-
-    track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
-    track.style.transform = `translate3d(${currentTranslate}px,0,0)`;
-
-    updateUI();
-  }
-
   function next() {
-    current = (current + 1) % items.length;
-    moveToSlide();
+    goTo((current + 1) % items.length);
   }
 
   function prev() {
-    current = (current - 1 + items.length) % items.length;
-    moveToSlide();
+    goTo((current - 1 + items.length) % items.length);
   }
 
   // ===== autoplay =====
   function startAuto() {
+    stopAuto();
     autoTimer = setInterval(() => {
-      prev(); // 👉 يمشي مع اتجاه الدوتس
-    }, 2500);
+      next(); // 👉 متناسق مع الدوتس
+    }, 3000);
   }
 
   function stopAuto() {
@@ -477,54 +485,60 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function restartAuto() {
     stopAuto();
-    setTimeout(startAuto, 5000); // 👈 يبدأ بعد 5 ثواني
+    setTimeout(startAuto, 4000);
   }
 
-  // ===== drag =====
-  function animation() {
-    track.style.transform = `translate3d(${currentTranslate}px,0,0)`;
-    if (isDragging) requestAnimationFrame(animation);
-  }
+  // ===== drag (خفيف بدون لاج) =====
+  let startX = 0;
+  let isDragging = false;
 
-  function touchStart(x) {
+  track.addEventListener("touchstart", e => {
     isDragging = true;
-    startX = x;
+    startX = e.touches[0].clientX;
     stopAuto();
-    animationID = requestAnimationFrame(animation);
-    track.style.transition = "none";
-  }
+  });
 
-  function touchMove(x) {
+  track.addEventListener("touchend", e => {
     if (!isDragging) return;
-    const diff = x - startX;
-    currentTranslate = prevTranslate + diff;
-  }
-
-  function touchEnd(x) {
     isDragging = false;
-    cancelAnimationFrame(animationID);
 
-    const moved = x - startX;
+    let diff = e.changedTouches[0].clientX - startX;
 
-    if (moved < -50) next();      // 👉 سحب شمال
-    else if (moved > 50) prev();  // 👉 سحب يمين
-    else moveToSlide();
+    if (diff < -50) next();
+    else if (diff > 50) prev();
+    else goTo(current);
+  });
 
-    restartAuto();
-  }
+  // 🖱️ دعم الماوس
+  track.addEventListener("mousedown", e => {
+    isDragging = true;
+    startX = e.clientX;
+    stopAuto();
+  });
 
-  // ===== events =====
-  track.addEventListener("touchstart", e => touchStart(e.touches[0].clientX));
-  track.addEventListener("touchmove", e => touchMove(e.touches[0].clientX));
-  track.addEventListener("touchend", e => touchEnd(e.changedTouches[0].clientX));
+  window.addEventListener("mouseup", e => {
+    if (!isDragging) return;
+    isDragging = false;
 
-  track.addEventListener("mousedown", e => touchStart(e.clientX));
-  window.addEventListener("mousemove", e => touchMove(e.clientX));
-  window.addEventListener("mouseup", e => touchEnd(e.clientX));
+    let diff = e.clientX - startX;
+
+    if (diff < -50) next();
+    else if (diff > 50) prev();
+    else goTo(current);
+  });
+
+  // 📱 إعادة الحساب عند تغيير الشاشة
+  window.addEventListener("resize", () => {
+    calculateWidth();
+    goTo(current);
+  });
 
   // ===== init =====
-  moveToSlide();
+  calculateWidth();
+  createDots();
+  goTo(0);
   startAuto();
+
 });
 </script>
 
