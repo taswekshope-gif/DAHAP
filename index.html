@@ -210,10 +210,10 @@ pointer-events: none; /* يمنع أي ضغط */
 
 .gallery-track {
   display: flex;
-
   gap: 20px;
   will-change: transform;
-  transform: translate3d(0,0,0); cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0,0,0);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .item {
@@ -404,85 +404,115 @@ window.addEventListener("DOMContentLoaded", () => {
 
   if (!track || !items.length) return;
 
+  // ======================
+  // CLONE (for infinite)
+  // ======================
+  track.innerHTML += track.innerHTML;
+
+  const allItems = Array.from(document.querySelectorAll(".item"));
+
   let current = 0;
-  let startX = 0;
   let isDragging = false;
-  let itemWidth = 0;
+  let startX = 0;
+  let position = 0;
 
   const gap = 20;
+  let itemWidth = 0;
 
-  // =====================
-  // حساب المقاس
-  // =====================
   function updateSize() {
-    itemWidth = items[0].offsetWidth + gap;
+    itemWidth = allItems[0].offsetWidth + gap;
   }
 
-  // =====================
-  // الدوتس
-  // =====================
+  // ======================
+  // DOTS
+  // ======================
+  const originalCount = items.length;
+
   function createDots() {
     dotsContainer.innerHTML = "";
-
-    items.forEach((_, i) => {
+    for (let i = 0; i < originalCount; i++) {
       const dot = document.createElement("span");
       dot.onclick = () => goTo(i);
       dotsContainer.appendChild(dot);
-    });
+    }
   }
 
   function updateDots() {
     const dots = dotsContainer.querySelectorAll("span");
-
     dots.forEach(d => d.classList.remove("active"));
-    if (dots[current]) dots[current].classList.add("active");
+    if (dots[current % originalCount]) {
+      dots[current % originalCount].classList.add("active");
+    }
   }
 
-  // =====================
-  // أهم جزء (CENTER FIX + NO LAG)
-  // =====================
+  // ======================
+  // MOVE CENTER
+  // ======================
   function goTo(index) {
-    current = (index + items.length) % items.length;
+    current = index;
 
-    const containerWidth = track.parentElement.offsetWidth;
+    const centerOffset = (track.parentElement.offsetWidth - itemWidth) / 2;
 
-    const offset = (containerWidth - itemWidth) / 2;
+    position = centerOffset - current * itemWidth;
 
-    const x = offset - current * itemWidth;
-
-    track.style.transition = "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)";
-    track.style.transform = `translate3d(${x}px,0,0)`;
+    track.style.transition = "transform 0.5s cubic-bezier(0.22,1,0.36,1)";
+    track.style.transform = `translate3d(${position}px,0,0)`;
 
     updateUI();
   }
 
-  // =====================
-  // UI
-  // =====================
-  function updateUI() {
-    items.forEach(i => i.classList.remove("active", "near"));
+  // ======================
+  // LOOP FIX
+  // ======================
+  function checkLoop() {
+    const total = originalCount;
 
-    if (items[current]) items[current].classList.add("active");
-    if (items[current - 1]) items[current - 1].classList.add("near");
-    if (items[current + 1]) items[current + 1].classList.add("near");
+    if (current >= total) {
+      current = 0;
+      position += total * itemWidth;
+      track.style.transition = "none";
+      track.style.transform = `translate3d(${position}px,0,0)`;
+    }
+
+    if (current < 0) {
+      current = total - 1;
+      position -= total * itemWidth;
+      track.style.transition = "none";
+      track.style.transform = `translate3d(${position}px,0,0)`;
+    }
+  }
+
+  // ======================
+  // UI
+  // ======================
+  function updateUI() {
+    allItems.forEach(i => i.classList.remove("active", "near"));
+
+    if (allItems[current]) allItems[current].classList.add("active");
+    if (allItems[current - 1]) allItems[current - 1]?.classList.add("near");
+    if (allItems[current + 1]) allItems[current + 1]?.classList.add("near");
 
     updateDots();
   }
 
-  // =====================
-  // next / prev (RTL FIX)
-  // =====================
+  // ======================
+  // NAV
+  // ======================
   function next() {
-    goTo(current + 1);
+    current++;
+    goTo(current);
+    setTimeout(checkLoop, 50);
   }
 
   function prev() {
-    goTo(current - 1);
+    current--;
+    goTo(current);
+    setTimeout(checkLoop, 50);
   }
 
-  // =====================
-  // DRAG (Smooth)
-  // =====================
+  // ======================
+  // DRAG (NO LAG)
+  // ======================
   function startDrag(x) {
     isDragging = true;
     startX = x;
@@ -494,10 +524,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const diff = x - startX;
 
-    const containerWidth = track.parentElement.offsetWidth;
-    const offset = (containerWidth - itemWidth) / 2;
+    const centerOffset = (track.parentElement.offsetWidth - itemWidth) / 2;
 
-    const xPos = offset - current * itemWidth + diff;
+    const xPos = centerOffset - current * itemWidth + diff;
 
     track.style.transform = `translate3d(${xPos}px,0,0)`;
   }
@@ -513,9 +542,9 @@ window.addEventListener("DOMContentLoaded", () => {
     else goTo(current);
   }
 
-  // =====================
+  // ======================
   // EVENTS
-  // =====================
+  // ======================
   track.addEventListener("touchstart", e => startDrag(e.touches[0].clientX));
   track.addEventListener("touchmove", e => moveDrag(e.touches[0].clientX));
   track.addEventListener("touchend", e => endDrag(e.changedTouches[0].clientX));
@@ -524,9 +553,9 @@ window.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("mousemove", e => moveDrag(e.clientX));
   window.addEventListener("mouseup", e => endDrag(e.clientX));
 
-  // =====================
+  // ======================
   // INIT
-  // =====================
+  // ======================
   window.addEventListener("resize", () => {
     updateSize();
     goTo(current);
