@@ -220,7 +220,7 @@ pointer-events: none; /* يمنع أي ضغط */
   flex: 0 0 auto;
   width: 200px;
   transition: 0.35s ease;
-  opacity: 0.6;
+  opacity: 1;
   transform: scale(0.9);
 }
 
@@ -233,36 +233,40 @@ pointer-events: none; /* يمنع أي ضغط */
 
 /* الصور اللي جنبها */
 .item.near {
-  opacity: 0.8;
+  opacity: 0.7;
   transform: scale(0.95);
 }
 
 /* تثبيت شكل الصور */
 .item img {
   width: 100%;
-  height: 200px; /* أكبر */
+  height: 200px;
   object-fit: cover;
   border-radius: 16px;
+  filter: contrast(1.05) brightness(1.05); /* 👈 ده بيشيل البهتان */
 }
 
 .dots {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .dots span {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #ccc;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  opacity: 0.5;
 }
 
 .dots span.active {
-  background: #000;
-  transform: scale(1.3);
+  width: 22px;
+  border-radius: 20px;
+  background: #D4AF37; /* دهبي */
+  opacity: 1;
 }
 
 form {  
