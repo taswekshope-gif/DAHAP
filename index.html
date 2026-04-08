@@ -830,6 +830,8 @@ document.querySelectorAll(".item").forEach(img => {
  ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.
 </div>
 
+<button onclick="resetOrder()">طلب جديد</button>
+
 </section>
 
 <script type="module">
@@ -1118,6 +1120,17 @@ window.addEventListener("DOMContentLoaded", () => {
   toggleItems();
   updatePrice();
 
+// 🛑 لو الطلب اتبعت قبل كده
+if (localStorage.getItem("orderDone") === "yes") {
+
+  // اخفاء الفورم
+  document.getElementById("orderForm").style.display = "none";
+
+  // اظهار رسالة النجاح
+  document.getElementById("successMessage").style.display = "block";
+
+}
+
   // الكمية
   document.getElementById("quantity").addEventListener("change", () => {
     toggleItems();
@@ -1268,6 +1281,9 @@ ${orderDetails.map((item, i) => `
     submitBtn.innerText = "✅ تم إرسال الطلب";
     submitBtn.style.background = "#0F7B65";
     document.getElementById("successMessage").style.display = "block";
+
+// 🧠 حفظ إن الطلب تم
+localStorage.setItem("orderDone", "yes");
     
   setTimeout(() => {
   let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
@@ -1284,6 +1300,11 @@ ${orderDetails.map((item, i) => `
     submitBtn.disabled = false;
     submitBtn.innerText = "تأكيد الطلب";
   }
+
+function resetOrder() {
+  localStorage.removeItem("orderDone");
+  location.reload();
+}
 });
   
 </script>
