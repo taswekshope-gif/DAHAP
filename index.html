@@ -1156,6 +1156,12 @@ window.addEventListener("DOMContentLoaded", () => {
 // 🛑 لو الطلب اتبعت قبل كده
 if (localStorage.getItem("orderDone") === "yes") {
 
+  document.getElementById("orderForm").style.display = "none";
+  document.getElementById("successMessage").style.display = "block";
+  document.getElementById("newOrderBtn").style.display = "block"; // ✅ مهم
+
+}
+
   // اخفاء الفورم
   document.getElementById("orderForm").style.display = "none";
 
