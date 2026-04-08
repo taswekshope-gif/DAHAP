@@ -382,6 +382,17 @@ button:hover { background:#095c4d; }
   cursor:pointer;
   font-weight:bold;
 }
+
+#submitBtn {
+  position: relative;
+  overflow: hidden;
+}
+
+#submitBtn.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 .note { font-size:14px; color:#555; }
 #successMessage { display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px; }
 </style>
@@ -823,7 +834,11 @@ document.querySelectorAll(".item").forEach(img => {
 
 </div>
 
-<button type="submit">تأكيد الطلب</button>
+<button type="submit" id="submitBtn">
+  <span id="btnText">تأكيد الطلب</span>
+  <span id="btnLoader" style="display:none;">⏳ جاري الإرسال...</span>
+</button>
+
 </form>
 <div id="successMessage"
      style="display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px;">
@@ -1157,14 +1172,17 @@ document.querySelectorAll(".lang").forEach((select, index) => {
 });
 
 // ✅ الفورم
-document.getElementById("orderForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
+let submitBtn = document.getElementById("submitBtn");
+let btnText = document.getElementById("btnText");
+let btnLoader = document.getElementById("btnLoader");
 
-let orderID = await generateOrderID();
+// 🛑 لو اتضغط قبل كده
+if (submitBtn.classList.contains("loading")) return;
 
-  let submitBtn = document.querySelector("#orderForm button");
-  submitBtn.innerText = "جاري الإرسال...";
-  submitBtn.disabled = true;
+// تشغيل اللودينج
+submitBtn.classList.add("loading");
+btnText.style.display = "none";
+btnLoader.style.display = "inline";
 
   try {
     let customerName = document.getElementById("customerName").value.trim();
@@ -1188,8 +1206,10 @@ if (allNames.length === 0) {
     "لازم تدخل اسم واحد على الأقل";
   document.getElementById("chainError").style.display = "block";
 
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
+  submitBtn.classList.remove("loading");
+btnLoader.style.display = "none";
+btnText.style.display = "inline";
+btnText.innerText = "تأكيد الطلب";
   return;
 }
 
@@ -1278,7 +1298,10 @@ ${orderDetails.map((item, i) => `
 `;
   
     // نجاح
-    submitBtn.innerText = "✅ تم إرسال الطلب";
+    btnLoader.style.display = "none";
+btnText.style.display = "inline";
+btnText.innerText = "✅ تم إرسال الطلب";
+submitBtn.classList.remove("loading");
     submitBtn.style.background = "#0F7B65";
     document.getElementById("successMessage").style.display = "block";
 
