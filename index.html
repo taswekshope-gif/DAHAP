@@ -1043,18 +1043,18 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
   }
 
   function addName(val) {
-    if (!val) return;
+  if (!val) return;
 
-    let design = box.querySelector(".design").value;
-    let max = design === "مزدوج" ? 2 : 1;
+  let design = box.querySelector(".design").value;
+  let max = design === "مزدوج" ? 2 : 1;
 
-    if orderItems[index].names.length >= max) return;
+  if (orderItems[index].names.length >= max) return;
 
-    orderItems[index].names.push(val);
-    input.value = "";
-    renderTags();
-    updatePrice();
-  }
+  orderItems[index].names.push(val);
+  input.value = "";
+  renderTags();
+  updatePrice();
+}
 
   // Enter + Space
 input.addEventListener("keydown", e => {
@@ -1161,7 +1161,7 @@ if (localStorage.getItem("orderDone") === "yes") {
 
 document.querySelectorAll(".lang").forEach((select, index) => {
   select.addEventListener("change", function () {
-    items[index].lang = this.value;
+    orderItems[index].lang = this.value;
   });
 });
 
@@ -1188,6 +1188,8 @@ btnText.style.display = "none";
 btnLoader.style.display = "inline";
 
   try {
+let orderID = await generateOrderID(); // ✅ هنا
+
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
     let gov = document.getElementById("governorate").value;
@@ -1200,7 +1202,7 @@ let allNames = [];
 document.querySelectorAll(".itemBox").forEach((box, index) => {
   if (box.style.display === "none") return;
 
-  allNames = allNames.concat(items[index].names);
+  allNames = allNames.concat(orderItems[index].names);
 });
 
 // تحقق الأسماء
@@ -1238,12 +1240,12 @@ for (let i = 0; i < quantity; i++) {
 let orderDetails = [];
 
 document.querySelectorAll(".itemBox").forEach((box, index) => {
-  items.forEach((item, i) => {
+  orderItems.forEach((item, i) => {
   if (i >= quantity) item.names = [];
 });
 
   let design = box.querySelector(".design").value;
-  let names = items[index].names;
+  let names = orderItems[index].names;
 
   if (names.length === 0) return;
 
