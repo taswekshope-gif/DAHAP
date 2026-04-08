@@ -402,7 +402,7 @@ button:hover { background:#095c4d; }
 window.addEventListener("DOMContentLoaded", () => {
 
   const track = document.getElementById("track");
-  const items = document.querySelectorAll(".item");
+  const orderItems = document.querySelectorAll(".item");
   const dotsContainer = document.getElementById("dots");
 
   let current = 0;
@@ -414,7 +414,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 🧠 حساب العرض
   function calculateWidth() {
-    itemWidth = items[0].offsetWidth + gap;
+    itemWidth = orderItems[0].offsetWidth + gap;
   }
 
   // 📍 توسيط العنصر
@@ -427,7 +427,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function createDots() {
     dotsContainer.innerHTML = "";
 
-    items.forEach((_, i) => {
+    orderItems.forEach((_, i) => {
       let dot = document.createElement("span");
 
       dot.addEventListener("click", () => {
@@ -461,14 +461,14 @@ track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
   function updateUI() {
   const dots = getDots();
 
-  items.forEach(el => el.classList.remove("active", "near"));
+  orderItems.forEach(el => el.classList.remove("active", "near"));
 
-  if (items[current]) items[current].classList.add("active");
-  if (items[current - 1]) items[current - 1].classList.add("near");
-  if (items[current + 1]) items[current + 1].classList.add("near");
+  if (orderItems[current]) orderItems[current].classList.add("active");
+  if (orderItems[current - 1]) orderItems[current - 1].classList.add("near");
+  if orderItems[current + 1]) orderItems[current + 1].classList.add("near");
 
   // ⭐ هنا السر (عكس بصري للدوتس فقط)
-  const reversedIndex = (items.length - 1) - current;
+  const reversedIndex = (orderItems.length - 1) - current;
 
   dots.forEach(d => d.classList.remove("active"));
   if (dots[reversedIndex]) dots[reversedIndex].classList.add("active");
@@ -476,11 +476,11 @@ track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
 
   // 👉 الاتجاه الطبيعي في RTL
   function next() {
-    goTo((current + 1) % items.length);
+    goTo((current + 1) % orderItems.length);
   }
 
   function prev() {
-    goTo((current - 1 + items.length) % items.length);
+    goTo((current - 1 + orderItems.length) % items.length);
   }
 
 // 🚫 منع أي تفاعل على الصور (Click + Hold + Menu)
@@ -845,7 +845,9 @@ document.querySelectorAll(".item").forEach(img => {
  ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.
 </div>
 
-<button onclick="resetOrder()">طلب جديد</button>
+<button id="newOrderBtn" onclick="resetOrder()" style="display:none;">
+  طلب جديد
+</button>
 
 </section>
 
@@ -868,16 +870,32 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
   
 // ✅ تايمر
-let duration = 3 * 60 * 60;
-setInterval(()=>{
-  let h = Math.floor(duration/3600);
-  let m = Math.floor((duration%3600)/60);
-  let s = duration%60;
+// ⏳ تايمر ذكي
+let savedEndTime = localStorage.getItem("endTime");
+
+if (!savedEndTime) {
+  let endTime = new Date().getTime() + (3 * 60 * 60 * 1000);
+  localStorage.setItem("endTime", endTime);
+  savedEndTime = endTime;
+}
+
+setInterval(() => {
+  let now = new Date().getTime();
+  let distance = savedEndTime - now;
+
+  if (distance < 0) {
+    document.getElementById("countdown").innerHTML = "00:00:00";
+    return;
+  }
+
+  let h = Math.floor(distance / (1000 * 60 * 60));
+  let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  let s = Math.floor((distance % (1000 * 60)) / 1000);
+
   document.getElementById("countdown").innerHTML =
     `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
 
-  if(duration>0) duration--;
-},1000);
+}, 1000);
   
 // المحافظات والمدن
 const govData = {
@@ -1146,6 +1164,8 @@ if (localStorage.getItem("orderDone") === "yes") {
 
 }
 
+document.getElementById("newOrderBtn").style.display = "block";
+
   // الكمية
   document.getElementById("quantity").addEventListener("change", () => {
     toggleItems();
@@ -1177,7 +1197,6 @@ let btnText = document.getElementById("btnText");
 let btnLoader = document.getElementById("btnLoader");
 
 document.getElementById("orderForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
 
 // 🛑 لو اتضغط قبل كده
 if (submitBtn.classList.contains("loading")) return;
@@ -1331,6 +1350,7 @@ ${orderDetails.map((item, i) => `
 
 function resetOrder() {
   localStorage.removeItem("orderDone");
+  localStorage.removeItem("endTime"); // مهم للتايمر
   location.reload();
 }
 });
