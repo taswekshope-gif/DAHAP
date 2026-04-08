@@ -1176,6 +1176,9 @@ let submitBtn = document.getElementById("submitBtn");
 let btnText = document.getElementById("btnText");
 let btnLoader = document.getElementById("btnLoader");
 
+document.getElementById("orderForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
 // 🛑 لو اتضغط قبل كده
 if (submitBtn.classList.contains("loading")) return;
 
@@ -1270,6 +1273,17 @@ orderDetails.push({
   status: "new"
 });
 
+// نجاح
+    btnLoader.style.display = "none";
+btnText.style.display = "inline";
+btnText.innerText = "✅ تم إرسال الطلب";
+submitBtn.classList.remove("loading");
+    submitBtn.style.background = "#0F7B65";
+    document.getElementById("successMessage").style.display = "block";
+
+// 🧠 حفظ إن الطلب تم
+localStorage.setItem("orderDone", "yes");
+
     // ✅ واتساب
 let message = `DAHAP
 كود الطلب: ${orderID}
@@ -1296,17 +1310,6 @@ ${orderDetails.map((item, i) => `
 
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
 `;
-  
-    // نجاح
-    btnLoader.style.display = "none";
-btnText.style.display = "inline";
-btnText.innerText = "✅ تم إرسال الطلب";
-submitBtn.classList.remove("loading");
-    submitBtn.style.background = "#0F7B65";
-    document.getElementById("successMessage").style.display = "block";
-
-// 🧠 حفظ إن الطلب تم
-localStorage.setItem("orderDone", "yes");
     
   setTimeout(() => {
   let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
