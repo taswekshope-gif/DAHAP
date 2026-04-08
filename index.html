@@ -922,7 +922,7 @@ Object.keys(govData).forEach(g=>{
 
 document.querySelectorAll(".design").forEach((select, index) => {
   select.addEventListener("change", function () {
-    items[index].design = this.value;
+    orderItems[index].design = this.value;
     updatePrice();
   });
 });
@@ -992,8 +992,8 @@ function toggleItems() {
       box.style.display = "none";
 
       // تفريغ البيانات لو مخفية
-      if (items[index]) {
-        items[index].names = [];
+      if (orderItems[index]) {
+        orderItems[index].names = [];
       }
     }
   });
@@ -1027,13 +1027,13 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
   function renderTags() {
     tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
 
-    items[index].names.forEach((name, i) => {
+    orderItems[index].names.forEach((name, i) => {
       let tag = document.createElement("div");
       tag.className = "tag";
       tag.innerHTML = `${name} <span>×</span>`;
 
       tag.querySelector("span").onclick = () => {
-        items[index].names.splice(i, 1);
+        orderItems[index].names.splice(i, 1);
         renderTags();
         updatePrice();
       };
@@ -1048,9 +1048,9 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
     let design = box.querySelector(".design").value;
     let max = design === "مزدوج" ? 2 : 1;
 
-    if (items[index].names.length >= max) return;
+    if orderItems[index].names.length >= max) return;
 
-    items[index].names.push(val);
+    orderItems[index].names.push(val);
     input.value = "";
     renderTags();
     updatePrice();
