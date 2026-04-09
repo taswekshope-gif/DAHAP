@@ -290,7 +290,27 @@ font-size:16px;
 .item span { display:block; margin-top:8px; font-weight:bold; }
 .offer { background:#F5F5F5; padding:40px; border-radius:15px; margin-top:20px; }
 .offer del { color:#888; margin-right:10px; }
-.timer { font-size:28px; font-weight:bold; color:#D4AF37; margin-top:15px; }
+
+.timer-box {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-top:20px;
+}
+
+.timer {
+  font-size:32px;
+  font-weight:bold;
+  color:#D4AF37;
+  background: linear-gradient(145deg,#111,#1c1c1c);
+  padding:20px 40px;
+  border-radius:20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4),
+              inset 0 0 10px rgba(255,215,0,0.2);
+  border:1px solid rgba(255,215,0,0.3);
+  letter-spacing:3px;
+}
+
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
 input, select, button { padding:12px; border-radius:8px; border:1px solid #ccc; }
 button { background:#0F7B65; color:#fff; border:none; cursor:pointer; font-weight:bold; }
@@ -395,6 +415,9 @@ window.addEventListener("DOMContentLoaded", () => {
 if (localStorage.getItem("ordered")) {
 
   document.getElementById("orderForm").style.display = "none";
+
+// ❌ إخفاء التايمر والعرض
+  document.querySelector(".offer").style.display = "none";
 
   let msg = document.getElementById("successMessage");
   let savedOrderID = localStorage.getItem("orderID");
@@ -615,6 +638,8 @@ document.querySelectorAll(".item").forEach(img => {
 
 function newOrder() {
   localStorage.removeItem("ordered");
+  localStorage.removeItem("orderID");
+  localStorage.removeItem("endTime"); // 👈 مهم
   location.reload();
 }
 </script>
@@ -711,7 +736,9 @@ function newOrder() {
   <del>349 جنيه</del>
   <strong style="color:#0F7B65;">249 جنيه</strong>
 </p>
-<div class="timer" id="countdown"></div>
+<div class="timer-box">
+  <div class="timer" id="countdown"></div>
+</div>
 </section>
 
 <section id="order" class="container">
@@ -889,17 +916,37 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
   
-// ✅ تايمر
-let duration = 3 * 60 * 60;
-setInterval(()=>{
-  let h = Math.floor(duration/3600);
-  let m = Math.floor((duration%3600)/60);
-  let s = duration%60;
-  document.getElementById("countdown").innerHTML =
-    `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
+// ✅ تايمر احترافي ثابت
+const countdownEl = document.getElementById("countdown");
 
-  if(duration>0) duration--;
-},1000);
+// لو مفيش وقت محفوظ → نحط وقت نهاية بعد 3 ساعات
+if (!localStorage.getItem("endTime")) {
+  let end = new Date().getTime() + (3 * 60 * 60 * 1000);
+  localStorage.setItem("endTime", end);
+}
+
+function updateTimer() {
+  let now = new Date().getTime();
+  let end = parseInt(localStorage.getItem("endTime"));
+
+  let diff = end - now;
+
+  if (diff <= 0) {
+    countdownEl.innerHTML = "انتهى العرض ❌";
+    localStorage.removeItem("endTime");
+    return;
+  }
+
+  let h = Math.floor(diff / (1000 * 60 * 60));
+  let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  let s = Math.floor((diff % (1000 * 60)) / 1000);
+
+  countdownEl.innerHTML =
+    `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
+}
+
+setInterval(updateTimer, 1000);
+updateTimer();
   
 // المحافظات والمدن
 const govData = {
