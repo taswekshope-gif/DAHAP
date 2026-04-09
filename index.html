@@ -391,6 +391,31 @@ button:hover { background:#095c4d; }
 <script>
 window.addEventListener("DOMContentLoaded", () => {
 
+// 🔒 منع الطلب المتكرر (بعد تحميل الصفحة)
+if (localStorage.getItem("ordered")) {
+
+  document.getElementById("orderForm").style.display = "none";
+
+  let msg = document.getElementById("successMessage");
+  msg.style.display = "block";
+
+  msg.innerHTML = `
+    ✅ تم إرسال طلبك بالفعل<br><br>
+    <button onclick="newOrder()" style="
+      margin-top:10px;
+      padding:12px;
+      border:none;
+      background:#fff;
+      color:#0F7B65;
+      border-radius:8px;
+      font-weight:bold;
+      width:100%;
+    ">
+      طلب جديد 🔄
+    </button>
+  `;
+}
+
   const track = document.getElementById("track");
   const items = document.querySelectorAll(".item");
   const dotsContainer = document.getElementById("dots");
@@ -579,20 +604,6 @@ document.querySelectorAll(".item").forEach(img => {
   startAuto();
 
 });
-
-// 🔒 منع الطلب المتكرر
-if (localStorage.getItem("ordered")) {
-  document.getElementById("orderForm").style.display = "none";
-
-  let msg = document.getElementById("successMessage");
-  msg.style.display = "block";
-  msg.innerHTML = `
-  ✅ تم إرسال طلبك بالفعل<br><br>
-  <button onclick="newOrder()" style="margin-top:10px; padding:10px; border:none; background:#fff; color:#0F7B65; border-radius:8px; font-weight:bold;">
-    طلب جديد 🔄
-  </button>
-  `;
-}
 
 function newOrder() {
   localStorage.removeItem("ordered");
