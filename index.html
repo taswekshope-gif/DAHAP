@@ -86,16 +86,17 @@ aspect-ratio: 2 / 3;
   background: url('images/header.jpg') center no-repeat;
   background-size: contain;
   background-color: #000;
+}
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
 
-  text-align: center;
-  color: white;
-  border-radius: 0 0 20px 20px;
-  overflow: hidden;
+text-align: center;
+color: white;
+border-radius: 0 0 20px 20px;
+overflow: hidden;
 }
 
 .hero::before {
@@ -272,12 +273,6 @@ font-size:16px;
   text-align: center;
   text-align-last: center; /* ده المهم */
 }
-
-#newOrderBtn{
-  margin-top:15px;
-  background:#D4AF37;
-  color:#000;
-}
 .checkout-box {  
   position: sticky;  
   bottom: 10px;  
@@ -387,17 +382,6 @@ button:hover { background:#095c4d; }
   cursor:pointer;
   font-weight:bold;
 }
-
-#submitBtn {
-  position: relative;
-  overflow: hidden;
-}
-
-#submitBtn.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
 .note { font-size:14px; color:#555; }
 #successMessage { display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px; }
 </style>
@@ -407,7 +391,7 @@ button:hover { background:#095c4d; }
 window.addEventListener("DOMContentLoaded", () => {
 
   const track = document.getElementById("track");
-  const orderItems = document.querySelectorAll(".item");
+  const items = document.querySelectorAll(".item");
   const dotsContainer = document.getElementById("dots");
 
   let current = 0;
@@ -419,7 +403,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 🧠 حساب العرض
   function calculateWidth() {
-    itemWidth = orderItems[0].offsetWidth + gap;
+    itemWidth = items[0].offsetWidth + gap;
   }
 
   // 📍 توسيط العنصر
@@ -432,7 +416,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function createDots() {
     dotsContainer.innerHTML = "";
 
-    orderItems.forEach((_, i) => {
+    items.forEach((_, i) => {
       let dot = document.createElement("span");
 
       dot.addEventListener("click", () => {
@@ -454,7 +438,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // 👇 أهم سطر (عكس الاتجاه)
     const x = offset - (current * itemWidth);
 
-    let duration = (index === 0 && current === orderItems.length - 1) ? 1.2 : 0.5;
+    let duration = (index === 0 && current === items.length - 1) ? 1.2 : 0.5;
 
 track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
     track.style.transform = `translate3d(${x}px,0,0)`;
@@ -466,14 +450,14 @@ track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
   function updateUI() {
   const dots = getDots();
 
-  orderItems.forEach(el => el.classList.remove("active", "near"));
+  items.forEach(el => el.classList.remove("active", "near"));
 
-  if (orderItems[current]) orderItems[current].classList.add("active");
-  if (orderItems[current - 1]) orderItems[current - 1].classList.add("near");
-  if (orderItems[current + 1]) orderItems[current + 1].classList.add("near");
+  if (items[current]) items[current].classList.add("active");
+  if (items[current - 1]) items[current - 1].classList.add("near");
+  if (items[current + 1]) items[current + 1].classList.add("near");
 
   // ⭐ هنا السر (عكس بصري للدوتس فقط)
-  const reversedIndex = (orderItems.length - 1) - current;
+  const reversedIndex = (items.length - 1) - current;
 
   dots.forEach(d => d.classList.remove("active"));
   if (dots[reversedIndex]) dots[reversedIndex].classList.add("active");
@@ -481,11 +465,11 @@ track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
 
   // 👉 الاتجاه الطبيعي في RTL
   function next() {
-    goTo((current + 1) % orderItems.length);
+    goTo((current + 1) % items.length);
   }
 
   function prev() {
-    goTo((current - 1 + orderItems.length) % orderItems.length);
+    goTo((current - 1 + items.length) % items.length);
   }
 
 // 🚫 منع أي تفاعل على الصور (Click + Hold + Menu)
@@ -839,20 +823,12 @@ document.querySelectorAll(".item").forEach(img => {
 
 </div>
 
-<button type="submit" id="submitBtn">
-  <span id="btnText">تأكيد الطلب</span>
-  <span id="btnLoader" style="display:none;">⏳ جاري الإرسال...</span>
-</button>
-
+<button type="submit">تأكيد الطلب</button>
 </form>
 <div id="successMessage"
      style="display:none; background:#0F7B65; color:#fff; padding:20px; border-radius:10px; margin-top:20px;">
  ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك على واتساب.
 </div>
-
-<button id="newOrderBtn" onclick="resetOrder()" style="display:none;">
-  طلب جديد
-</button>
 
 </section>
 
@@ -875,32 +851,16 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
   
 // ✅ تايمر
-// ⏳ تايمر ذكي
-let savedEndTime = localStorage.getItem("endTime");
-
-if (!savedEndTime) {
-  let endTime = new Date().getTime() + (3 * 60 * 60 * 1000);
-  localStorage.setItem("endTime", endTime);
-  savedEndTime = endTime;
-}
-
-setInterval(() => {
-  let now = new Date().getTime();
-  let distance = savedEndTime - now;
-
-  if (distance < 0) {
-    document.getElementById("countdown").innerHTML = "00:00:00";
-    return;
-  }
-
-  let h = Math.floor(distance / (1000 * 60 * 60));
-  let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  let s = Math.floor((distance % (1000 * 60)) / 1000);
-
+let duration = 3 * 60 * 60;
+setInterval(()=>{
+  let h = Math.floor(duration/3600);
+  let m = Math.floor((duration%3600)/60);
+  let s = duration%60;
   document.getElementById("countdown").innerHTML =
     `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
 
-}, 1000);
+  if(duration>0) duration--;
+},1000);
   
 // المحافظات والمدن
 const govData = {
@@ -945,7 +905,7 @@ Object.keys(govData).forEach(g=>{
 
 document.querySelectorAll(".design").forEach((select, index) => {
   select.addEventListener("change", function () {
-    orderItems[index].design = this.value;
+    items[index].design = this.value;
     updatePrice();
   });
 });
@@ -1015,8 +975,8 @@ function toggleItems() {
       box.style.display = "none";
 
       // تفريغ البيانات لو مخفية
-      if (orderItems[index]) {
-        orderItems[index].names = [];
+      if (items[index]) {
+        items[index].names = [];
       }
     }
   });
@@ -1050,13 +1010,13 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
   function renderTags() {
     tagsBox.querySelectorAll(".tag").forEach(t => t.remove());
 
-    orderItems[index].names.forEach((name, i) => {
+    items[index].names.forEach((name, i) => {
       let tag = document.createElement("div");
       tag.className = "tag";
       tag.innerHTML = `${name} <span>×</span>`;
 
       tag.querySelector("span").onclick = () => {
-        orderItems[index].names.splice(i, 1);
+        items[index].names.splice(i, 1);
         renderTags();
         updatePrice();
       };
@@ -1066,18 +1026,18 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
   }
 
   function addName(val) {
-  if (!val) return;
+    if (!val) return;
 
-  let design = box.querySelector(".design").value;
-  let max = design === "مزدوج" ? 2 : 1;
+    let design = box.querySelector(".design").value;
+    let max = design === "مزدوج" ? 2 : 1;
 
-  if (orderItems[index].names.length >= max) return;
+    if (items[index].names.length >= max) return;
 
-  orderItems[index].names.push(val);
-  input.value = "";
-  renderTags();
-  updatePrice();
-}
+    items[index].names.push(val);
+    input.value = "";
+    renderTags();
+    updatePrice();
+  }
 
   // Enter + Space
 input.addEventListener("keydown", e => {
@@ -1158,16 +1118,6 @@ window.addEventListener("DOMContentLoaded", () => {
   toggleItems();
   updatePrice();
 
-// 🛑 لو الطلب اتبعت قبل كده
-if (localStorage.getItem("orderDone") === "yes") {
-
-  document.getElementById("orderForm").style.display = "none";
-  document.getElementById("successMessage").style.display = "block";
-  document.getElementById("newOrderBtn").style.display = "block"; // ✅ مهم
-
-}
-});
-
   // الكمية
   document.getElementById("quantity").addEventListener("change", () => {
     toggleItems();
@@ -1183,7 +1133,7 @@ if (localStorage.getItem("orderDone") === "yes") {
 
 document.querySelectorAll(".lang").forEach((select, index) => {
   select.addEventListener("change", function () {
-    orderItems[index].lang = this.value;
+    items[index].lang = this.value;
   });
 });
 
@@ -1194,23 +1144,16 @@ document.querySelectorAll(".lang").forEach((select, index) => {
 });
 
 // ✅ الفورم
-let submitBtn = document.getElementById("submitBtn");
-let btnText = document.getElementById("btnText");
-let btnLoader = document.getElementById("btnLoader");
-
 document.getElementById("orderForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-// 🛑 لو اتضغط قبل كده
-if (submitBtn.classList.contains("loading")) return;
+let orderID = await generateOrderID();
 
-// تشغيل اللودينج
-submitBtn.classList.add("loading");
-btnText.style.display = "none";
-btnLoader.style.display = "inline";
+  let submitBtn = document.querySelector("#orderForm button");
+  submitBtn.innerText = "جاري الإرسال...";
+  submitBtn.disabled = true;
 
   try {
-let orderID = await generateOrderID(); // ✅ هنا
-
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
     let gov = document.getElementById("governorate").value;
@@ -1223,7 +1166,7 @@ let allNames = [];
 document.querySelectorAll(".itemBox").forEach((box, index) => {
   if (box.style.display === "none") return;
 
-  allNames = allNames.concat(orderItems[index].names);
+  allNames = allNames.concat(items[index].names);
 });
 
 // تحقق الأسماء
@@ -1232,10 +1175,8 @@ if (allNames.length === 0) {
     "لازم تدخل اسم واحد على الأقل";
   document.getElementById("chainError").style.display = "block";
 
-  submitBtn.classList.remove("loading");
-btnLoader.style.display = "none";
-btnText.style.display = "inline";
-btnText.innerText = "تأكيد الطلب";
+  submitBtn.disabled = false;
+  submitBtn.innerText = "تأكيد الطلب";
   return;
 }
 
@@ -1261,12 +1202,12 @@ for (let i = 0; i < quantity; i++) {
 let orderDetails = [];
 
 document.querySelectorAll(".itemBox").forEach((box, index) => {
-  orderItems.forEach((item, i) => {
+  items.forEach((item, i) => {
   if (i >= quantity) item.names = [];
 });
 
   let design = box.querySelector(".design").value;
-  let names = orderItems[index].names;
+  let names = items[index].names;
 
   if (names.length === 0) return;
 
@@ -1296,17 +1237,6 @@ orderDetails.push({
   status: "new"
 });
 
-// نجاح
-    btnLoader.style.display = "none";
-btnText.style.display = "inline";
-btnText.innerText = "✅ تم إرسال الطلب";
-submitBtn.classList.remove("loading");
-    submitBtn.style.background = "#0F7B65";
-    document.getElementById("successMessage").style.display = "block";
-
-// 🧠 حفظ إن الطلب تم
-localStorage.setItem("orderDone", "yes");
-
     // ✅ واتساب
 let message = `DAHAP
 كود الطلب: ${orderID}
@@ -1333,6 +1263,11 @@ ${orderDetails.map((item, i) => `
 
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
 `;
+  
+    // نجاح
+    submitBtn.innerText = "✅ تم إرسال الطلب";
+    submitBtn.style.background = "#0F7B65";
+    document.getElementById("successMessage").style.display = "block";
     
   setTimeout(() => {
   let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
@@ -1349,12 +1284,6 @@ ${orderDetails.map((item, i) => `
     submitBtn.disabled = false;
     submitBtn.innerText = "تأكيد الطلب";
   }
-
-function resetOrder() {
-  localStorage.removeItem("orderDone");
-  localStorage.removeItem("endTime"); // مهم للتايمر
-  location.reload();
-}
 });
   
 </script>
