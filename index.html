@@ -1276,21 +1276,15 @@ ${orderDetails.map((item, i) => `
   let appUrl = "whatsapp://send?phone=201106018685&text=" + messageEncoded;
   let webUrl = "https://wa.me/201106018685?text=" + messageEncoded;
 
-  // محاولة فتح واتساب
-  window.location.href = appUrl;
+  let a = document.createElement("a");
+  a.href = appUrl;
+  a.click();
 
-  // fallback لو التطبيق مش موجود
+  // fallback بعد 1.5 ثانية
   setTimeout(() => {
     window.location.href = webUrl;
   }, 1500);
 
-}, 1000);
-
-  let a = document.createElement("a");
-  a.href = url;
-  a.target = "_self";
-  document.body.appendChild(a);
-  a.click();
 }, 1000);
     
   } catch (error) {
