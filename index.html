@@ -57,6 +57,31 @@ pointer-events: none; /* يمنع أي ضغط */
   flex: 1; /* يخليها في النص */
 }
 
+.urgent-box {
+  text-align: center;
+  margin: 25px auto;
+  padding: 15px 20px;
+  max-width: 500px;
+
+  background: linear-gradient(145deg, #fff, #f9f9f9);
+  border-radius: 12px;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+}
+
+.urgent-box .main {
+  color: #d62828;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.urgent-box .sub {
+  color: #444;
+  font-size: 14px;
+}
+
 /* البراند */
 .brand {
   font-size: 15px;
@@ -721,13 +746,10 @@ function newOrder() {
 <p>“وصلت بسرعة والتصميم تحفة 👌”</p>
 </section>
 
-<p style="color:red; font-weight:bold;">
-🔥 الكمية محدودة – احجزي قبل ما العرض يخلص!
-</p>
-
-<p class="note">
-💝 مناسبة هدية عيد ميلاد أو ذكرى مميزة
-</p>
+<div class="urgent-box">
+  <div class="main">🔥 الكمية محدودة – احجزي قبل ما العرض يخلص!</div>
+  <div class="sub">💝 مناسبة هدية عيد ميلاد أو ذكرى مميزة</div>
+</div>
 
 <section class="offer">
 <h2>🔥 عرض لفترة محدودة</h2>
