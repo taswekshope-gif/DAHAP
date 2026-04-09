@@ -1406,18 +1406,35 @@ localStorage.setItem("orderID", orderID);
 
   let messageEncoded = encodeURIComponent(message);
 
-  // 👇 افتح التطبيق فقط
-  window.location.href =
-    "whatsapp://send?phone=201106018685&text=" + messageEncoded;
+  let appUrl = "whatsapp://send?phone=201106018685&text=" + messageEncoded;
+  let webUrl = "https://wa.me/201106018685?text=" + messageEncoded;
 
-  // 👇 بعد وقت قصير اعمل refresh
+  let openedApp = false;
+
+  // نحاول نفتح التطبيق
+  const start = Date.now();
+  window.location.href = appUrl;
+
+  // نراقب لو خرج من الصفحة (مؤشر إنه فتح التطبيق)
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      openedApp = true;
+    }
+  });
+
+  // بعد وقت قصير
   setTimeout(() => {
 
-    // مهم: نضمن إن الصفحة مش فاضية
-    if (document.hidden) {
+    // لو غالباً فتح التطبيق → نعمل refresh
+    if (openedApp) {
       location.reload();
     } else {
-      location.reload();
+      // لو ما فتحش التطبيق → افتح ويب
+      window.location.href = webUrl;
+
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     }
 
   }, 2500);
