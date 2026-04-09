@@ -1276,11 +1276,10 @@ ${orderDetails.map((item, i) => `
   let appUrl = "whatsapp://send?phone=201106018685&text=" + messageEncoded;
   let webUrl = "https://wa.me/201106018685?text=" + messageEncoded;
 
-  let a = document.createElement("a");
-  a.href = appUrl;
-  a.click();
+  // محاولة فتح واتساب
+  window.location.href = appUrl;
 
-  // fallback بعد 1.5 ثانية
+  // fallback لو التطبيق مش موجود
   setTimeout(() => {
     window.location.href = webUrl;
   }, 1500);
