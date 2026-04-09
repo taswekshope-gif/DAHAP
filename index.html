@@ -454,7 +454,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // 👇 أهم سطر (عكس الاتجاه)
     const x = offset - (current * itemWidth);
 
-    let duration = (index === 0 && current === items.length - 1) ? 1.2 : 0.5;
+    let duration = (index === 0 && current === orderItems.length - 1) ? 1.2 : 0.5;
 
 track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
     track.style.transform = `translate3d(${x}px,0,0)`;
@@ -485,7 +485,7 @@ track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
   }
 
   function prev() {
-    goTo((current - 1 + orderItems.length) % items.length);
+    goTo((current - 1 + orderItems.length) % orderItems.length);
   }
 
 // 🚫 منع أي تفاعل على الصور (Click + Hold + Menu)
