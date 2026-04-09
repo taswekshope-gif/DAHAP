@@ -568,25 +568,6 @@ document.querySelectorAll(".item").forEach(img => {
     goTo(current);
   });
 
-// 🔒 منع الطلب المتكرر
-if (localStorage.getItem("ordered")) {
-  document.getElementById("orderForm").style.display = "none";
-
-  let msg = document.getElementById("successMessage");
-  msg.style.display = "block";
-  msg.innerHTML = `
-  ✅ تم إرسال طلبك بالفعل<br><br>
-  <button onclick="newOrder()" style="margin-top:10px; padding:10px; border:none; background:#fff; color:#0F7B65; border-radius:8px; font-weight:bold;">
-    طلب جديد 🔄
-  </button>
-  `;
-}
-
-function newOrder() {
-  localStorage.removeItem("ordered");
-  location.reload();
-}
-
   // ===== init =====
   calculateWidth();
   createDots();
@@ -1288,24 +1269,9 @@ ${orderDetails.map((item, i) => `
     submitBtn.style.background = "#0F7B65";
     document.getElementById("successMessage").style.display = "block";
 
-localStorage.setItem("ordered", "true");
     
   setTimeout(() => {
-  let messageEncoded = encodeURIComponent(message);
-
-  let appUrl = "whatsapp://send?phone=201106018685&text=" + messageEncoded;
-  let webUrl = "https://wa.me/201106018685?text=" + messageEncoded;
-
-  let a = document.createElement("a");
-  a.href = appUrl;
-  a.click();
-
-  // fallback بعد 1.5 ثانية
-  setTimeout(() => {
-    window.location.href = webUrl;
-  }, 1500);
-
-}, 1000);
+  let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
 
   let a = document.createElement("a");
   a.href = url;
