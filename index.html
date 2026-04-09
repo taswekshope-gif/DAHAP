@@ -1271,7 +1271,21 @@ ${orderDetails.map((item, i) => `
 
     
   setTimeout(() => {
-  let url = "https://wa.me/201106018685?text=" + encodeURIComponent(message);
+  let messageEncoded = encodeURIComponent(message);
+
+  let appUrl = "whatsapp://send?phone=201106018685&text=" + messageEncoded;
+  let webUrl = "https://wa.me/201106018685?text=" + messageEncoded;
+
+  let a = document.createElement("a");
+  a.href = appUrl;
+  a.click();
+
+  // fallback بعد 1.5 ثانية
+  setTimeout(() => {
+    window.location.href = webUrl;
+  }, 1500);
+
+}, 1000);
 
   let a = document.createElement("a");
   a.href = url;
