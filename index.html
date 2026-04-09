@@ -397,10 +397,18 @@ if (localStorage.getItem("ordered")) {
   document.getElementById("orderForm").style.display = "none";
 
   let msg = document.getElementById("successMessage");
+  let savedOrderID = localStorage.getItem("orderID");
+
   msg.style.display = "block";
 
   msg.innerHTML = `
-    ✅ تم إرسال طلبك بالفعل<br><br>
+    ✅ تم إرسال طلبك بنجاح<br><br>
+
+    🧾 كود الطلب:<br>
+    <strong style="font-size:18px;">${savedOrderID}</strong><br><br>
+
+    📞 سيتم التواصل معك على واتساب لتأكيد الطلب<br><br>
+
     <button onclick="newOrder()" style="
       margin-top:10px;
       padding:12px;
@@ -1305,6 +1313,7 @@ ${orderDetails.map((item, i) => `
     document.getElementById("successMessage").style.display = "block";
 
 localStorage.setItem("ordered", "true");
+localStorage.setItem("orderID", orderID);
     
   setTimeout(() => {
   let messageEncoded = encodeURIComponent(message);
