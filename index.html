@@ -1403,21 +1403,26 @@ localStorage.setItem("ordered", "true");
 localStorage.setItem("orderID", orderID);
     
   setTimeout(() => {
+
   let messageEncoded = encodeURIComponent(message);
 
-  let appUrl = "whatsapp://send?phone=201106018685&text=" + messageEncoded;
-  let webUrl = "https://wa.me/201106018685?text=" + messageEncoded;
+  // 👇 افتح التطبيق فقط
+  window.location.href =
+    "whatsapp://send?phone=201106018685&text=" + messageEncoded;
 
-  let a = document.createElement("a");
-  a.href = appUrl;
-  a.click();
-
-  // fallback بعد 1.5 ثانية
+  // 👇 بعد وقت قصير اعمل refresh
   setTimeout(() => {
-    window.location.href = webUrl;
-  }, 1500);
 
-}, 1000);
+    // مهم: نضمن إن الصفحة مش فاضية
+    if (document.hidden) {
+      location.reload();
+    } else {
+      location.reload();
+    }
+
+  }, 2500);
+
+}, 800);
     
   } catch (error) {
     alert("حصل خطأ حاول تاني");
