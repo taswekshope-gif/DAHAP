@@ -1310,7 +1310,11 @@ ${orderDetails.map((item, i) => `
     // نجاح
     submitBtn.innerText = "✅ تم إرسال الطلب";
     submitBtn.style.background = "#0F7B65";
-    document.getElementById("successMessage").style.display = "block";
+    document.getElementById("successMessage").innerHTML = `
+  ✅ تم إرسال طلبك بنجاح!<br><br>
+  🧾 كود الطلب:<br>
+  <strong style="font-size:18px;">${orderID}</strong>
+`;
 
 localStorage.setItem("ordered", "true");
 localStorage.setItem("orderID", orderID);
