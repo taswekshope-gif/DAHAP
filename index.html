@@ -5,6 +5,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>سلسلة باسمك - DAHAP</title>
+<!-- 🔥 تسريع تحميل الصور -->
+<link rel="preload" as="image" href="images/1.webp">
+<link rel="preload" as="image" href="images/header.webp">
+
+<!-- 🔥 تحسين الاتصال -->
+<link rel="preconnect" href="https://www.gstatic.com">
+
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&display=swap" rel="stylesheet">
 <style>
 body { margin:0; font-family: 'Cairo', sans-serif; background:#fff; color:#111; }
@@ -108,27 +115,33 @@ aspect-ratio: 2 / 3;
 .hero {
   width: 100%;
   height: 220px;
-  background: url('images/header.jpg') center no-repeat;
-  background-size: contain;
+
+  background-image: url('images/header.webp');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
   background-color: #000;
-}
 
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-text-align: center;
-color: white;
-border-radius: 0 0 20px 20px;
-overflow: hidden;
+  text-align: center;
+  color: white;
+
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+
+  position: relative; /* مهم جدًا للـ overlay */
 }
 
 .hero::before {
-content: '';
-position: absolute;
-inset: 0;
-background: rgba(0,0,0,0.4);
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
 }
 .hero * {
 position: relative;
@@ -689,44 +702,62 @@ function newOrder() {
   <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
   <p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتصميم مخصوص ليكي 💖</p>
   <a href="#order" class="btn">اطلبي الآن 💎</a>
-</section>
-
 <section class="container">
-<h2>أنواع تصميم السلسلة</h2>
-<div class="gallery">
-  <div class="gallery-track" id="track">
+  <h2>أنواع تصميم السلسلة</h2>
 
-    <div class="item">
-      <img src="images/1.jpg" loading="lazy" width="500" height="500" alt="سلسلة عادي">
-      <span>عادي</span>
+  <div class="gallery">
+    <div class="gallery-track" id="track">
+
+      <div class="item">
+        <img src="images/1.webp"
+             width="500" height="500"
+             loading="eager"
+             fetchpriority="high"
+             decoding="async"
+             alt="سلسلة عادي">
+        <span>عادي</span>
+      </div>
+
+      <div class="item">
+        <img src="images/2.webp"
+             width="500" height="500"
+             loading="lazy"
+             decoding="async"
+             alt="سلسلة قلب">
+        <span>قلب ❤️</span>
+      </div>
+
+      <div class="item">
+        <img src="images/3.webp"
+             width="500" height="500"
+             loading="lazy"
+             decoding="async"
+             alt="سلسلة فراشة">
+        <span>فراشة 🦋</span>
+      </div>
+
+      <div class="item">
+        <img src="images/4.webp"
+             width="500" height="500"
+             loading="lazy"
+             decoding="async"
+             alt="سلسلة تاج">
+        <span>تاج 👑</span>
+      </div>
+
+      <div class="item">
+        <img src="images/5.webp"
+             width="500" height="500"
+             loading="lazy"
+             decoding="async"
+             alt="سلسلة مزدوج">
+        <span>مزدوج</span>
+      </div>
+
     </div>
-
-    <div class="item">
-      <img src="images/2.jpg" loading="lazy" width="500" height="500" alt="سلسلة قلب">
-      <span>قلب ❤️</span>
-    </div>
-
-    <div class="item">
-      <img src="images/3.jpg" loading="lazy" width="500" height="500" alt="سلسلة فراشة">
-      <span>فراشة 🦋</span>
-    </div>
-
-    <div class="item">
-      <img src="images/4.jpg" loading="lazy" width="500" height="500" alt="سلسلة تاج">
-      <span>تاج 👑</span>
-    </div>
-
-    <div class="item">
-      <img src="images/5.jpg" loading="lazy" width="500" height="500" alt="سلسلة مزدوج">
-      <span>مزدوج</span>
-    </div>
-
   </div>
-</div>
 
   <div class="dots" id="dots"></div>
-</div>
-
 </section>
 
 <section class="container">
