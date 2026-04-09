@@ -1223,6 +1223,37 @@ if (allNames.length === 0) {
   return;
 }
 
+// ✅ تحقق التصميم المزدوج
+for (let i = 0; i < quantity; i++) {
+  let box = document.querySelectorAll(".itemBox")[i];
+
+  let design = box.querySelector(".design").value;
+  let names = items[i].names;
+
+  if (design === "مزدوج" && names.length !== 2) {
+    document.getElementById("chainError").innerText =
+      "⚠️ التصميم المزدوج لازم يكون فيه اسمين";
+    document.getElementById("chainError").style.display = "block";
+
+    submitBtn.disabled = false;
+    submitBtn.innerText = "تأكيد الطلب";
+
+    return;
+  }
+
+  // لو مش مزدوج لازم اسم واحد على الأقل
+  if (design !== "مزدوج" && names.length < 1) {
+    document.getElementById("chainError").innerText =
+      "⚠️ كل سلسلة لازم يكون لها اسم";
+    document.getElementById("chainError").style.display = "block";
+
+    submitBtn.disabled = false;
+    submitBtn.innerText = "تأكيد الطلب";
+
+    return;
+  }
+}
+
     // تحقق رقم الهاتف
     if (!/^01[0-9]{9}$/.test(phone)) {
       alert("رقم غير صحيح");
