@@ -511,46 +511,6 @@ if (localStorage.getItem("ordered")) {
   const gap = 20;
   let itemWidth;
 
-function applyCoupon(code, total, shipping) {
-
-  code = code.toUpperCase();
-
-  if (code === "FIRST") {
-    return { total, shipping: 0, msg: "شحن مجاني 🎁" };
-  }
-
-  if (code === "DAHAP10") {
-    return { total: total - 10, shipping, msg: "خصم 10 جنيه 💸" };
-  }
-
-  return { total, shipping, msg: "" };
-}
-
-async function isFirstOrder(phone, ip) {
-  const q = query(
-    collection(db, "orders"),
-    where("phone", "==", phone)
-  );
-
-  const snap = await getDocs(q);
-
-  // نفس الرقم قبل كده
-  if (!snap.empty) return false;
-
-  // تحقق IP
-  const ipQuery = query(
-    collection(db, "orders"),
-    where("ip", "==", ip),
-    limit(1)
-  );
-
-  const ipSnap = await getDocs(ipQuery);
-
-  if (!ipSnap.empty) return false;
-
-  return true;
-}
-
   // 🧠 حساب العرض
   function calculateWidth() {
     itemWidth = items[0].offsetWidth + gap;
@@ -712,16 +672,6 @@ document.querySelectorAll(".item").forEach(img => {
     else goTo(current);
   });
 
-async function getUserIP() {
-  try {
-    let res = await fetch("https://api.ipify.org?format=json");
-    let data = await res.json();
-    return data.ip;
-  } catch {
-    return "unknown";
-  }
-}
-
   // 📱 resize fix
   window.addEventListener("resize", () => {
     calculateWidth();
@@ -767,8 +717,6 @@ function newOrder() {
   <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
   <p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتصميم مخصوص ليكي 💖</p>
   <a href="#order" class="btn">اطلبي الآن 💎</a>
-</section>
-
 <section class="container">
   <h2>أنواع تصميم السلسلة</h2>
 
@@ -1022,7 +970,6 @@ function newOrder() {
   </div>
 
 </div>
-<input type="text" id="coupon" placeholder="كود الخصم (اختياري)">
 
 <button type="submit">تأكيد الطلب</button>
 </form>
@@ -1037,7 +984,7 @@ function newOrder() {
 
 // 🔥 Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
@@ -1148,43 +1095,6 @@ govData[govSelect.value].forEach(c => {
   });
   
 });
-
-async function isSpam(phone, ip) {
-
-  // رقم متكرر
-  const phoneQuery = query(
-    collection(db, "orders"),
-    where("phone", "==", phone)
-  );
-  const phoneSnap = await getDocs(phoneQuery);
-
-  if (!phoneSnap.empty) return true;
-
-  // IP متكرر
-  const ipQuery = query(
-    collection(db, "orders"),
-    where("ip", "==", ip)
-  );
-  const ipSnap = await getDocs(ipQuery);
-
-  if (!ipSnap.empty) return true;
-
-  return false;
-}
-
-async function isFakeOrDuplicate(phone) {
-  const q = query(
-    collection(db, "orders"),
-    where("phone", "==", phone)
-  );
-
-  const snap = await getDocs(q);
-
-  // لو الرقم طلب قبل كدا
-  if (!snap.empty) return true;
-
-  return false;
-}
 
 // ✅ توليد كود أوردر مركزي
 async function generateOrderID() {
@@ -1355,15 +1265,16 @@ if (quantity === 1) {
   label.innerText = "💰 سعر 3 قطع";
 }
   let gov = document.getElementById("governorate").value;
-  
-let isOfferEnded = localStorage.getItem("offerEnded");
+
+  let isOfferEnded = localStorage.getItem("offerEnded");
 
 let shipping;
 
-// ✅ العرض شغال
+// ✅ أثناء العرض
 if (!isOfferEnded) {
   shipping = 0;
 } else {
+  // ❌ بعد انتهاء العرض
   shipping = shippingFees[gov] || 20;
 }
 
@@ -1448,33 +1359,11 @@ document.querySelectorAll(".itemBox").forEach((box, index) => {
   allNames = allNames.concat(items[index].names);
 });
 
-// 🔒 تحقق من الرقم الوهمي
-let isFake = await isFakeOrDuplicate(phone);
-
-if (isFake) {
-  document.getElementById("phoneError").innerText =
-    "تم استخدام هذا الرقم من قبل ❌";
-  document.getElementById("phoneError").style.display = "block";
-
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
-  return;
-}
-
 // تحقق الأسماء
 if (allNames.length === 0) {
   document.getElementById("chainError").innerText =
     "لازم تدخل اسم واحد على الأقل";
   document.getElementById("chainError").style.display = "block";
-
-  let ip = await getUserIP();
-
-let spam = await isSpam(phone, ip);
-
-if (spam) {
-  document.getElementById("phoneError").innerText =
-    "تم إرسال طلب مسبق من هذا الرقم أو الجهاز ❌";
-  document.getElementById("phoneError").style.display = "block";
 
   submitBtn.disabled = false;
   submitBtn.innerText = "تأكيد الطلب";
@@ -1513,16 +1402,12 @@ for (let i = 0; i < quantity; i++) {
 }
 
     // تحقق رقم الهاتف
-    if (!/^01(0|1|2|5)[0-9]{8}$/.test(phone)) {
-  document.getElementById("phoneError").innerText = "رقم غير صحيح";
-  document.getElementById("phoneError").style.display = "block";
-
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
-  return;
-} else {
-  document.getElementById("phoneError").style.display = "none";
-}
+    if (!/^01[0-9]{9}$/.test(phone)) {
+      alert("رقم غير صحيح");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "تأكيد الطلب";
+      return;
+    }
 
 let price = 0;
 
@@ -1571,7 +1456,6 @@ orderDetails.push({
   orderID,
   customerName,
   phone,
-  ip,
   gov,
   city,
   address,
