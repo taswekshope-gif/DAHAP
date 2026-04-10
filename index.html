@@ -1025,7 +1025,7 @@ function newOrder() {
 
 // 🔥 Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
@@ -1364,7 +1364,7 @@ let isOfferEnded = localStorage.getItem("offerEnded");
 let shipping;
 
 // ✅ العرض شغال
-if (!isOfferEnded && isFirst) {
+if (!isOfferEnded) {
   shipping = 0;
 } else {
   shipping = shippingFees[gov] || 20;
