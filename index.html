@@ -1084,7 +1084,7 @@ document.querySelectorAll(".design").forEach((select, index) => {
 });
 
 govSelect.addEventListener("change",()=>{
-  citySelect.innerHTML='<option>المدينة</option>';
+  citySelect.innerHTML='<option value="">اختاري المدينة</option>';
  if (!govData[govSelect.value]) return;
 
 govData[govSelect.value].forEach(c => {
