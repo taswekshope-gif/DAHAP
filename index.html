@@ -1416,8 +1416,19 @@ for (let i = 0; i < quantity; i++) {
   let d = box.querySelector(".design").value;
   price += prices[d] || 249;
 }
-    let shipping = shippingFees[gov] || 20;
-    let finalTotal = price + shipping;
+    let isOfferEnded = localStorage.getItem("offerEnded");
+
+let shipping;
+
+// أثناء العرض
+if (!isOfferEnded) {
+  shipping = 0;
+} else {
+  // بعد انتهاء العرض
+  shipping = shippingFees[gov] || 20;
+}
+
+let finalTotal = price + shipping;
 
 // ❤️ تجهيز تفاصيل الطلب
 let orderDetails = [];
@@ -1479,7 +1490,7 @@ ${orderDetails.map((item, i) => `
 
 📦 الكمية: ${quantity}
 💰 سعر القطعة: ${price}
-🚚 الشحن: ${shipping}
+🚚 الشحن: ${shipping === 0 ? "مجاني 🎁" : shipping}
 💵 الإجمالي: ${finalTotal}
 
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
