@@ -313,6 +313,26 @@ font-size:16px;
   z-index: 5;  
 }
 
+.free-ship-box {
+  display: inline-block;
+  background: linear-gradient(135deg, #0F7B65, #16a085);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+
+  box-shadow: 0 5px 15px rgba(15,123,101,0.3);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .hero * { position:relative; }
 .hero h1 { color:#D4AF37; font-size:3rem; margin-bottom:10px; }
 .hero h2 { font-size:2rem; margin-bottom:10px; }
@@ -778,15 +798,25 @@ function newOrder() {
 </div>
 
 <section class="offer">
-<h2>🔥 عرض لفترة محدودة</h2>
-<p>متفوتيش الفرصة وخلي اسمِك بيلمع دايمًا 💖</p>
-<p>
-  <del>349 جنيه</del>
-  <strong style="color:#0F7B65;">249 جنيه</strong>
+
+<h2>🚚 شحن مجاني لفترة محدودة</h2>
+
+<p style="margin-bottom:10px;">
+احصلي على سلسلتك الآن مع <strong style="color:#D4AF37;">شحن مجاني 100%</strong> 🚀
 </p>
+
+<div class="free-ship-box">
+  🎁 وفرنا لك مصاريف الشحن بالكامل!
+</div>
+
+<p style="margin-top:15px;">
+<strong style="font-size:20px; color:#0F7B65;">249 جنيه</strong>
+</p>
+
 <div class="timer-box">
   <div class="timer" id="countdown"></div>
 </div>
+
 </section>
 
 <section id="order" class="container">
