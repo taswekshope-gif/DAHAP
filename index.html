@@ -1016,11 +1016,12 @@ function updateTimer() {
   if (diff <= 0) {
   countdownEl.innerHTML = "انتهى العرض ❌";
 
-  // ❌ رجوع الشحن لطبيعته
   localStorage.setItem("offerEnded", "true");
 
-  updatePrice(); // 👈 مهم
+  updatePrice();
+preserveLocation();
 
+  clearInterval(timerInterval); // 👈 مهم جدا
   return;
 }
 
@@ -1032,8 +1033,35 @@ function updateTimer() {
     `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
 }
 
-setInterval(updateTimer, 1000);
+let timerInterval = setInterval(updateTimer, 1000);
 updateTimer();
+
+let shipping;
+
+if (!isOfferEnded) {
+  shipping = 0;
+} else {
+  shipping = gov ? (shippingFees[gov] || 20) : 20;
+}
+
+// 🔥 حماية اختيار المحافظة والمدينة
+function preserveLocation() {
+  let savedGov = govSelect.value;
+  let savedCity = citySelect.value;
+
+  if (savedGov) {
+    citySelect.innerHTML = '<option value="">اختاري المدينة</option>';
+
+    govData[savedGov].forEach(c => {
+      let opt = document.createElement("option");
+      opt.value = c;
+      opt.text = c;
+      citySelect.appendChild(opt);
+    });
+
+    citySelect.value = savedCity;
+  }
+}
   
 // المحافظات والمدن
 const govData = {
