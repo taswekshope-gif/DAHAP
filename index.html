@@ -997,6 +997,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+let govSelect = document.getElementById("governorate");
+let citySelect = document.getElementById("city");
   
 // ✅ تايمر احترافي ثابت
 const countdownEl = document.getElementById("countdown");
@@ -1035,14 +1038,6 @@ preserveLocation();
 
 let timerInterval = setInterval(updateTimer, 1000);
 updateTimer();
-
-let shipping;
-
-if (!isOfferEnded) {
-  shipping = 0;
-} else {
-  shipping = gov ? (shippingFees[gov] || 20) : 20;
-}
 
 // 🔥 حماية اختيار المحافظة والمدينة
 function preserveLocation() {
@@ -1093,9 +1088,6 @@ const govData = {
 "شمال سيناء":["العريش","رفح","شيخ زويد","بئر العبد"],
 "جنوب سيناء":["دهب","شرم الشيخ","نويبع","طابا","سانت كاترين"]
 };
-
-let govSelect = document.getElementById("governorate");
-let citySelect = document.getElementById("city");
 
 Object.keys(govData).forEach(g=>{
   let opt=document.createElement("option");
