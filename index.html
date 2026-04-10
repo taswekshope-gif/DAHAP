@@ -980,10 +980,15 @@ function updateTimer() {
   let diff = end - now;
 
   if (diff <= 0) {
-    countdownEl.innerHTML = "انتهى العرض ❌";
-    localStorage.removeItem("endTime");
-    return;
-  }
+  countdownEl.innerHTML = "انتهى العرض ❌";
+
+  // ❌ رجوع الشحن لطبيعته
+  localStorage.setItem("offerEnded", "true");
+
+  updatePrice(); // 👈 مهم
+
+  return;
+}
 
   let h = Math.floor(diff / (1000 * 60 * 60));
   let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1227,7 +1232,17 @@ if (quantity === 1) {
 }
   let gov = document.getElementById("governorate").value;
 
-  let shipping = shippingFees[gov] || 20;
+  let isOfferEnded = localStorage.getItem("offerEnded");
+
+let shipping;
+
+// ✅ أثناء العرض
+if (!isOfferEnded) {
+  shipping = 0;
+} else {
+  // ❌ بعد انتهاء العرض
+  shipping = shippingFees[gov] || 20;
+}
 
   let total = 0;
 
@@ -1247,6 +1262,14 @@ if (quantity === 1) {
   document.getElementById("price").innerText = total;
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
+}
+
+let shippingText = document.getElementById("shipping");
+
+if (!isOfferEnded) {
+  shippingText.innerText = "مجاني 🎁";
+} else {
+  shippingText.innerText = shipping;
 }
 
 // 🔥 تحديث السعر عند التغيير
