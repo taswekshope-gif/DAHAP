@@ -1258,15 +1258,12 @@ if (!isOfferEnded) {
   let finalTotal = total + shipping;
 
   document.getElementById("quantityDisplay").innerText = quantity;
-  document.getElementById("price").innerText = total;
+document.getElementById("price").innerText = total;
 
 document.getElementById("shipping").innerText =
-    shipping === 0 ? "مجاني 🎁" : shipping;
+  shipping === 0 ? "مجاني 🎁" : shipping;
 
-  document.getElementById("finalTotal").innerText = finalTotal;
-}
-  document.getElementById("shipping").innerText = shipping;
-  document.getElementById("finalTotal").innerText = finalTotal;
+document.getElementById("finalTotal").innerText = finalTotal;
 }
 
 // 🔥 تحديث السعر عند التغيير
