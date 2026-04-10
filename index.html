@@ -191,7 +191,6 @@ pointer-events: none; /* يمنع أي ضغط */
     padding: 12px 18px;
     font-size: 14px;
   }
-}
 
 /* موبايل */
 @media (max-width:768px){
@@ -1260,16 +1259,14 @@ if (!isOfferEnded) {
 
   document.getElementById("quantityDisplay").innerText = quantity;
   document.getElementById("price").innerText = total;
-  document.getElementById("shipping").innerText = shipping;
+
+document.getElementById("shipping").innerText =
+    shipping === 0 ? "مجاني 🎁" : shipping;
+
   document.getElementById("finalTotal").innerText = finalTotal;
 }
-
-let shippingText = document.getElementById("shipping");
-
-if (!isOfferEnded) {
-  shippingText.innerText = "مجاني 🎁";
-} else {
-  shippingText.innerText = shipping;
+  document.getElementById("shipping").innerText = shipping;
+  document.getElementById("finalTotal").innerText = finalTotal;
 }
 
 // 🔥 تحديث السعر عند التغيير
