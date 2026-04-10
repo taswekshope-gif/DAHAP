@@ -1398,6 +1398,8 @@ orderDetails.push({
   names: names.join(" - "),
   lang
  });
+});
+
 // 🔍 تحقق هل الرقم طلب قبل كده
 const qCheck = query(collection(db, "orders"));
 const snapshotCheck = await getDocs(qCheck);
@@ -1417,7 +1419,6 @@ if (alreadyOrdered) {
   localStorage.setItem("offerExpired", "true");
   updatePrice();
 }
-});
 
  await addDoc(collection(db, "orders"), {
   orderID,
