@@ -1137,21 +1137,6 @@ govData[govSelect.value].forEach(c => {
   
 });
 
-function isGarbageNumber(phone) {
-  return /^(\d)\1+$/.test(phone) || // كل الأرقام زي بعض
-         /1234567890/.test(phone);
-}
-
-if (isGarbageNumber(phone)) {
-  document.getElementById("phoneError").innerText =
-    "رقم غير حقيقي ❌";
-  document.getElementById("phoneError").style.display = "block";
-
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
-  return;
-}
-
 async function isSpam(phone, ip) {
 
   // رقم متكرر
