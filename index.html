@@ -786,6 +786,9 @@ function newOrder() {
 </p>
 <div class="timer-box">
   <div class="timer" id="countdown"></div>
+<p id="offerMsg" style="margin-top:10px; font-weight:bold; color:#d62828;">
+🚚 الشحن مجاني لفترة محدودة ⏳
+</p>
 </div>
 </section>
 
@@ -984,6 +987,8 @@ function updateTimer() {
 
   // ❌ انتهاء العرض = رجوع الشحن
   localStorage.setItem("offerExpired", "true");
+document.getElementById("offerMsg").innerHTML =
+    "❌ انتهى الشحن المجاني – تم إضافة مصاريف الشحن";
 
   updatePrice(); // تحديث السعر فوراً
   return;
@@ -1305,6 +1310,13 @@ let orderID = await generateOrderID();
   try {
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
+// 🔒 منع تكرار العرض لنفس الرقم
+if (localStorage.getItem("usedOffer_" + phone)) {
+  alert("❌ لقد حصلت بالفعل على العرض من قبل");
+  submitBtn.disabled = false;
+  submitBtn.innerText = "تأكيد الطلب";
+  return;
+}
     let gov = document.getElementById("governorate").value;
     let city = document.getElementById("city").value;
     let address = document.getElementById("address").value.trim();
@@ -1473,13 +1485,21 @@ msgBox.style.display = "block";
 
 msgBox.innerHTML = `
   ✅ تم إرسال طلبك بنجاح!<br><br>
+🎉 مبروك! حصلت على العرض الخاص<br><br>
+
   🧾 كود طلبك:<br>
   <strong style="font-size:18px;">${orderID}</strong><br><br>
+
+🚚 الشحن مجاني لهذا الطلب فقط 🔥<br><br>
+
+  ⛔ العرض مرة واحدة فقط لكل عميل<br><br>
+
   📞 سيتم التواصل معك على واتساب
 `;
 
 localStorage.setItem("ordered", "true");
 localStorage.setItem("orderID", orderID);
+localStorage.setItem("usedOffer_" + phone, "true");
     
   setTimeout(() => {
 
