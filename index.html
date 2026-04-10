@@ -980,7 +980,7 @@ function newOrder() {
 
 </section>
 
-<script>
+<script type="module">
 
 // 🔥 Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -1084,7 +1084,7 @@ document.querySelectorAll(".design").forEach((select, index) => {
 });
 
 govSelect.addEventListener("change",()=>{
-  citySelect.innerHTML='<option value="">اختاري المدينة</option>';
+  citySelect.innerHTML='<option>المدينة</option>';
  if (!govData[govSelect.value]) return;
 
 govData[govSelect.value].forEach(c => {
