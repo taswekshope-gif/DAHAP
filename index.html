@@ -7,7 +7,7 @@
 <title>سلسلة باسمك - DAHAP</title>
 <!-- 🔥 تسريع تحميل الصور -->
 <link rel="preload" as="image" href="images/1.webp">
-<link rel="preload" as="image" href="images/header.webp">
+<link rel="preload" as="image" href="images/header.webp" fetchpriority="high">
 
 <!-- 🔥 تحسين الاتصال -->
 <link rel="preconnect" href="https://www.gstatic.com">
@@ -204,7 +204,9 @@ pointer-events: none; /* يمنع أي ضغط */
 @media (max-width:768px){
   .hero {
     height:180px;
+    background-size: cover; /* 👈 هنا نرجع cover للموبايل */
   }
+}
 
   .brand {
     font-size:18px;
