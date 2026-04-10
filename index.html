@@ -998,6 +998,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+let items = [
+  { design: "عادي", names: [], lang: "عربي" },
+  { design: "عادي", names: [], lang: "عربي" },
+  { design: "عادي", names: [], lang: "عربي" }
+];
+let ordersNames = []; // كل أوردر لوحده
+
 let govSelect = document.getElementById("governorate");
 let citySelect = document.getElementById("city");
   
@@ -1140,13 +1147,6 @@ async function generateOrderID() {
 
   return `${prefix}-${counter}`;
 }
-
-let items = [
-  { design: "عادي", names: [], lang: "عربي" },
-  { design: "عادي", names: [], lang: "عربي" },
-  { design: "عادي", names: [], lang: "عربي" }
-];
-let ordersNames = []; // كل أوردر لوحده
 
 function showTagsMessage(msg, success = false) {
   let box = document.getElementById("tagsMessage");
