@@ -1022,7 +1022,6 @@ function updateTimer() {
   localStorage.setItem("offerEnded", "true");
 
   updatePrice();
-preserveLocation();
 
   clearInterval(timerInterval); // 👈 مهم جدا
   return;
@@ -1041,10 +1040,12 @@ updateTimer();
 
 // 🔥 حماية اختيار المحافظة والمدينة
 function preserveLocation() {
+  if (!govSelect || !citySelect) return; // 🔥 حماية
+
   let savedGov = govSelect.value;
   let savedCity = citySelect.value;
 
-  if (savedGov) {
+  if (savedGov && govData[savedGov]) {
     citySelect.innerHTML = '<option value="">اختاري المدينة</option>';
 
     govData[savedGov].forEach(c => {
@@ -1286,7 +1287,7 @@ if (quantity === 1) {
 }
   let gov = document.getElementById("governorate").value;
 
-  let isOfferEnded = localStorage.getItem("offerEnded");
+  let isOfferEnded = localStorage.getItem("offerEnded") === "true";
 
 let shipping;
 
