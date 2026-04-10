@@ -712,6 +712,16 @@ document.querySelectorAll(".item").forEach(img => {
     else goTo(current);
   });
 
+async function getUserIP() {
+  try {
+    let res = await fetch("https://api.ipify.org?format=json");
+    let data = await res.json();
+    return data.ip;
+  } catch {
+    return "unknown";
+  }
+}
+
   // 📱 resize fix
   window.addEventListener("resize", () => {
     calculateWidth();
@@ -757,6 +767,8 @@ function newOrder() {
   <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
   <p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتصميم مخصوص ليكي 💖</p>
   <a href="#order" class="btn">اطلبي الآن 💎</a>
+</section>
+
 <section class="container">
   <h2>أنواع تصميم السلسلة</h2>
 
@@ -1596,7 +1608,6 @@ ${orderDetails.map((item, i) => `
 💰 سعر القطعة: ${price}
 🚚 الشحن: ${shipping === 0 ? "مجاني 🎁" : shipping}
 💵 الإجمالي: ${finalTotal}
-🎟️ الكوبون: ${coupon || "لا يوجد"}
 
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
 `;
