@@ -712,13 +712,6 @@ document.querySelectorAll(".item").forEach(img => {
     else goTo(current);
   });
 
-let coupon = document.getElementById("coupon").value;
-
-let result = applyCoupon(coupon, price, shipping);
-
-let finalTotal = result.total + result.shipping;
-shipping = result.shipping;
-
   // 📱 resize fix
   window.addEventListener("resize", () => {
     calculateWidth();
