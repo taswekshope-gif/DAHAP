@@ -980,10 +980,17 @@ function updateTimer() {
   let diff = end - now;
 
   if (diff <= 0) {
-    countdownEl.innerHTML = "انتهى العرض ❌";
-    localStorage.removeItem("endTime");
-    return;
-  }
+  countdownEl.innerHTML = "انتهى العرض ❌";
+
+  // ❌ انتهاء العرض = رجوع الشحن
+  localStorage.setItem("offerExpired", "true");
+
+  updatePrice(); // تحديث السعر فوراً
+  return;
+} else {
+  // ✅ العرض شغال = شحن مجاني
+  localStorage.setItem("offerExpired", "false");
+}
 
   let h = Math.floor(diff / (1000 * 60 * 60));
   let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1227,7 +1234,10 @@ if (quantity === 1) {
 }
   let gov = document.getElementById("governorate").value;
 
-  let shipping = shippingFees[gov] || 20;
+  let isExpired = localStorage.getItem("offerExpired") === "true";
+
+// لو العرض شغال → الشحن مجاني
+let shipping = isExpired ? (shippingFees[gov] || 20) : 0;
 
   let total = 0;
 
@@ -1245,7 +1255,8 @@ if (quantity === 1) {
 
   document.getElementById("quantityDisplay").innerText = quantity;
   document.getElementById("price").innerText = total;
-  document.getElementById("shipping").innerText = shipping;
+  document.getElementById("shipping").innerText =
+  shipping === 0 ? "مجاني 🎁" : shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
 }
 
@@ -1387,6 +1398,25 @@ orderDetails.push({
   names: names.join(" - "),
   lang
  });
+// 🔍 تحقق هل الرقم طلب قبل كده
+const qCheck = query(collection(db, "orders"));
+const snapshotCheck = await getDocs(qCheck);
+
+let alreadyOrdered = false;
+
+snapshotCheck.forEach(doc => {
+  if (doc.data().phone === phone) {
+    alreadyOrdered = true;
+  }
+});
+
+// لو طلب قبل كده → إلغاء الشحن المجاني
+if (alreadyOrdered) {
+  alert("⚠️ لقد حصلت على العرض مسبقاً، سيتم تطبيق الشحن العادي");
+
+  localStorage.setItem("offerExpired", "true");
+  updatePrice();
+}
 });
 
  await addDoc(collection(db, "orders"), {
