@@ -313,26 +313,6 @@ font-size:16px;
   z-index: 5;  
 }
 
-.free-ship-box {
-  display: inline-block;
-  background: linear-gradient(135deg, #0F7B65, #16a085);
-  color: #fff;
-  padding: 10px 18px;
-  border-radius: 30px;
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 10px;
-
-  box-shadow: 0 5px 15px rgba(15,123,101,0.3);
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
 .hero * { position:relative; }
 .hero h1 { color:#D4AF37; font-size:3rem; margin-bottom:10px; }
 .hero h2 { font-size:2rem; margin-bottom:10px; }
@@ -462,10 +442,9 @@ button:hover { background:#095c4d; }
 </head>
 
 <script>
-document.addEventListener("DOMContentLoaded", initApp);
+window.addEventListener("DOMContentLoaded", () => {
 
-function initApp() {
-  // 🔒 منع الطلب المتكرر (بعد تحميل الصفحة)
+// 🔒 منع الطلب المتكرر (بعد تحميل الصفحة)
 if (localStorage.getItem("ordered")) {
 
   document.getElementById("orderForm").style.display = "none";
@@ -500,9 +479,6 @@ if (localStorage.getItem("ordered")) {
     </button>
   `;
 }
-}
-
-
 
   const track = document.getElementById("track");
   const items = document.querySelectorAll(".item");
@@ -802,29 +778,15 @@ function newOrder() {
 </div>
 
 <section class="offer">
-
-<h2>شحن مجاني لفترة محدودة 🚚</h2>
-
-<p style="color:#d62828; font-weight:bold;">
-العرض ينتهي خلال الوقت المتبقي فقط ⏳
+<h2>🔥 عرض لفترة محدودة</h2>
+<p>متفوتيش الفرصة وخلي اسمِك بيلمع دايمًا 💖</p>
+<p>
+  <del>349 جنيه</del>
+  <strong style="color:#0F7B65;">249 جنيه</strong>
 </p>
-
-<p style="margin-bottom:10px;">
-احصلي على سلسلتك الآن مع <strong style="color:#D4AF37;">شحن مجاني 100%</strong> 🚀
-</p>
-
-<div class="free-ship-box">
-  وفرنا لك مصاريف الشحن بالكامل! 🎁
-</div>
-
-<p style="margin-top:15px;">
-<strong style="font-size:20px; color:#0F7B65;">ثمن السلسلة وبس</strong>
-</p>
-
 <div class="timer-box">
   <div class="timer" id="countdown"></div>
 </div>
-
 </section>
 
 <section id="order" class="container">
@@ -1001,16 +963,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-let items = [
-  { design: "عادي", names: [], lang: "عربي" },
-  { design: "عادي", names: [], lang: "عربي" },
-  { design: "عادي", names: [], lang: "عربي" }
-];
-let ordersNames = []; // كل أوردر لوحده
-
-let govSelect = document.getElementById("governorate");
-let citySelect = document.getElementById("city");
   
 // ✅ تايمر احترافي ثابت
 const countdownEl = document.getElementById("countdown");
@@ -1028,15 +980,10 @@ function updateTimer() {
   let diff = end - now;
 
   if (diff <= 0) {
-  countdownEl.innerHTML = "انتهى العرض ❌";
-
-  localStorage.setItem("offerEnded", "true");
-
-  updatePrice();
-
-  clearInterval(timerInterval); // 👈 مهم جدا
-  return;
-}
+    countdownEl.innerHTML = "انتهى العرض ❌";
+    localStorage.removeItem("endTime");
+    return;
+  }
 
   let h = Math.floor(diff / (1000 * 60 * 60));
   let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1046,29 +993,8 @@ function updateTimer() {
     `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
 }
 
-let timerInterval = setInterval(updateTimer, 1000);
+setInterval(updateTimer, 1000);
 updateTimer();
-
-// 🔥 حماية اختيار المحافظة والمدينة
-function preserveLocation() {
-  if (!govSelect || !citySelect) return; // 🔥 حماية
-
-  let savedGov = govSelect.value;
-  let savedCity = citySelect.value;
-
-  if (savedGov && govData[savedGov]) {
-    citySelect.innerHTML = '<option value="">اختاري المدينة</option>';
-
-    govData[savedGov].forEach(c => {
-      let opt = document.createElement("option");
-      opt.value = c;
-      opt.text = c;
-      citySelect.appendChild(opt);
-    });
-
-    citySelect.value = savedCity;
-  }
-}
   
 // المحافظات والمدن
 const govData = {
@@ -1100,6 +1026,9 @@ const govData = {
 "شمال سيناء":["العريش","رفح","شيخ زويد","بئر العبد"],
 "جنوب سيناء":["دهب","شرم الشيخ","نويبع","طابا","سانت كاترين"]
 };
+
+let govSelect = document.getElementById("governorate");
+let citySelect = document.getElementById("city");
 
 Object.keys(govData).forEach(g=>{
   let opt=document.createElement("option");
@@ -1151,6 +1080,13 @@ async function generateOrderID() {
 
   return `${prefix}-${counter}`;
 }
+
+let items = [
+  { design: "عادي", names: [], lang: "عربي" },
+  { design: "عادي", names: [], lang: "عربي" },
+  { design: "عادي", names: [], lang: "عربي" }
+];
+let ordersNames = []; // كل أوردر لوحده
 
 function showTagsMessage(msg, success = false) {
   let box = document.getElementById("tagsMessage");
@@ -1291,17 +1227,7 @@ if (quantity === 1) {
 }
   let gov = document.getElementById("governorate").value;
 
-  let isOfferEnded = localStorage.getItem("offerEnded") === "true";
-
-let shipping;
-
-// ✅ أثناء العرض
-if (!isOfferEnded) {
-  shipping = 0;
-} else {
-  // ❌ بعد انتهاء العرض
-  shipping = shippingFees[gov] || 20;
-}
+  let shipping = shippingFees[gov] || 20;
 
   let total = 0;
 
@@ -1318,20 +1244,15 @@ if (!isOfferEnded) {
   let finalTotal = total + shipping;
 
   document.getElementById("quantityDisplay").innerText = quantity;
-document.getElementById("price").innerText = total;
-
-document.getElementById("shipping").innerText =
-  shipping === 0 ? "مجاني 🎁" : shipping;
-
-document.getElementById("finalTotal").innerText = finalTotal;
+  document.getElementById("price").innerText = total;
+  document.getElementById("shipping").innerText = shipping;
+  document.getElementById("finalTotal").innerText = finalTotal;
 }
 
 // 🔥 تحديث السعر عند التغيير
 // 🔥 تشغيل بعد تحميل الصفحة
 
-document.addEventListener("DOMContentLoaded", initApp);
-
-function initApp() {
+window.addEventListener("DOMContentLoaded", () => {
   toggleItems();
   updatePrice();
 
@@ -1339,7 +1260,6 @@ function initApp() {
   document.getElementById("quantity").addEventListener("change", () => {
     toggleItems();
     updatePrice();
-}
   });
 
   // التصميم
@@ -1444,19 +1364,8 @@ for (let i = 0; i < quantity; i++) {
   let d = box.querySelector(".design").value;
   price += prices[d] || 249;
 }
-    let isOfferEnded = localStorage.getItem("offerEnded");
-
-let shipping;
-
-// أثناء العرض
-if (!isOfferEnded) {
-  shipping = 0;
-} else {
-  // بعد انتهاء العرض
-  shipping = shippingFees[gov] || 20;
-}
-
-let finalTotal = price + shipping;
+    let shipping = shippingFees[gov] || 20;
+    let finalTotal = price + shipping;
 
 // ❤️ تجهيز تفاصيل الطلب
 let orderDetails = [];
@@ -1511,14 +1420,14 @@ ${address}
 💎 الطلب:
 ${orderDetails.map((item, i) => `
 سلسلة ${i + 1}:
-🏷️ الأسم: ${item.names}
+🏷️ الأسماء: ${item.names}
 🎨 التصميم: ${item.design}
 🌍 اللغة: ${item.lang}
 `).join("\n")}
 
 📦 الكمية: ${quantity}
 💰 سعر القطعة: ${price}
-🚚 الشحن: ${shipping === 0 ? "مجاني 🎁" : shipping}
+🚚 الشحن: ${shipping}
 💵 الإجمالي: ${finalTotal}
 
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
