@@ -324,53 +324,116 @@ font-size:16px;
 .offer { background:#F5F5F5; padding:40px; border-radius:15px; margin-top:20px; }
 .offer del { color:#888; margin-right:10px; }
 
-.free-shipping {
-  font-size: 22px;
+.offer-pro {
+  padding: 30px 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.offer-card {
+  width: 100%;
+  max-width: 420px;
+
+  background: linear-gradient(145deg, #ffffff, #f9f9f9);
+  border-radius: 20px;
+  padding: 25px 20px;
+  text-align: center;
+
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  border: 1px solid #eee;
+
+  position: relative;
+}
+
+/* 🔥 البادج */
+.offer-badge {
+  position: absolute;
+  top: -12px;
+  right: 15px;
+
+  background: #d62828;
+  color: #fff;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 20px;
   font-weight: bold;
-  margin-bottom: 8px;
 
-  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0, #FFD700);
-  background-size: 200%;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
 
+/* 💰 السعر */
+.price-box {
+  margin-top: 10px;
+}
+
+.old-price {
+  display: block;
+  text-decoration: line-through;
+  color: #999;
+  font-size: 16px;
+}
+
+.new-price {
+  font-size: 32px;
+  font-weight: bold;
+  color: #0F7B65;
+}
+
+/* 🎁 شحن مجاني */
+.free-shipping {
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: bold;
+
+  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
   animation: shine 3s linear infinite;
-
-  letter-spacing: 1px;
 }
 
+/* ⏳ التايمر */
 .timer-box {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .timer {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: bold;
   color: #D4AF37;
 
-  display: flex;
-  gap: 10px; /* 👈 يخلي الأرقام جنب بعض بشكل حلو */
+  background: #111;
+  padding: 12px 20px;
+  border-radius: 12px;
 
-  background: linear-gradient(145deg,#111,#1c1c1c);
-  padding: 15px 25px;
-  border-radius: 15px;
-
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4),
-              inset 0 0 8px rgba(255,215,0,0.2);
-
-  border:1px solid rgba(255,215,0,0.3);
-  letter-spacing: 2px;
+  display: inline-block;
 }
 
-/* الجملة تحت التايمر */
+/* 📦 الجملة */
 .offer-msg {
-  text-align: center;
   margin-top: 10px;
   font-size: 14px;
   color: #0F7B65;
+}
+
+/* زر */
+.offer-btn {
+  display: block;
+  margin-top: 15px;
+
+  background: #0F7B65;
+  color: #fff;
+  padding: 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+
+  transition: 0.3s;
+}
+
+.offer-btn:hover {
+  background: #095c4d;
+  transform: scale(1.03);
 }
 
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
@@ -806,18 +869,35 @@ function newOrder() {
   <div class="sub">هدية مناسبة عيد ميلاد أو ذكرى مميزة 💝</div>
 </div>
 
-<section class="offer">
-<h2>🔥 عرض لفترة محدودة</h2>
-<p>متفوتيش الفرصة وخلي اسمِك بيلمع دايمًا 💖</p>
+<section class="offer-pro">
 
-<div class="free-shipping">شحن مجاني 🎁</div>
+  <div class="offer-card">
 
-<div class="timer-box">
-  <div class="timer" id="countdown"></div>
-</div>
+    <!-- 🔥 بادج -->
+    <div class="offer-badge">🔥 عرض محدود</div>
 
-<p id="offerMsg" class="offer-msg"></p>
-</div>
+    <!-- 💰 السعر -->
+    <div class="price-box">
+      <span class="old-price">349 جنيه</span>
+      <span class="new-price">249 جنيه</span>
+    </div>
+
+    <!-- 🎁 شحن مجاني -->
+    <div class="free-shipping">شحن مجاني 🎁</div>
+
+    <!-- ⏳ التايمر -->
+    <div class="timer-box">
+      <div class="timer" id="countdown"></div>
+    </div>
+
+    <!-- 📦 الجملة -->
+    <p id="offerMsg" class="offer-msg"></p>
+
+    <!-- CTA -->
+    <a href="#order" class="offer-btn">اطلبي الآن 💎</a>
+
+  </div>
+
 </section>
 
 <section id="order" class="container">
