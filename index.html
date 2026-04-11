@@ -966,14 +966,29 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+function getDeviceID() {
+  let id = localStorage.getItem("device_id");
+
+  if (!id) {
+    id = Math.random().toString(36).substring(2) + Date.now();
+    localStorage.setItem("device_id", id);
+  }
+
+  return id;
+}
   
 // ✅ تايمر احترافي ثابت
 const countdownEl = document.getElementById("countdown");
 
 // لو مفيش وقت محفوظ → نحط وقت نهاية بعد 3 ساعات
-if (!localStorage.getItem("endTime")) {
+let firstVisit = localStorage.getItem("firstVisit");
+
+if (!firstVisit) {
   let end = new Date().getTime() + (3 * 60 * 60 * 1000);
+
   localStorage.setItem("endTime", end);
+  localStorage.setItem("firstVisit", "true");
 }
 
 function updateTimer() {
@@ -1413,7 +1428,12 @@ orderDetails.push({
 });
 
 // 🔍 تحقق هل الرقم طلب قبل كده
-const qCheck = query(collection(db, "orders"));
+import { where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const qCheck = query(
+  collection(db, "orders"),
+  where("phone", "==", phone)
+);
 const snapshotCheck = await getDocs(qCheck);
 
 let alreadyOrdered = false;
@@ -1424,6 +1444,18 @@ snapshotCheck.forEach(doc => {
   }
 });
 
+const qDevice = query(
+  collection(db, "orders"),
+  where("deviceID", "==", getDeviceID())
+);
+
+const snapshotDevice = await getDocs(qDevice);
+
+if (!snapshotDevice.empty) {
+  alert("❌ هذا الجهاز استخدم العرض بالفعل");
+  return;
+}
+
 // لو طلب قبل كده → إلغاء الشحن المجاني
 if (alreadyOrdered) {
   alert("⚠️ لقد حصلت على العرض مسبقاً، سيتم تطبيق الشحن العادي");
@@ -1432,10 +1464,13 @@ if (alreadyOrdered) {
   updatePrice();
 }
 
- await addDoc(collection(db, "orders"), {
+ let deviceID = getDeviceID();
+
+await addDoc(collection(db, "orders"), {
   orderID,
   customerName,
   phone,
+  deviceID, // 🔥 مهم
   gov,
   city,
   address,
