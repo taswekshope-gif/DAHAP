@@ -639,7 +639,7 @@ track.style.transition = `transform ${duration}s cubic-bezier(0.22,1,0.36,1)`;
   if (items[current + 1]) items[current + 1].classList.add("near");
 
   // ⭐ هنا السر (عكس بصري للدوتس فقط)
-  const reversedIndex = (items.length - 1) + current;
+  const reversedIndex = (items.length - 1) - current;
 
   dots.forEach(d => d.classList.remove("active"));
   if (dots[reversedIndex]) dots[reversedIndex].classList.add("active");
