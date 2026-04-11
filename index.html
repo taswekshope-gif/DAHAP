@@ -983,20 +983,27 @@ function updateTimer() {
 
   let diff = end - now;
 
+  let timerInterval;
+
+function updateTimer() {
+  let now = new Date().getTime();
+  let end = parseInt(localStorage.getItem("endTime"));
+
+  let diff = end - now;
+
   if (diff <= 0) {
-  countdownEl.innerHTML = "انتهى العرض ❌";
+    countdownEl.innerHTML = "انتهى العرض ❌";
 
-  // ❌ انتهاء العرض = رجوع الشحن
-  localStorage.setItem("offerExpired", "true");
-document.getElementById("offerMsg").innerHTML =
-    "❌ انتهى الشحن المجاني – تم إضافة مصاريف الشحن";
+    localStorage.setItem("offerExpired", "true");
 
-  updatePrice(); // تحديث السعر فوراً
-  return;
-} else {
-  // ✅ العرض شغال = شحن مجاني
-  localStorage.setItem("offerExpired", "false");
-}
+    document.getElementById("offerMsg").innerHTML =
+      "❌ انتهى الشحن المجاني – تم إضافة مصاريف الشحن";
+
+    updatePrice();
+
+    clearInterval(timerInterval); // 🔥 أهم سطر
+    return;
+  }
 
   let h = Math.floor(diff / (1000 * 60 * 60));
   let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1006,7 +1013,7 @@ document.getElementById("offerMsg").innerHTML =
     `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
 }
 
-setInterval(updateTimer, 1000);
+timerInterval = setInterval(updateTimer, 1000);
 updateTimer();
   
 // المحافظات والمدن
@@ -1394,10 +1401,10 @@ for (let i = 0; i < quantity; i++) {
 // ❤️ تجهيز تفاصيل الطلب
 let orderDetails = [];
 
-document.querySelectorAll(".itemBox").forEach((box, index) => {
-  items.forEach((item, i) => {
+items.forEach((item, i) => {
   if (i >= quantity) item.names = [];
 });
+document.querySelectorAll(".itemBox").forEach((box, index) => {
 
   let design = box.querySelector(".design").value;
   let names = items[index].names;
