@@ -324,6 +324,22 @@ font-size:16px;
 .offer { background:#F5F5F5; padding:40px; border-radius:15px; margin-top:20px; }
 .offer del { color:#888; margin-right:10px; }
 
+.free-shipping {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 8px;
+
+  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0, #FFD700);
+  background-size: 200%;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: shine 3s linear infinite;
+
+  letter-spacing: 1px;
+}
+
 .timer-box {
   display: flex;
   justify-content: center;
@@ -793,10 +809,9 @@ function newOrder() {
 <section class="offer">
 <h2>🔥 عرض لفترة محدودة</h2>
 <p>متفوتيش الفرصة وخلي اسمِك بيلمع دايمًا 💖</p>
-<p>
-  <del>349 جنيه</del>
-  <strong style="color:#0F7B65;">249 جنيه</strong>
-</p>
+
+<div class="free-shipping">شحن مجاني 🎁</div>
+
 <div class="timer-box">
   <div class="timer" id="countdown"></div>
 </div>
