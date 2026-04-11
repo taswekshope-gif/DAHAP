@@ -1293,18 +1293,6 @@ window.addEventListener("DOMContentLoaded", () => {
     updatePrice();
   });
 
-  // التصميم
-  document.querySelectorAll(".design").forEach(select => {
-    select.addEventListener("change", () => {
-      updatePrice();
-    });
-  });
-
-document.querySelectorAll(".lang").forEach((select, index) => {
-  select.addEventListener("change", function () {
-    items[index].lang = this.value;
-  });
-});
 
   // المحافظة
   document.getElementById("governorate").addEventListener("change", () => {
@@ -1463,6 +1451,19 @@ if (alreadyOrdered) {
   localStorage.setItem("offerExpired", "true");
   updatePrice();
 }
+
+// التصميم
+  document.querySelectorAll(".design").forEach(select => {
+    select.addEventListener("change", () => {
+      updatePrice();
+    });
+  });
+
+document.querySelectorAll(".lang").forEach((select, index) => {
+  select.addEventListener("change", function () {
+    items[index].lang = this.value;
+  });
+});
 
  let deviceID = getDeviceID();
 
