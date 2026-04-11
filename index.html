@@ -475,6 +475,31 @@ color: #0F7B65;
   font-weight: bold;
 }
 
+.reviews-box {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+
+  position: relative;
+  overflow: hidden;
+
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.reviews-box img {
+  width: 100%;
+  display: block;
+
+  transition: opacity 0.8s ease;
+  opacity: 1;
+}
+
+/* حالة الاختفاء */
+.reviews-box img.fade-out {
+  opacity: 0;
+}
+
 .cta-btn {
   display: inline-block;
   width: 100%;
@@ -851,6 +876,41 @@ function newOrder() {
 }
 </script>
 
+<script>
+const reviewImages = [
+  "images/reviews/1.webp",
+  "images/reviews/2.webp",
+  "images/reviews/3.webp",
+  "images/reviews/4.webp",
+  "images/reviews/5.webp"
+];
+
+const reviewImg = document.getElementById("reviewImage");
+
+// اختيار عشوائي
+function getRandomImage(current) {
+  let newImage;
+  do {
+    newImage = reviewImages[Math.floor(Math.random() * reviewImages.length)];
+  } while (newImage === current);
+
+  return newImage;
+}
+
+// تغيير الصورة
+function changeReview() {
+  reviewImg.classList.add("fade-out");
+
+  setTimeout(() => {
+    reviewImg.src = getRandomImage(reviewImg.src);
+    reviewImg.classList.remove("fade-out");
+  }, 500);
+}
+
+// تشغيل كل 3 ثواني
+setInterval(changeReview, 3000);
+</script>
+
 <body>
 
 <header class="header">
@@ -998,8 +1058,10 @@ function newOrder() {
 <section class="container">
 <h2>آراء العملاء 💬</h2>
 <p>⭐⭐⭐⭐⭐</p>
-<p>“السلسلة جميلة جدًا وجودة ممتازة 💖”</p>
-<p>“وصلت بسرعة والتصميم تحفة 👌”</p>
+  <div class="reviews-box">
+    <img id="reviewImage" src="images/reviews/1.webp" alt="رأي عميل">
+  </div>
+
 </section>
 
 <section id="order" class="container">
