@@ -291,6 +291,56 @@ pointer-events: none; /* يمنع أي ضغط */
   opacity: 1;
 }
 
+.offer-banner {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.banner-box {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* الصورة */
+.banner-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* طبقة خفيفة */
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+}
+
+/* نص */
+.banner-text {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  left: 15px;
+
+  color: #fff;
+  text-align: center;
+}
+
+.banner-text h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.banner-text p {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
 form {  
   width:100%;  
   max-width:100%;  
@@ -855,6 +905,28 @@ function newOrder() {
 ✔ هدية مميزة لأي مناسبة 🎁 <br>
 ✔ بتوصل لحد باب البيت 🚚
 </p>
+</section>
+
+<section class="offer-banner">
+
+  <div class="banner-box">
+
+    <img src="images/offer.webp"
+         width="1280"
+         height="720"
+         loading="lazy"
+         decoding="async"
+         alt="عرض السلسلة">
+
+    <div class="banner-overlay"></div>
+
+    <div class="banner-text">
+      <h3>عرض خاص لفترة محدودة 🎁</h3>
+      <p>سلسلة باسمك + شحن مجاني 💖</p>
+    </div>
+
+  </div>
+
 </section>
 
 <section class="container">
