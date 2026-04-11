@@ -436,6 +436,44 @@ font-size:16px;
   transform: scale(1.03);
 }
 
+.offer-banner {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.banner-box {
+  display: flex;
+  flex-direction: column; /* 👈 يخلي العناصر تحت بعض */
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.banner-box img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.banner-text {
+  margin-top: 10px;
+}
+
+.banner-text h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+color: #d62828;
+  font-weight: bold;
+}
+
+.banner-text p {
+  font-size: 14px;
+  color: #555;
+color: #0F7B65;
+  font-weight: bold;
+}
+
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
 input, select, button { padding:12px; border-radius:8px; border:1px solid #ccc; }
 button { background:#0F7B65; color:#fff; border:none; cursor:pointer; font-weight:bold; }
@@ -788,8 +826,77 @@ function newOrder() {
 
 <section class="intro">
   <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
-  <p>خلي اسمك أو اسم اللي بتحبيه في قطعة أنيقة بتصميم مخصوص ليكي 💖</p>
+
+<div class="urgent-box">
+  <div class="main"> الكمية محدودة – احجزي قبل ما العرض يخلص! 🔥</div>
+  <div class="sub">هدية مناسبة عيد ميلاد أو ذكرى مميزة 💝</div>
+</div>
+
+<section class="offer-pro">
+
+  <div class="offer-card">
+
+    <!-- 🔥 بادج -->
+    <div class="offer-badge">🔥 عرض محدود</div>
+
+    <!-- 💰 السعر -->
+    <div class="price-box">
+      <span class="old-price">349 جنيه</span>
+      <span class="new-price">249 جنيه</span>
+    </div>
+
+    <!-- 🎁 شحن مجاني -->
+    <div class="free-shipping">شحن مجاني 🎁</div>
+
+    <!-- ⏳ التايمر -->
+    <div class="timer-box">
+      <div class="timer" id="countdown"></div>
+    </div>
+
+    <!-- 📦 الجملة -->
+    <p id="offerMsg" class="offer-msg"></p>
+
+    <!-- CTA -->
+    <a href="#order" class="offer-btn">اطلبي الآن 💎</a>
+
+  </div>
+
+</section>
+
+<section class="container">
+<h2>ليه تختارينا؟</h2>
+<p>
+✔ تصميم باسمك حسب الطلب 💖 <br>
+✔ خامة عالية تدوم سنين ✨ <br>
+✔ هدية مميزة لأي مناسبة 🎁 <br>
+✔ بتوصل لحد باب البيت 🚚
+</p>
+</section>
+
   <a href="#order" class="btn">اطلبي الآن 💎</a>
+
+<section class="offer-banner">
+
+  <div class="banner-box">
+
+    <img src="images/offer.webp"
+         width="1280"
+         height="720"
+         loading="lazy"
+         decoding="async"
+         alt="عرض السلسلة">
+
+    <div class="banner-overlay"></div>
+
+    <div class="banner-text">
+      <h3>عرض خاص لفترة محدودة 🎁</h3>
+      <p>سلسلة باسمك + شحن مجاني 💖</p>
+    </div>
+
+  </div>
+
+</section>
+
 <section class="container">
   <h2>أنواع تصميم السلسلة</h2>
 
@@ -849,56 +956,10 @@ function newOrder() {
 </section>
 
 <section class="container">
-<h2>ليه تختارينا؟</h2>
-<p>
-✔ تصميم باسمك حسب الطلب 💖 <br>
-✔ خامة عالية تدوم سنين ✨ <br>
-✔ هدية مميزة لأي مناسبة 🎁 <br>
-✔ بتوصل لحد باب البيت 🚚
-</p>
-</section>
-
-<section class="container">
 <h2>آراء العملاء 💬</h2>
 <p>⭐⭐⭐⭐⭐</p>
 <p>“السلسلة جميلة جدًا وجودة ممتازة 💖”</p>
 <p>“وصلت بسرعة والتصميم تحفة 👌”</p>
-</section>
-
-<div class="urgent-box">
-  <div class="main"> الكمية محدودة – احجزي قبل ما العرض يخلص! 🔥</div>
-  <div class="sub">هدية مناسبة عيد ميلاد أو ذكرى مميزة 💝</div>
-</div>
-
-<section class="offer-pro">
-
-  <div class="offer-card">
-
-    <!-- 🔥 بادج -->
-    <div class="offer-badge">🔥 عرض محدود</div>
-
-    <!-- 💰 السعر -->
-    <div class="price-box">
-      <span class="old-price">349 جنيه</span>
-      <span class="new-price">249 جنيه</span>
-    </div>
-
-    <!-- 🎁 شحن مجاني -->
-    <div class="free-shipping">شحن مجاني 🎁</div>
-
-    <!-- ⏳ التايمر -->
-    <div class="timer-box">
-      <div class="timer" id="countdown"></div>
-    </div>
-
-    <!-- 📦 الجملة -->
-    <p id="offerMsg" class="offer-msg"></p>
-
-    <!-- CTA -->
-    <a href="#order" class="offer-btn">اطلبي الآن 💎</a>
-
-  </div>
-
 </section>
 
 <section id="order" class="container">
