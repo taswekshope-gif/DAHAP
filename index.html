@@ -325,23 +325,36 @@ font-size:16px;
 .offer del { color:#888; margin-right:10px; }
 
 .timer-box {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin-top:20px;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .timer {
-  font-size:32px;
-  font-weight:bold;
-  color:#D4AF37;
+  font-size: 28px;
+  font-weight: bold;
+  color: #D4AF37;
+
+  display: flex;
+  gap: 10px; /* 👈 يخلي الأرقام جنب بعض بشكل حلو */
+
   background: linear-gradient(145deg,#111,#1c1c1c);
-  padding:20px 40px;
-  border-radius:20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4),
-              inset 0 0 10px rgba(255,215,0,0.2);
+  padding: 15px 25px;
+  border-radius: 15px;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4),
+              inset 0 0 8px rgba(255,215,0,0.2);
+
   border:1px solid rgba(255,215,0,0.3);
-  letter-spacing:3px;
+  letter-spacing: 2px;
+}
+
+/* الجملة تحت التايمر */
+.offer-msg {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #0F7B65;
 }
 
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
@@ -786,7 +799,9 @@ function newOrder() {
 </p>
 <div class="timer-box">
   <div class="timer" id="countdown"></div>
-<p id="offerMsg" style="margin-top:10px; font-size:14px; color:#0F7B65;"></p>
+</div>
+
+<p id="offerMsg" class="offer-msg"></p>
 </div>
 </section>
 
