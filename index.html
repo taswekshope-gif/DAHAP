@@ -475,6 +475,48 @@ color: #0F7B65;
   font-weight: bold;
 }
 
+.cta-btn {
+  display: inline-block;
+  width: 100%;
+  max-width: 320px;
+  margin: 20px auto;
+
+  text-align: center;
+  padding: 15px;
+
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+
+  color: #000;
+  border-radius: 12px;
+
+  background: linear-gradient(45deg, #D4AF37, #FFD700, #FFF3B0);
+  background-size: 200%;
+
+  box-shadow: 0 10px 25px rgba(212,175,55,0.4);
+
+  transition: all 0.3s ease;
+  animation: goldShine 3s linear infinite;
+}
+
+/* ✨ أنيميشن لمعة دهبية */
+@keyframes goldShine {
+  0% { background-position: 0%; }
+  100% { background-position: 200%; }
+}
+
+/* 👆 Hover */
+.cta-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 15px 35px rgba(212,175,55,0.6);
+}
+
+/* 👇 ضغط */
+.cta-btn:active {
+  transform: scale(0.97);
+}
+
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
 input, select, button { padding:12px; border-radius:8px; border:1px solid #ccc; }
 button { background:#0F7B65; color:#fff; border:none; cursor:pointer; font-weight:bold; }
@@ -824,14 +866,8 @@ function newOrder() {
 </header>
 
 <section class="hero"></section>
- <a href="#order" class="btn">اطلبي الآن 💎</a>
 <section class="intro">
   <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
-
-<div class="urgent-box">
-  <div class="main"> الكمية محدودة – احجزي قبل ما العرض يخلص! 🔥</div>
-  <div class="sub">هدية مناسبة عيد ميلاد أو ذكرى مميزة 💝</div>
-</div>
 
 <section class="offer-pro">
 
@@ -863,6 +899,10 @@ function newOrder() {
   </div>
 
 </section>
+<div class="urgent-box">
+  <div class="main"> الكمية محدودة – احجزي قبل ما العرض يخلص! 🔥</div>
+  <div class="sub">هدية مناسبة عيد ميلاد أو ذكرى مميزة 💝</div>
+</div>
 
 <section class="offer-banner">
 
@@ -885,6 +925,7 @@ function newOrder() {
   </div>
 
 </section>
+<a href="#order" class="cta-btn">اطلبي الآن 💎</a>
 
 <section class="container">
 <h2>ليه تختارينا؟</h2>
