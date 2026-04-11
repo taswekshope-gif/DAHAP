@@ -786,9 +786,6 @@ function newOrder() {
 </p>
 <div class="timer-box">
   <div class="timer" id="countdown"></div>
-<p id="offerMsg" style="margin-top:10px; font-weight:bold; color:#d62828;">
-🚚 الشحن مجاني لفترة محدودة ⏳
-</p>
 </div>
 </section>
 
@@ -951,7 +948,6 @@ function newOrder() {
 
 <script type="module">
 
-
 // 🔥 Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -983,25 +979,9 @@ function updateTimer() {
 
   let diff = end - now;
 
-  let timerInterval;
-
-function updateTimer() {
-  let now = new Date().getTime();
-  let end = parseInt(localStorage.getItem("endTime"));
-
-  let diff = end - now;
-
   if (diff <= 0) {
     countdownEl.innerHTML = "انتهى العرض ❌";
-
-    localStorage.setItem("offerExpired", "true");
-
-    document.getElementById("offerMsg").innerHTML =
-      "❌ انتهى الشحن المجاني – تم إضافة مصاريف الشحن";
-
-    updatePrice();
-
-    clearInterval(timerInterval); // 🔥 أهم سطر
+    localStorage.removeItem("endTime");
     return;
   }
 
@@ -1013,7 +993,7 @@ function updateTimer() {
     `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
 }
 
-timerInterval = setInterval(updateTimer, 1000);
+setInterval(updateTimer, 1000);
 updateTimer();
   
 // المحافظات والمدن
@@ -1247,10 +1227,7 @@ if (quantity === 1) {
 }
   let gov = document.getElementById("governorate").value;
 
-  let isExpired = localStorage.getItem("offerExpired") === "true";
-
-// لو العرض شغال → الشحن مجاني
-let shipping = isExpired ? (shippingFees[gov] || 20) : 0;
+  let shipping = shippingFees[gov] || 20;
 
   let total = 0;
 
@@ -1268,8 +1245,7 @@ let shipping = isExpired ? (shippingFees[gov] || 20) : 0;
 
   document.getElementById("quantityDisplay").innerText = quantity;
   document.getElementById("price").innerText = total;
-  document.getElementById("shipping").innerText =
-  shipping === 0 ? "مجاني 🎁" : shipping;
+  document.getElementById("shipping").innerText = shipping;
   document.getElementById("finalTotal").innerText = finalTotal;
 }
 
@@ -1318,13 +1294,6 @@ let orderID = await generateOrderID();
   try {
     let customerName = document.getElementById("customerName").value.trim();
     let phone = document.getElementById("phone").value.trim();
-// 🔒 منع تكرار العرض لنفس الرقم
-if (localStorage.getItem("usedOffer_" + phone)) {
-  alert("❌ لقد حصلت بالفعل على العرض من قبل");
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
-  return;
-}
     let gov = document.getElementById("governorate").value;
     let city = document.getElementById("city").value;
     let address = document.getElementById("address").value.trim();
@@ -1401,10 +1370,10 @@ for (let i = 0; i < quantity; i++) {
 // ❤️ تجهيز تفاصيل الطلب
 let orderDetails = [];
 
-items.forEach((item, i) => {
+document.querySelectorAll(".itemBox").forEach((box, index) => {
+  items.forEach((item, i) => {
   if (i >= quantity) item.names = [];
 });
-document.querySelectorAll(".itemBox").forEach((box, index) => {
 
   let design = box.querySelector(".design").value;
   let names = items[index].names;
@@ -1419,26 +1388,6 @@ orderDetails.push({
   lang
  });
 });
-
-// 🔍 تحقق هل الرقم طلب قبل كده
-const qCheck = query(collection(db, "orders"));
-const snapshotCheck = await getDocs(qCheck);
-
-let alreadyOrdered = false;
-
-snapshotCheck.forEach(doc => {
-  if (doc.data().phone === phone) {
-    alreadyOrdered = true;
-  }
-});
-
-// لو طلب قبل كده → إلغاء الشحن المجاني
-if (alreadyOrdered) {
-  alert("⚠️ لقد حصلت على العرض مسبقاً، سيتم تطبيق الشحن العادي");
-
-  localStorage.setItem("offerExpired", "true");
-  updatePrice();
-}
 
  await addDoc(collection(db, "orders"), {
   orderID,
@@ -1493,21 +1442,13 @@ msgBox.style.display = "block";
 
 msgBox.innerHTML = `
   ✅ تم إرسال طلبك بنجاح!<br><br>
-🎉 مبروك! حصلت على العرض الخاص<br><br>
-
   🧾 كود طلبك:<br>
   <strong style="font-size:18px;">${orderID}</strong><br><br>
-
-🚚 الشحن مجاني لهذا الطلب فقط 🔥<br><br>
-
-  ⛔ العرض مرة واحدة فقط لكل عميل<br><br>
-
   📞 سيتم التواصل معك على واتساب
 `;
 
 localStorage.setItem("ordered", "true");
 localStorage.setItem("orderID", orderID);
-localStorage.setItem("usedOffer_" + phone, "true");
     
   setTimeout(() => {
 
