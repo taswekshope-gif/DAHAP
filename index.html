@@ -647,8 +647,8 @@ document.querySelectorAll(".item").forEach(img => {
 
     let diff = e.clientX - startX;
 
-    if (diff < -50) prev();
-    else if (diff > 50) next();
+    if (diff < -50) next();
+    else if (diff > 50) prev();
     else goTo(current);
   });
 
@@ -786,6 +786,7 @@ function newOrder() {
 </p>
 <div class="timer-box">
   <div class="timer" id="countdown"></div>
+<p id="offerMsg" style="margin-top:10px; font-size:14px; color:#0F7B65;"></p>
 </div>
 </section>
 
@@ -1383,7 +1384,8 @@ for (let i = 0; i < quantity; i++) {
   let d = box.querySelector(".design").value;
   price += prices[d] || 249;
 }
-    let shipping = shippingFees[gov] || 20;
+    let isExpired = localStorage.getItem("offerExpired") === "true";
+let shipping = isExpired ? (shippingFees[gov] || 20) : 0;
     let finalTotal = price + shipping;
 
 // ❤️ تجهيز تفاصيل الطلب
