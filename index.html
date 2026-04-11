@@ -542,7 +542,8 @@ if (localStorage.getItem("ordered")) {
   document.getElementById("orderForm").style.display = "none";
 
 // ❌ إخفاء التايمر والعرض
-  document.querySelector(".offer").style.display = "none";
+  let offer = document.querySelector(".offer-pro");
+if (offer) offer.style.display = "none";
 
   let msg = document.getElementById("successMessage");
   let savedOrderID = localStorage.getItem("orderID");
