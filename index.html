@@ -739,8 +739,8 @@ document.querySelectorAll(".item").forEach(img => {
 
     let diff = e.clientX - startX;
 
-    if (diff < -50) next();
-    else if (diff > 50) prev();
+    if (diff < -50) prev();
+    else if (diff > 50) next();
     else goTo(current);
   });
 
