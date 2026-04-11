@@ -980,10 +980,26 @@ function updateTimer() {
   let diff = end - now;
 
   if (diff <= 0) {
-    countdownEl.innerHTML = "انتهى العرض ❌";
-    localStorage.removeItem("endTime");
-    return;
+  countdownEl.innerHTML = "انتهى العرض ❌";
+
+  // ⛔ نخليها true مرة واحدة بس
+  if (localStorage.getItem("offerExpired") !== "true") {
+    localStorage.setItem("offerExpired", "true");
+
+document.getElementById("shipping").style.color = "red";    document.getElementById("offerMsg").innerHTML =
+      "❌ انتهى الشحن المجاني – تم إضافة مصاريف الشحن";
+
+    updatePrice(); // 🔥 يحدث السعر مرة واحدة بس
   }
+
+  return;
+} else {
+  // ✅ طول ما العرض شغال
+  localStorage.setItem("offerExpired", "false");
+
+  document.getElementById("offerMsg").innerHTML =
+    "🚚 الشحن مجاني لفترة محدودة ⏳";
+}
 
   let h = Math.floor(diff / (1000 * 60 * 60));
   let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1227,7 +1243,10 @@ if (quantity === 1) {
 }
   let gov = document.getElementById("governorate").value;
 
-  let shipping = shippingFees[gov] || 20;
+  let isExpired = localStorage.getItem("offerExpired") === "true";
+
+// لو العرض شغال → الشحن مجاني
+let shipping = isExpired ? (shippingFees[gov] || 20) : 0;
 
   let total = 0;
 
