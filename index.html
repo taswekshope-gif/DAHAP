@@ -975,7 +975,11 @@ window.addEventListener("DOMContentLoaded", () => {
     <p id="offerMsg" class="offer-msg"></p>
 
     <!-- CTA -->
-    <a href="#order" class="offer-btn no-interaction">اطلبي الآن 💎</a>
+    <a class="offer-btn no-interaction"
+
+onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
+   اطلبي الآن 💎
+</a>
 
   </div>
 
@@ -989,12 +993,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
   <div class="banner-box">
 
-    <img src="images/offer.webp"class="no-interaction">
-         width="1280"
-         height="720"
-         loading="lazy"
-         decoding="async"
-         alt="عرض السلسلة">
+  <img src="images/offer.webp"
+     class="no-interaction"
+     width="1280"
+     height="720"
+     loading="lazy"
+     decoding="async"
+     alt="عرض السلسلة">
 
     <div class="banner-overlay"></div>
 
@@ -1006,7 +1011,6 @@ window.addEventListener("DOMContentLoaded", () => {
   </div>
 
 </section>
-<a href="#order" class="cta-btn no-interaction">اطلبي الآن 💎</a>
 
 <section class="container">
 <h2>ليه تختارينا؟</h2>
@@ -1017,6 +1021,12 @@ window.addEventListener("DOMContentLoaded", () => {
 ✔ بتوصل لحد باب البيت 🚚
 </p>
 </section>
+
+<a class="cta-btn no-interaction"
+
+onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
+   اطلبي الآن 💎
+</a>
 
 <section class="container">
   <h2>أنواع تصميم السلسلة</h2>
@@ -1080,7 +1090,7 @@ window.addEventListener("DOMContentLoaded", () => {
 <h2>آراء العملاء 💬</h2>
 <p>⭐⭐⭐⭐⭐</p>
  <div class="reviews-box no-interaction">
-  <img id="reviewImage" src="images/reviews/rev1.webp" alt="رأي عميل">
+  <img id="reviewImage" class="no-interaction" src="images/reviews/rev1.webp" alt="رأي عميل">
   </div>
 
 </section>
