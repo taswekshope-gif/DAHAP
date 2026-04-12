@@ -291,6 +291,22 @@ pointer-events: none; /* يمنع أي ضغط */
   opacity: 1;
 }
 
+/* 🚫 منع الضغط المطول + النسخ + التحديد */
+.no-interaction {
+  -webkit-user-select: none;
+  user-select: none;
+
+  -webkit-touch-callout: none; /* iPhone */
+  -webkit-tap-highlight-color: transparent;
+
+  touch-action: manipulation;
+}
+
+/* 🚫 منع سحب الصور */
+.no-interaction img {
+  pointer-events: none;
+}
+
 form {  
   width:100%;  
   max-width:100%;  
@@ -959,7 +975,7 @@ window.addEventListener("DOMContentLoaded", () => {
     <p id="offerMsg" class="offer-msg"></p>
 
     <!-- CTA -->
-    <a href="#order" class="offer-btn">اطلبي الآن 💎</a>
+    <a href="#order" class="offer-btn no-interaction">اطلبي الآن 💎</a>
 
   </div>
 
@@ -969,11 +985,11 @@ window.addEventListener("DOMContentLoaded", () => {
   <div class="sub">هدية مناسبة عيد ميلاد أو ذكرى مميزة 💝</div>
 </div>
 
-<section class="offer-banner">
+<section class="offer-banner no-interaction">
 
   <div class="banner-box">
 
-    <img src="images/offer.webp"
+    <img src="images/offer.webp"class="no-interaction">
          width="1280"
          height="720"
          loading="lazy"
@@ -990,7 +1006,7 @@ window.addEventListener("DOMContentLoaded", () => {
   </div>
 
 </section>
-<a href="#order" class="cta-btn">اطلبي الآن 💎</a>
+<a href="#order" class="cta-btn no-interaction">اطلبي الآن 💎</a>
 
 <section class="container">
 <h2>ليه تختارينا؟</h2>
@@ -1063,8 +1079,8 @@ window.addEventListener("DOMContentLoaded", () => {
 <section class="container">
 <h2>آراء العملاء 💬</h2>
 <p>⭐⭐⭐⭐⭐</p>
-  <div class="reviews-box">
-   <img id="reviewImage" src="images/reviews/rev1.webp" alt="رأي عميل">
+ <div class="reviews-box no-interaction">
+  <img id="reviewImage" src="images/reviews/rev1.webp" alt="رأي عميل">
   </div>
 
 </section>
