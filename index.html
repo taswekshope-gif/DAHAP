@@ -491,8 +491,8 @@ color: #0F7B65;
   width: 100%;
   display: block;
 
-  transition: opacity 0.8s ease;
-  opacity: 1;
+  transition: opacity 0.6s ease;
+  opacity: 0;
 }
 
 /* حالة الاختفاء */
@@ -877,38 +877,43 @@ function newOrder() {
 </script>
 
 <script>
-const reviewImages = [
-  "images/reviews/1.webp",
-  "images/reviews/2.webp",
-  "images/reviews/3.webp",
-  "images/reviews/4.webp",
-  "images/reviews/5.webp"
-];
+window.addEventListener("DOMContentLoaded", () => {
 
-const reviewImg = document.getElementById("reviewImage");
+  const reviewImages = [
+    "images/reviews/rev1.webp",
+    "images/reviews/rev2.webp",
+    "images/reviews/rev3.webp",
+    "images/reviews/rev4.webp",
+    "images/reviews/rev5.webp"
+  ];
 
-// اختيار عشوائي
-function getRandomImage(current) {
-  let newImage;
-  do {
-    newImage = reviewImages[Math.floor(Math.random() * reviewImages.length)];
-  } while (newImage === current);
+  const reviewImg = document.getElementById("reviewImage");
 
-  return newImage;
-}
+  function getRandomImage(current) {
+    let newImage;
+    do {
+      newImage = reviewImages[Math.floor(Math.random() * reviewImages.length)];
+    } while (newImage === current);
 
-// تغيير الصورة
-function changeReview() {
-  reviewImg.classList.add("fade-out");
+    return newImage;
+  }
 
-  setTimeout(() => {
-    reviewImg.src = getRandomImage(reviewImg.src);
-    reviewImg.classList.remove("fade-out");
-  }, 500);
-}
+  function changeReview() {
+    reviewImg.classList.add("fade-out");
 
-// تشغيل كل 3 ثواني
-setInterval(changeReview, 3000);
+    setTimeout(() => {
+      reviewImg.src = getRandomImage(reviewImg.src);
+      reviewImg.classList.remove("fade-out");
+    }, 400);
+  }
+
+  // أول صورة عشوائي
+  reviewImg.src = reviewImages[Math.floor(Math.random() * reviewImages.length)];
+
+  // تغيير كل 2.5 ثانية
+  setInterval(changeReview, 2500);
+
+});
 </script>
 
 <body>
@@ -1059,7 +1064,7 @@ setInterval(changeReview, 3000);
 <h2>آراء العملاء 💬</h2>
 <p>⭐⭐⭐⭐⭐</p>
   <div class="reviews-box">
-    <img id="reviewImage" src="images/reviews/1.webp" alt="رأي عميل">
+   <img id="reviewImage" src="images/reviews/rev1.webp" alt="رأي عميل">
   </div>
 
 </section>
