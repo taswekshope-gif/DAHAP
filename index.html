@@ -927,32 +927,42 @@ document.querySelectorAll(".item").forEach(img => {
 
 });
 
-const toast = document.getElementById("toast");
+window.addEventListener("DOMContentLoaded", () => {
 
-const messages = [
-  "🔥 عميل من القاهرة طلب حالًا",
-  "💎 فيه طلب جديد اتسجل دلوقتي",
-  "🚚 تم تأكيد طلب من الجيزة",
-  "👀 حد بيشتري المنتج الآن",
-  "💖 طلب جديد على السلسلة باسمك",
-  "🛒 عميلة أضافت 2 قطعة للسلة"
-];
+  const toast = document.getElementById("toast");
 
-function showToast() {
-  const msg = messages[Math.floor(Math.random() * messages.length)];
+  if (!toast) {
+    console.error("Toast element not found!");
+    return;
+  }
 
-  toast.innerText = msg;
-  toast.classList.add("show");
+  const messages = [
+    "🔥 عميل من القاهرة طلب حالًا",
+    "💎 فيه طلب جديد اتسجل دلوقتي",
+    "🚚 تم تأكيد طلب من الجيزة",
+    "👀 حد بيشتري المنتج الآن",
+    "💖 طلب جديد على السلسلة باسمك",
+    "🛒 عميلة أضافت 2 قطعة للسلة"
+  ];
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
-}
+  function showToast() {
+    const msg = messages[Math.floor(Math.random() * messages.length)];
 
-// كل 6 - 12 ثانية
-setInterval(() => {
-  showToast();
-}, Math.random() * 6000 + 6000);
+    toast.innerText = msg;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3000);
+  }
+
+  function randomInterval() {
+    showToast();
+    setTimeout(randomInterval, Math.random() * 6000 + 6000);
+  }
+
+  randomInterval();
+});
 
 </script>
 
