@@ -81,6 +81,7 @@ input{
 
 <script type="module">
 
+import { addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -94,6 +95,12 @@ const firebaseConfig = {
   appId: "1:914606801645:web:273f6dab0028a42bef02e4",
   measurementId: "G-ZW99YCTSGY"
 };
+
+const q2 = query(collection(db,"complaints"), orderBy("createdAt","desc"));
+
+onSnapshot(q2,(snap)=>{
+  console.log("شكاوي:", snap.docs.map(d=>d.data()));
+});
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
