@@ -141,6 +141,31 @@ function load(){
 
 }
 
+async function sendMessage() {
+  const msg = document.getElementById("userMessage").value.trim();
+
+  if (!msg) {
+    alert("اكتب رسالة الأول");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "messages"), {
+      message: msg,
+      createdAt: new Date(),
+      status: "new"
+    });
+
+    document.getElementById("userMessage").value = "";
+    chatBox.style.display = "none";
+
+    alert("تم إرسال رسالتك 💖");
+
+  } catch (error) {
+    alert("حصل خطأ");
+  }
+}
+
 // 🔔 صوت
 function sound(){
   new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
