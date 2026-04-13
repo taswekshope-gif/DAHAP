@@ -571,34 +571,34 @@ color: #0F7B65;
   transform: scale(0.97);
 }
 
-.stats-box {
+.toast {
   position: fixed;
-  bottom: 15px;
+  bottom: 80px;
   right: 15px;
 
-  z-index: 9999;
+  background: #111;
+  color: #fff;
 
-  background: rgba(255,255,255,0.95);
-  border: 1px solid #eee;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-
-  padding: 10px 14px;
-  border-radius: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
 
   font-size: 13px;
   font-weight: bold;
 
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 
-  min-width: 150px;
+  opacity: 0;
+  transform: translateY(20px);
 
-  backdrop-filter: blur(6px);
+  transition: 0.4s ease;
+
+  z-index: 99999;
+  max-width: 220px;
 }
 
-.stat {
-  color: #0F7B65;
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
@@ -927,39 +927,33 @@ document.querySelectorAll(".item").forEach(img => {
 
 });
 
-function random(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+const toast = document.getElementById("toast");
+
+const messages = [
+  "🔥 عميل من القاهرة طلب حالًا",
+  "💎 فيه طلب جديد اتسجل دلوقتي",
+  "🚚 تم تأكيد طلب من الجيزة",
+  "👀 حد بيشتري المنتج الآن",
+  "💖 طلب جديد على السلسلة باسمك",
+  "🛒 عميلة أضافت 2 قطعة للسلة"
+];
+
+function showToast() {
+  const msg = messages[Math.floor(Math.random() * messages.length)];
+
+  toast.innerText = msg;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
 }
 
-// 👀 الزوار بين 15 - 100
-let visitors = random(15, 100);
+// كل 6 - 12 ثانية
+setInterval(() => {
+  showToast();
+}, Math.random() * 6000 + 6000);
 
-// 🛒 الطلبات بين 9 - 40
-let ordersToday = random(9, 40);
-
-function updateFakeStats() {
-
-  // حركة بسيطة طبيعية
-  visitors += random(-2, 3);
-  if (visitors < 15) visitors = 15;
-  if (visitors > 100) visitors = 100;
-
-  // الطلبات بتزيد أحيانًا
-  if (Math.random() > 0.6) {
-    ordersToday += 1;
-  }
-
-  if (ordersToday > 40) ordersToday = 40;
-
-  document.getElementById("visitors").innerText = visitors;
-  document.getElementById("ordersToday").innerText = ordersToday;
-}
-
-// أول تحميل
-updateFakeStats();
-
-// تحديث كل 2.5 ثانية
-setInterval(updateFakeStats, 2500);
 </script>
 
 <script>
@@ -1014,16 +1008,6 @@ window.addEventListener("DOMContentLoaded", () => {
     <h1 class="brand">DAHAP</h1>
 
   </div>
-
-<div class="stats-box">
-  <div class="stat">
-    👀 الزوار الآن: <span id="visitors">0</span>
-  </div>
-
-  <div class="stat">
-    🛒 طلبات اليوم: <span id="ordersToday">0</span>
-  </div>
-</div>
 </header>
 
 <section class="hero"></section>
@@ -1332,6 +1316,7 @@ onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
 
 </section>
 
+<div id="toast" class="toast"></div>
 <script type="module">
 
 // 🔥 Firebase
