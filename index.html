@@ -573,32 +573,48 @@ color: #0F7B65;
 
 .toast {
   position: fixed;
-  bottom: 80px;
-  right: 15px;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
 
-  background: #111;
+  background: rgba(0, 0, 0, 0.85);
   color: #fff;
 
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: 14px 18px;
+  border-radius: 14px;
 
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  backdrop-filter: blur(8px);
 
   opacity: 0;
-  transform: translateY(20px);
+  transition: all 0.4s ease;
 
-  transition: 0.4s ease;
+  z-index: 999999;
 
-  z-index: 99999;
-  max-width: 220px;
+  min-width: 250px;
+  max-width: 90%;
+  text-align: center;
+
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
+/* حالة الظهور */
 .toast.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
+}
+
+/* لمسة دهبي */
+.toast::before {
+  content: "🔥 Live";
+  display: block;
+  font-size: 11px;
+  color: #FFD700;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
 }
 
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
@@ -937,12 +953,12 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   const messages = [
-    "🔥 عميل من القاهرة طلب حالًا",
-    "💎 فيه طلب جديد اتسجل دلوقتي",
-    "🚚 تم تأكيد طلب من الجيزة",
-    "👀 حد بيشتري المنتج الآن",
-    "💖 طلب جديد على السلسلة باسمك",
-    "🛒 عميلة أضافت 2 قطعة للسلة"
+    "🔥 تم تأكيد طلب قطعه",
+    "💎 تم تأكيد طلب قطعه",
+    "🔥 تم تأكيد طلب قطعتين",
+    "👀 تم تأكيد طلب 3 قطع",
+    "💖 تم تأكيد طلب قطعه",
+    "🛒 تم تأكيد طلب قطعتين"
   ];
 
   function showToast() {
@@ -953,12 +969,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       toast.classList.remove("show");
-    }, 3000);
+    }, 4000);
   }
 
   function randomInterval() {
     showToast();
-    setTimeout(randomInterval, Math.random() * 6000 + 6000);
+    setTimeout(randomInterval, Math.random() * 20000 + 30000);
   }
 
   randomInterval();
