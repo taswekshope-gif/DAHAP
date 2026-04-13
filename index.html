@@ -602,12 +602,13 @@ color: #0F7B65;
   border: 1px solid rgba(255,255,255,0.08);
 }
 
+/* الحالة الظاهرة */
 .toast.show {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
-/* لمسة دهبي */
+/* Live badge */
 .toast::before {
   content: "🟢 Live";
   display: block;
