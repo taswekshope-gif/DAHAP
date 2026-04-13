@@ -644,6 +644,10 @@ color: #0F7B65;
 
 /* البوكس */
 #complaintBox {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.3s;
+
   position: fixed;
   bottom: 150px;
   left: 15px;
@@ -660,6 +664,12 @@ color: #0F7B65;
   gap: 10px;
 
   z-index: 999999;
+}
+
+#complaintBox.show {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 #complaintBox h3 {
@@ -1109,15 +1119,66 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<!-- زرار الرسائل -->
-<div id="chatBtn">💬</div>
+<script type="module">
+complaintBtn.onclick = () => {
+  complaintBox.classList.toggle("show");
+};
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-<!-- صندوق الرسالة -->
-<div id="chatBox">
-  <h3>اترك رسالة 💖</h3>
-  <textarea id="userMessage" placeholder="اكتب رسالتك هنا..."></textarea>
-  <button onclick="sendMessage()">إرسال</button>
-</div>
+const firebaseConfig = {
+  apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
+  authDomain: "dahap-87e3a.firebaseapp.com",
+  projectId: "dahap-87e3a",
+  storageBucket: "dahap-87e3a.appspot.com",
+  messagingSenderId: "914606801645",
+  appId: "1:914606801645:web:273f6dab0028a42bef02e4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔥 دي أهم دالة
+window.sendComplaint = async function () {
+
+  const name = document.getElementById("cName").value.trim();
+  const phone = document.getElementById("cPhone").value.trim();
+  const message = document.getElementById("cMessage").value.trim();
+
+  if (!name || !phone || !message) {
+    alert("من فضلك املأ كل البيانات");
+    return;
+  }
+
+  if (!/^01[0-9]{9}$/.test(phone)) {
+    alert("رقم غير صحيح");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "complaints"), {
+      name,
+      phone,
+      message,
+      createdAt: new Date(),
+      status: "new"
+    });
+
+    // reset
+    document.getElementById("cName").value = "";
+    document.getElementById("cPhone").value = "";
+    document.getElementById("cMessage").value = "";
+
+    document.getElementById("complaintBox").style.display = "none";
+
+    alert("تم إرسال رسالتك ✔");
+
+  } catch (e) {
+    alert("حصل خطأ");
+    console.log(e);
+  }
+};
+</script>
 
 <body>
 
@@ -1132,6 +1193,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
   </div>
 </header>
+
+<div id="complaintBox">
+  <h3>تواصل معنا</h3>
+
+  <input id="cName" placeholder="اسمك">
+  <input id="cPhone" placeholder="رقم التليفون">
+  <textarea id="cMessage" placeholder="اكتب رسالتك"></textarea>
+
+  <button onclick="sendComplaint()">إرسال</button>
+</div>
+
+<button onclick="sendComplaint()">إرسال</button>
 
 <section class="hero"></section>
 <section class="intro">
