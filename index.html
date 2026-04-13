@@ -961,6 +961,8 @@ window.addEventListener("DOMContentLoaded", () => {
   ];
 
   function showToast() {
+    if (!toast) return; // 👈 حماية
+
     const msg = messages[Math.floor(Math.random() * messages.length)];
 
     toast.innerText = msg;
@@ -968,21 +970,21 @@ window.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       toast.classList.remove("show");
-    }, 6000);
+    }, 5000);
   }
 
-  function startLoop() {
+  function loop() {
     showToast();
 
-    setTimeout(startLoop, Math.random() * 20000 + 30000);
+    // ⏱️ وقت عشوائي بين 20 و 40 ثانية
+    const delay = Math.random() * 20000 + 20000;
+
+    setTimeout(loop, delay);
   }
 
-  // ✅ مهم جداً: ما تظهرش أول مرة لو ظهر قبل كده في نفس الجلسة
+  // 🚀 بداية التشغيل (مهم جداً)
+  setTimeout(loop, 6000); // أول إشعار بعد 6 ثواني
 
-    setTimeout(() => {
-      startLoop();
-    }, 15000); // أول ظهور بعد 4 ثواني
-  }
 });
 
 </script>
