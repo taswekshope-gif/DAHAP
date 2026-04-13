@@ -141,28 +141,42 @@ function load(){
 
 }
 
-async function sendMessage() {
-  const msg = document.getElementById("userMessage").value.trim();
+async function sendComplaint() {
+  const name = document.getElementById("cName").value.trim();
+  const phone = document.getElementById("cPhone").value.trim();
+  const message = document.getElementById("cMessage").value.trim();
 
-  if (!msg) {
-    alert("اكتب رسالة الأول");
+  // تحقق
+  if (!name || !phone || !message) {
+    alert("من فضلك املأ كل البيانات");
+    return;
+  }
+
+  if (!/^01[0-9]{9}$/.test(phone)) {
+    alert("رقم غير صحيح");
     return;
   }
 
   try {
-    await addDoc(collection(db, "messages"), {
-      message: msg,
+    await addDoc(collection(db, "complaints"), {
+      name: name,
+      phone: phone,
+      message: message,
       createdAt: new Date(),
       status: "new"
     });
 
-    document.getElementById("userMessage").value = "";
-    chatBox.style.display = "none";
+    // تفريغ
+    document.getElementById("cName").value = "";
+    document.getElementById("cPhone").value = "";
+    document.getElementById("cMessage").value = "";
 
-    alert("تم إرسال رسالتك 💖");
+    complaintBox.style.display = "none";
+
+    alert("تم إرسال رسالتك للإدارة ✔");
 
   } catch (error) {
-    alert("حصل خطأ");
+    alert("حصل خطأ حاول تاني");
   }
 }
 
