@@ -573,43 +573,43 @@ color: #0F7B65;
 
 .toast {
   position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-20px);
+  bottom: 20px;
+  right: 15px;
 
   background: rgba(0, 0, 0, 0.85);
   color: #fff;
 
-  padding: 14px 18px;
+  padding: 14px 16px;
   border-radius: 14px;
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
 
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
   backdrop-filter: blur(8px);
 
   opacity: 0;
+  transform: translateY(20px);
+
   transition: all 0.4s ease;
 
   z-index: 999999;
 
-  min-width: 250px;
+  min-width: 220px;
   max-width: 90%;
   text-align: center;
 
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
-/* حالة الظهور */
 .toast.show {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 /* لمسة دهبي */
 .toast::before {
-  content: "🔥 Live";
+  content: "🟢 Live";
   display: block;
   font-size: 11px;
   color: #FFD700;
@@ -947,18 +947,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const toast = document.getElementById("toast");
 
-  if (!toast) {
-    console.error("Toast element not found!");
-    return;
-  }
-
   const messages = [
-    "🔥 تم تأكيد طلب قطعه",
-    "💎 تم تأكيد طلب قطعه",
-    "🔥 تم تأكيد طلب قطعتين",
-    "👀 تم تأكيد طلب 3 قطع",
-    "💖 تم تأكيد طلب قطعه",
-    "🛒 تم تأكيد طلب قطعتين"
+    "💖 تم تأكيد طلب سلسلة",
+    "💖 تم تأكيد طلب سلسلة",
+    "🛒 تم تأكيد طلب سلسلتين",
+    "🔥 تم تأكيد طلب 3 سلاسل",
+    "👀 عدد الزوار الأن: 19",
+    "👀 عدد الزوار الأن: 25",
+    "👀 عدد الزوار الأن: 23",
+    "💖 تم تأكيد طلب سلسلة",
+    "🛒 تم تأكيد طلب سلسلتين"
   ];
 
   function showToast() {
@@ -969,15 +967,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       toast.classList.remove("show");
-    }, 4000);
+    }, 3000);
   }
 
-  function randomInterval() {
+  function startLoop() {
     showToast();
-    setTimeout(randomInterval, Math.random() * 20000 + 30000);
+
+    setTimeout(startLoop, Math.random() * 20000 + 30000);
   }
 
-  randomInterval();
+  // ✅ مهم جداً: ما تظهرش أول مرة لو ظهر قبل كده في نفس الجلسة
+  if (!sessionStorage.getItem("toastStarted")) {
+    sessionStorage.setItem("toastStarted", "true");
+
+    setTimeout(() => {
+      startLoop();
+    }, 11000); // أول ظهور بعد 4 ثواني
+  }
 });
 
 </script>
@@ -1189,14 +1195,14 @@ onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
 
 <div class="center-box">
   <select id="quantity">
-    <option value="1">قطعة واحدة</option>
-    <option value="2">قطعتين</option>
-    <option value="3">3 قطع</option>
+    <option value="1">سلسلة</option>
+    <option value="2">سلسلتين</option>
+    <option value="3">3 سلاسل</option>
   </select>
 </div>
   
     <p class="note">
-✔ يمكنك طلب 3 قطع فقط من الموقع 
+✔ يمكنك طلب 3 سلاسل فقط من الموقع 
 </p> 
  <p class="note">
 ✔ للزيادة اطلبي اوردر وسيتم تأكيد العدد على واتساب
