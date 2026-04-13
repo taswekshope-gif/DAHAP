@@ -604,7 +604,7 @@ color: #0F7B65;
 
 .toast.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 /* لمسة دهبي */
@@ -967,7 +967,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       toast.classList.remove("show");
-    }, 3000);
+    }, 6000);
   }
 
   function startLoop() {
@@ -982,7 +982,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       startLoop();
-    }, 11000); // أول ظهور بعد 4 ثواني
+    }, 15000); // أول ظهور بعد 4 ثواني
   }
 });
 
