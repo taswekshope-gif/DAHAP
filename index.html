@@ -573,39 +573,39 @@ color: #0F7B65;
 
 .toast {
   position: fixed;
-  bottom: 20px;
+  top: 80px;
   right: 15px;
 
-  background: rgba(0, 0, 0, 0.85);
+  background: linear-gradient(135deg, #111, #222);
   color: #fff;
 
-  padding: 14px 16px;
-  border-radius: 14px;
+  padding: 14px 18px;
+  border-radius: 16px;
 
   font-size: 13px;
   font-weight: bold;
 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  backdrop-filter: blur(8px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
 
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(-20px) scale(0.95);
 
   transition: all 0.4s ease;
 
   z-index: 999999;
 
-  min-width: 220px;
+  min-width: 240px;
   max-width: 90%;
   text-align: center;
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 /* الحالة الظاهرة */
 .toast.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 /* Live badge */
@@ -614,7 +614,7 @@ color: #0F7B65;
   display: block;
   font-size: 11px;
   color: #FFD700;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   letter-spacing: 1px;
 }
 
@@ -949,15 +949,15 @@ window.addEventListener("DOMContentLoaded", () => {
   const toast = document.getElementById("toast");
 
   const messages = [
-    "💖 تم تأكيد طلب سلسلة",
-    "💖 تم تأكيد طلب سلسلة",
-    "🛒 تم تأكيد طلب سلسلتين",
-    "🔥 تم تأكيد طلب 3 سلاسل",
+    "💖 تم تأكيد طلب سلسلة الأن",
     "👀 عدد الزوار الأن: 19 زائر",
+    "💖 تم تأكيد طلب سلسلة الأن",
+    "🛒 تم تأكيد طلب سلسلتين الأن",
     "👀 عدد الزوار الأن: 25 زائر",
+    "🔥 تم تأكيد طلب 3 سلاسل الأن",
+    "💖 تم تأكيد طلب سلسلة الأن",
     "👀 عدد الزوار الأن: 23 زائر",
-    "💖 تم تأكيد طلب سلسلة",
-    "🛒 تم تأكيد طلب سلسلتين"
+    "🛒 تم تأكيد طلب سلسلتين الأن"
   ];
 
   function showToast() {
@@ -978,8 +978,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // ✅ مهم جداً: ما تظهرش أول مرة لو ظهر قبل كده في نفس الجلسة
-  if (!sessionStorage.getItem("toastStarted")) {
-    sessionStorage.setItem("toastStarted", "true");
 
     setTimeout(() => {
       startLoop();
