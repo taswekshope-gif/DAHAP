@@ -571,6 +571,33 @@ color: #0F7B65;
   transform: scale(0.97);
 }
 
+.stats-box {
+  position: fixed;
+  top: 90px;
+  left: 10px;
+  z-index: 9999;
+
+  background: rgba(255,255,255,0.95);
+  border: 1px solid #eee;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  font-size: 13px;
+  font-weight: bold;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  min-width: 140px;
+}
+
+.stat {
+  color: #0F7B65;
+}
+
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
 input, select, button { padding:12px; border-radius:8px; border:1px solid #ccc; }
 button { background:#0F7B65; color:#fff; border:none; cursor:pointer; font-weight:bold; }
@@ -903,6 +930,33 @@ function newOrder() {
   localStorage.removeItem("endTime"); // 👈 مهم
   location.reload();
 }
+
+function randomInRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// 👀 زائرين وهمي (يتحرك تدريجياً)
+let visitors = randomInRange(120, 250);
+
+// 🛒 طلبات اليوم (ثابت نسبيًا + زيادة بسيطة)
+let ordersToday = randomInRange(35, 80);
+
+function updateStats() {
+  // حركة بسيطة عشان يبان حي
+  visitors += randomInRange(-2, 5);
+  if (visitors < 100) visitors = 100;
+
+  ordersToday += Math.random() > 0.7 ? 1 : 0;
+
+  document.getElementById("visitors").innerText = visitors;
+  document.getElementById("ordersToday").innerText = ordersToday;
+}
+
+// أول تحميل
+updateStats();
+
+// تحديث كل 3 ثواني
+setInterval(updateStats, 3000);
 </script>
 
 <script>
@@ -957,6 +1011,16 @@ window.addEventListener("DOMContentLoaded", () => {
     <h1 class="brand">DAHAP</h1>
 
   </div>
+
+<div class="stats-box">
+  <div class="stat">
+    👀 زائر الآن: <span id="visitors">0</span>
+  </div>
+
+  <div class="stat">
+    🛒 طلبات اليوم: <span id="ordersToday">0</span>
+  </div>
+</div>
 </header>
 
 <section class="hero"></section>
