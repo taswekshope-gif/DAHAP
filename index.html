@@ -573,15 +573,16 @@ color: #0F7B65;
 
 .stats-box {
   position: fixed;
-  top: 90px;
-  left: 10px;
+  bottom: 15px;
+  right: 15px;
+
   z-index: 9999;
 
   background: rgba(255,255,255,0.95);
   border: 1px solid #eee;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 
-  padding: 10px 12px;
+  padding: 10px 14px;
   border-radius: 12px;
 
   font-size: 13px;
@@ -591,7 +592,9 @@ color: #0F7B65;
   flex-direction: column;
   gap: 6px;
 
-  min-width: 140px;
+  min-width: 150px;
+
+  backdrop-filter: blur(6px);
 }
 
 .stat {
@@ -924,39 +927,39 @@ document.querySelectorAll(".item").forEach(img => {
 
 });
 
-function newOrder() {
-  localStorage.removeItem("ordered");
-  localStorage.removeItem("orderID");
-  localStorage.removeItem("endTime"); // 👈 مهم
-  location.reload();
-}
-
-function randomInRange(min, max) {
+function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// 👀 زائرين وهمي (يتحرك تدريجياً)
-let visitors = randomInRange(120, 250);
+// 👀 الزوار بين 15 - 100
+let visitors = random(15, 100);
 
-// 🛒 طلبات اليوم (ثابت نسبيًا + زيادة بسيطة)
-let ordersToday = randomInRange(35, 80);
+// 🛒 الطلبات بين 9 - 40
+let ordersToday = random(9, 40);
 
-function updateStats() {
-  // حركة بسيطة عشان يبان حي
-  visitors += randomInRange(-2, 5);
-  if (visitors < 100) visitors = 100;
+function updateFakeStats() {
 
-  ordersToday += Math.random() > 0.7 ? 1 : 0;
+  // حركة بسيطة طبيعية
+  visitors += random(-2, 3);
+  if (visitors < 15) visitors = 15;
+  if (visitors > 100) visitors = 100;
+
+  // الطلبات بتزيد أحيانًا
+  if (Math.random() > 0.6) {
+    ordersToday += 1;
+  }
+
+  if (ordersToday > 40) ordersToday = 40;
 
   document.getElementById("visitors").innerText = visitors;
   document.getElementById("ordersToday").innerText = ordersToday;
 }
 
 // أول تحميل
-updateStats();
+updateFakeStats();
 
-// تحديث كل 3 ثواني
-setInterval(updateStats, 3000);
+// تحديث كل 2.5 ثانية
+setInterval(updateFakeStats, 2500);
 </script>
 
 <script>
@@ -1014,7 +1017,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 <div class="stats-box">
   <div class="stat">
-    👀 زائر الآن: <span id="visitors">0</span>
+    👀 الزوار الآن: <span id="visitors">0</span>
   </div>
 
   <div class="stat">
