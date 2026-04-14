@@ -1026,15 +1026,23 @@ document.querySelectorAll(".item").forEach(img => {
 
 });
 
+
+window.addEventListener("DOMContentLoaded", () => {
+
 const complaintBtn = document.getElementById("complaintBtn");
-const complaintBox = document.getElementById("complaintBox");
+  const complaintBox = document.getElementById("complaintBox");
+
+  if (complaintBtn) {
+    complaintBtn.onclick = () => {
+      complaintBox.classList.toggle("show");
+    };
+  }
+});
 
 complaintBtn.onclick = () => {
   complaintBox.style.display =
     complaintBox.style.display === "flex" ? "none" : "flex";
 };
-
-window.addEventListener("DOMContentLoaded", () => {
 
   const toast = document.getElementById("toast");
 
@@ -1077,11 +1085,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
 });
 
-</script>
-
-<script>
-window.addEventListener("DOMContentLoaded", () => {
-
   const reviewImages = [
     "images/reviews/rev1.webp",
     "images/reviews/rev2.webp",
@@ -1118,25 +1121,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
-
-<script type="module">
-complaintBtn.onclick = () => {
-  complaintBox.classList.toggle("show");
-};
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCitT_L8jC3J-z-zPn4ciOao2YJRoIvnsg",
-  authDomain: "dahap-87e3a.firebaseapp.com",
-  projectId: "dahap-87e3a",
-  storageBucket: "dahap-87e3a.appspot.com",
-  messagingSenderId: "914606801645",
-  appId: "1:914606801645:web:273f6dab0028a42bef02e4"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 // 🔥 دي أهم دالة
 window.sendComplaint = async function () {
@@ -1207,6 +1191,7 @@ window.sendComplaint = async function () {
 <section class="hero"></section>
 <section class="intro">
   <h2>سلسلة باسمك… لمسة تميزك ✨</h2>
+<div id="complaintBtn">💬</div>
 
 <section class="offer-pro">
 
@@ -1220,6 +1205,7 @@ window.sendComplaint = async function () {
       <span class="old-price">349 جنيه</span>
       <span class="new-price">249 جنيه</span>
     </div>
+
 
     <!-- 🎁 شحن مجاني -->
     <div class="free-shipping">شحن مجاني 🎁</div>
