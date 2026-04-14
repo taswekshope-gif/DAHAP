@@ -944,7 +944,7 @@ document.querySelectorAll(".item").forEach(img => {
 
 });
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", () => {
 
   const toast = document.getElementById("toast");
 
@@ -971,20 +971,22 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 6000);
   }
 
-  function startLoop() {
-    showToast();
+  function showToast() {
+    const msg = messages[Math.floor(Math.random() * messages.length)];
 
-    setTimeout(startLoop, Math.random() * 20000 + 30000);
-  }
-
-  // ✅ مهم جداً: ما تظهرش أول مرة لو ظهر قبل كده في نفس الجلسة
-  if (!sessionStorage.getItem("toastStarted")) {
-    sessionStorage.setItem("toastStarted", "true");
+    toast.innerText = msg;
+    toast.classList.add("show");
 
     setTimeout(() => {
-      startLoop();
-    }, 15000); // أول ظهور بعد 4 ثواني
+      toast.classList.remove("show");
+    }, 4000);
   }
+
+  // أول ظهور سريع
+  setTimeout(showToast, 2000);
+
+  // تكرار
+  setInterval(showToast, 15000);
 });
 
 </script>
