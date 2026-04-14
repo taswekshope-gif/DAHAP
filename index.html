@@ -618,6 +618,66 @@ color: #0F7B65;
   letter-spacing: 1px;
 }
 
+/* 💬 الزر العائم */
+#contactBtn {
+  position: fixed;
+  bottom: 20px;
+  left: 15px;
+  background: #0F7B65;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 50px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+#contactBtn span {
+  font-size: 12px;
+}
+
+/* 📩 Popup */
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+  text-align: center;
+}
+
+.popup-content input,
+.popup-content textarea {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.popup-content button {
+  margin-top: 10px;
+}
+
+.closeBtn {
+  background: #ccc;
+  color: #000;
+}
+
 form { max-width:400px; margin:auto; display:flex; flex-direction:column; gap:10px; }
 input, select, button { padding:12px; border-radius:8px; border:1px solid #ccc; }
 button { background:#0F7B65; color:#fff; border:none; cursor:pointer; font-weight:bold; }
@@ -1351,6 +1411,26 @@ onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
 
 </div>
 
+<!-- 💬 Floating Button -->
+<div id="contactBtn">
+  💬
+  <span>إرسال رسالة</span>
+</div>
+
+<!-- 📩 Popup Form -->
+<div id="contactPopup" class="popup">
+  <div class="popup-content">
+    <h3>إرسال رسالة للمسئول</h3>
+
+    <input type="text" id="msgName" placeholder="اسمك">
+    <input type="tel" id="msgPhone" placeholder="رقم تليفونك">
+    <textarea id="msgText" placeholder="اكتب رسالتك"></textarea>
+
+    <button onclick="sendMessage()">إرسال</button>
+    <button class="closeBtn" onclick="closePopup()">إغلاق</button>
+  </div>
+</div>
+
 <button type="submit">تأكيد الطلب</button>
 </form>
 <div id="successMessage"
@@ -1375,6 +1455,57 @@ const firebaseConfig = {
   messagingSenderId: "914606801645",
   appId: "1:914606801645:web:273f6dab0028a42bef02e4"
 };
+
+// فتح البوب اب
+document.getElementById("contactBtn").onclick = () => {
+  document.getElementById("contactPopup").style.display = "flex";
+};
+
+// قفل
+function closePopup() {
+  document.getElementById("contactPopup").style.display = "none";
+}
+
+// إرسال الرسالة
+async function sendMessage() {
+
+  let name = document.getElementById("msgName").value.trim();
+  let phone = document.getElementById("msgPhone").value.trim();
+  let message = document.getElementById("msgText").value.trim();
+
+  if (!name || !phone || !message) {
+    alert("املأ كل البيانات");
+    return;
+  }
+
+  if (!/^01[0-9]{9}$/.test(phone)) {
+    alert("رقم غير صحيح");
+    return;
+  }
+
+  try {
+
+    await addDoc(collection(db, "messages"), {
+      name,
+      phone,
+      message,
+      createdAt: new Date(),
+      status: "new"
+    });
+
+    alert("تم إرسال الرسالة ✅");
+
+    closePopup();
+
+    // تفريغ
+    document.getElementById("msgName").value = "";
+    document.getElementById("msgPhone").value = "";
+    document.getElementById("msgText").value = "";
+
+  } catch (e) {
+    alert("حصل خطأ");
+  }
+}
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
