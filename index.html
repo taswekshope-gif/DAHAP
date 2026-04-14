@@ -1458,12 +1458,14 @@ const firebaseConfig = {
 };
 
 // فتح البوب اب
-document.getElementById("contactBtn").onclick = () => {
-  document.getElementById("contactPopup").style.display = "flex";
-};
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("contactBtn").onclick = () => {
+    document.getElementById("contactPopup").style.display = "flex";
+  };
+});
 
 // قفل
-function closePopup() {
+window.closePopup = function() {
   document.getElementById("contactPopup").style.display = "none";
 }
 
@@ -1471,7 +1473,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // إرسال الرسالة
-async function sendMessage() {
+window.sendMessage = async function() {
 
   let name = document.getElementById("msgName").value.trim();
   let phone = document.getElementById("msgPhone").value.trim();
