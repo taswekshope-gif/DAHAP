@@ -1027,6 +1027,15 @@ window.addEventListener("DOMContentLoaded", () => {
   setInterval(changeReview, 2500);
 
 });
+
+function newOrder() {
+  // مسح حالة الطلب
+  localStorage.removeItem("ordered");
+  localStorage.removeItem("orderID");
+
+  // إعادة تحميل الصفحة
+  location.reload();
+}
 </script>
 
 <body>
