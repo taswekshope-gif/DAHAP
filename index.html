@@ -1414,7 +1414,7 @@ onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
 <!-- 💬 Floating Button -->
 <div id="contactBtn">
   💬
-  <span>إرسال رسالة</span>
+  <span>إرسال رسالة للمسئول</span>
 </div>
 
 <!-- 📩 Popup Form -->
@@ -1466,6 +1466,9 @@ function closePopup() {
   document.getElementById("contactPopup").style.display = "none";
 }
 
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 // إرسال الرسالة
 async function sendMessage() {
 
@@ -1486,9 +1489,9 @@ async function sendMessage() {
   try {
 
     await addDoc(collection(db, "messages"), {
-      name,
-      phone,
-      message,
+      name: name,
+      phone: phone,
+      message: message,
       createdAt: new Date(),
       status: "new"
     });
@@ -1497,18 +1500,15 @@ async function sendMessage() {
 
     closePopup();
 
-    // تفريغ
     document.getElementById("msgName").value = "";
     document.getElementById("msgPhone").value = "";
     document.getElementById("msgText").value = "";
 
   } catch (e) {
+    console.error(e);
     alert("حصل خطأ");
   }
 }
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
   
 // ✅ تايمر احترافي ثابت
 const countdownEl = document.getElementById("countdown");
