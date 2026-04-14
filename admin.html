@@ -96,12 +96,6 @@ const firebaseConfig = {
   measurementId: "G-ZW99YCTSGY"
 };
 
-const q2 = query(collection(db,"complaints"), orderBy("createdAt","desc"));
-
-onSnapshot(q2,(snap)=>{
-  console.log("شكاوي:", snap.docs.map(d=>d.data()));
-});
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -146,45 +140,6 @@ function load(){
     render();
   });
 
-}
-
-async function sendComplaint() {
-  const name = document.getElementById("cName").value.trim();
-  const phone = document.getElementById("cPhone").value.trim();
-  const message = document.getElementById("cMessage").value.trim();
-
-  // تحقق
-  if (!name || !phone || !message) {
-    alert("من فضلك املأ كل البيانات");
-    return;
-  }
-
-  if (!/^01[0-9]{9}$/.test(phone)) {
-    alert("رقم غير صحيح");
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "complaints"), {
-      name: name,
-      phone: phone,
-      message: message,
-      createdAt: new Date(),
-      status: "new"
-    });
-
-    // تفريغ
-    document.getElementById("cName").value = "";
-    document.getElementById("cPhone").value = "";
-    document.getElementById("cMessage").value = "";
-
-    complaintBox.style.display = "none";
-
-    alert("تم إرسال رسالتك للإدارة ✔");
-
-  } catch (error) {
-    alert("حصل خطأ حاول تاني");
-  }
 }
 
 // 🔔 صوت
@@ -253,6 +208,8 @@ html += `
 value='${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}'
 style="float:left; transform:scale(1.2); margin-left:10px;">
 
+<div id="messagesBox"></div>
+
 <b>🧾 ${o.orderID}</b>
 <span class="status ${status}">${status}</span><br><br>
 
@@ -285,6 +242,29 @@ href="https://wa.me/${o.phone}">واتساب</a>
   document.getElementById("orders").innerHTML=html;
   document.getElementById("count").innerText="📊 "+count;
 }
+
+const qMessages = query(collection(db,"messages"), orderBy("createdAt","desc"));
+
+onSnapshot(qMessages,(snap)=>{
+  let msgs = snap.docs.map(d=>d.data());
+
+  let box = document.getElementById("messagesBox");
+
+  let html = "<h3>📩 الرسائل</h3>";
+
+  msgs.forEach(m=>{
+    html += `
+    <div class="card">
+      👤 ${m.name}<br>
+      📞 ${m.phone}<br><br>
+      💬 ${m.message}<br><br>
+      🕒 ${m.createdAt?.toDate?.().toLocaleString('ar-EG')}
+    </div>
+    `;
+  });
+
+  box.innerHTML = html;
+});
 
 // 📋 copy
 window.copyText = (t)=>{
