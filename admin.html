@@ -79,6 +79,10 @@ input{
   
 <div id="orders"></div>
 
+<hr>
+
+<div id="messagesBox"></div>
+
 <script type="module">
 
 import { addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -207,8 +211,6 @@ html += `
 <input type="checkbox" class="selectOrder"
 value='${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}'
 style="float:left; transform:scale(1.2); margin-left:10px;">
-
-<div id="messagesBox"></div>
 
 <b>🧾 ${o.orderID}</b>
 <span class="status ${status}">${status}</span><br><br>
