@@ -252,6 +252,8 @@ onSnapshot(qMessages,(snap)=>{
 
   let box = document.getElementById("messagesBox");
 
+  if (!box) return;
+
   let html = "<h3>📩 الرسائل</h3>";
 
   msgs.forEach(m=>{
