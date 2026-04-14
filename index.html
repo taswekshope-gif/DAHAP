@@ -1029,7 +1029,7 @@ document.querySelectorAll(".item").forEach(img => {
 
 window.addEventListener("DOMContentLoaded", () => {
 
-const complaintBtn = document.getElementById("complaintBtn");
+  const complaintBtn = document.getElementById("complaintBtn");
   const complaintBox = document.getElementById("complaintBox");
 
   if (complaintBtn) {
@@ -1037,12 +1037,8 @@ const complaintBtn = document.getElementById("complaintBtn");
       complaintBox.classList.toggle("show");
     };
   }
-});
 
-complaintBtn.onclick = () => {
-  complaintBox.style.display =
-    complaintBox.style.display === "flex" ? "none" : "flex";
-};
+});
 
   const toast = document.getElementById("toast");
 
@@ -1120,48 +1116,6 @@ complaintBtn.onclick = () => {
   setInterval(changeReview, 2500);
 
 });
-</script>
-
-// 🔥 دي أهم دالة
-window.sendComplaint = async function () {
-
-  const name = document.getElementById("cName").value.trim();
-  const phone = document.getElementById("cPhone").value.trim();
-  const message = document.getElementById("cMessage").value.trim();
-
-  if (!name || !phone || !message) {
-    alert("من فضلك املأ كل البيانات");
-    return;
-  }
-
-  if (!/^01[0-9]{9}$/.test(phone)) {
-    alert("رقم غير صحيح");
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "complaints"), {
-      name,
-      phone,
-      message,
-      createdAt: new Date(),
-      status: "new"
-    });
-
-    // reset
-    document.getElementById("cName").value = "";
-    document.getElementById("cPhone").value = "";
-    document.getElementById("cMessage").value = "";
-
-    document.getElementById("complaintBox").style.display = "none";
-
-    alert("تم إرسال رسالتك ✔");
-
-  } catch (e) {
-    alert("حصل خطأ");
-    console.log(e);
-  }
-};
 </script>
 
 <body>
@@ -1510,6 +1464,46 @@ const firebaseConfig = {
   storageBucket: "dahap-87e3a.firebasestorage.app",
   messagingSenderId: "914606801645",
   appId: "1:914606801645:web:273f6dab0028a42bef02e4"
+};
+
+// 🔥 إرسال شكوى
+window.sendComplaint = async function () {
+
+  const name = document.getElementById("cName").value.trim();
+  const phone = document.getElementById("cPhone").value.trim();
+  const message = document.getElementById("cMessage").value.trim();
+
+  if (!name || !phone || !message) {
+    alert("من فضلك املأ كل البيانات");
+    return;
+  }
+
+  if (!/^01[0-9]{9}$/.test(phone)) {
+    alert("رقم غير صحيح");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "complaints"), {
+      name,
+      phone,
+      message,
+      createdAt: new Date(),
+      status: "new"
+    });
+
+    document.getElementById("cName").value = "";
+    document.getElementById("cPhone").value = "";
+    document.getElementById("cMessage").value = "";
+
+    document.getElementById("complaintBox").classList.remove("show");
+
+    alert("تم إرسال رسالتك ✔");
+
+  } catch (e) {
+    console.log(e);
+    alert("حصل خطأ");
+  }
 };
 
 const app = initializeApp(firebaseConfig);
