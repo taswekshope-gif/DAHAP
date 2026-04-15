@@ -1511,13 +1511,14 @@ document.getElementById("sendMsgBtn").addEventListener("click", sendMessage);
 
   window.closePopup();
 
-} catch (e) {
-  console.error("ERROR:", e);
-  alert(e.message);
-}
+
     document.getElementById("msgName").value = "";
     document.getElementById("msgPhone").value = "";
     document.getElementById("msgText").value = "";
+
+} catch (e) {
+  console.error("ERROR:", e);
+  alert(e.message);
 }
   
 // ✅ تايمر احترافي ثابت
