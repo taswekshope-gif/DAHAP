@@ -136,14 +136,14 @@ window.update = async function(id, status){
 
 }
 
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
 const qMessages = query(
   collection(db,"messages"),
   orderBy("createdAt","desc")
 );
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
 
 let orders = [];
 let lastCount = 0;
