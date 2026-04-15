@@ -234,10 +234,10 @@ transition: all 0.3s ease;
 
   <input type="text" id="search" placeholder="🔍">
 <div class="filters">
-  <button onclick="setFilter('')" class="filter-btn active">الكل</button>
-<button onclick="setFilter(event, 'new')" class="filter-btn">جديد</button>
-  <button onclick="setFilter('shipped')" class="filter-btn">اتشحن</button>
-  <button onclick="setFilter('done')" class="filter-btn">تم</button>
+<button onclick="setFilter(event,'')" class="filter-btn active">الكل</button>
+<button onclick="setFilter(event,'new')" class="filter-btn">جديد</button>
+<button onclick="setFilter(event,'shipped')" class="filter-btn">اتشحن</button>
+<button onclick="setFilter(event,'done')" class="filter-btn">تم</button>
 </div>
 <h3 id="count"></h3>
 
@@ -320,8 +320,6 @@ window.openMsg = (id,name,phone,message)=>{
   <a href="https://wa.me/2${phone}" target="_blank">رد واتساب</a>
   `;
 }
-
-document.getElementById("statusFilter").addEventListener("change", render);
 
 window.setFilter = (e, status)=>{
   currentFilter = status;
@@ -490,10 +488,6 @@ if(currentFilter && o.status !== currentFilter) return;
     ) return;
 
     let d = o.createdAt?.toDate?.();
-
-    if(date && d){
-      if(d.toDateString() !== new Date(date).toDateString()) return;
-    }
 
     count++;
 
