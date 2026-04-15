@@ -1474,6 +1474,7 @@ const db = getFirestore(app);
 
 // إرسال الرسالة
 window.sendMessage = async function() {
+  console.log("BTN CLICKED");
 
   let name = document.getElementById("msgName").value.trim();
   let phone = document.getElementById("msgPhone").value.trim();
@@ -1490,28 +1491,29 @@ window.sendMessage = async function() {
   }
 
   try {
+  console.log("قبل الإرسال");
 
-    await addDoc(collection(db, "messages"), {
-      name: name,
-      phone: phone,
-      message: message,
-      createdAt: new Date(),
-      status: "new"
-    });
+  await addDoc(collection(db, "messages"), {
+    name,
+    phone,
+    message,
+    createdAt: new Date(),
+    status: "new"
+  });
 
-    alert("تم إرسال الرسالة ✅");
+  console.log("تم الإرسال");
 
-    closePopup();
+  alert("تم إرسال الرسالة ✅");
 
+  window.closePopup();
+
+} catch (e) {
+  console.error("ERROR:", e);
+  alert(e.message);
+}
     document.getElementById("msgName").value = "";
     document.getElementById("msgPhone").value = "";
     document.getElementById("msgText").value = "";
-
-  } catch (e) {
-    console.error(e);
-    alert("حصل خطأ");
-  }
-}
   
 // ✅ تايمر احترافي ثابت
 const countdownEl = document.getElementById("countdown");
