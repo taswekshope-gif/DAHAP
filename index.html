@@ -1520,6 +1520,14 @@ document.getElementById("sendMsgBtn").addEventListener("click", sendMessage);
   console.error("ERROR:", e);
   alert(e.message);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.getElementById("contactBtn").addEventListener("click", openPopup);
+  document.getElementById("sendMsgBtn").addEventListener("click", sendMessage);
+  document.getElementById("closePopupBtn").addEventListener("click", closePopup);
+
+});
   
 // ✅ تايمر احترافي ثابت
 const countdownEl = document.getElementById("countdown");
