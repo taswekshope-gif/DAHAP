@@ -1415,7 +1415,7 @@ onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
 </form>
 
 <!-- 💬 Floating Button -->
-<div id="contactBtn">
+<div id="contactBtn" onclick="openPopup()">
   💬
   <span>إرسال رسالة للمسئول</span>
 </div>
@@ -1458,11 +1458,9 @@ const firebaseConfig = {
 };
 
 // فتح البوب اب
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("contactBtn").onclick = () => {
-    document.getElementById("contactPopup").style.display = "flex";
-  };
-});
+window.openPopup = function() {
+  document.getElementById("contactPopup").style.display = "flex";
+}
 
 // قفل
 window.closePopup = function() {
