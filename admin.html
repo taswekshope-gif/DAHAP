@@ -104,6 +104,9 @@ input{
   cursor:pointer;
   font-size:18px;
   transition:0.2s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .action-btn:active{
@@ -184,9 +187,8 @@ transition: all 0.3s ease;
 
 </style>
 
-<h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
-
 <div class="header">
+<h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
 
   <div class="header-icons">
 
@@ -200,7 +202,12 @@ transition: all 0.3s ease;
   </div>
 
   <input type="text" id="search" placeholder="🔍">
-  <input type="date" id="dateFilter">
+ <select id="statusFilter">
+  <option value="">الكل</option>
+  <option value="new">جديد</option>
+  <option value="shipped">اتشحن</option>
+  <option value="done">تم</option>
+</select>
 <h3 id="count"></h3>
 
 </div>
@@ -208,6 +215,32 @@ transition: all 0.3s ease;
 <div id="orders"></div>
 
 <hr>
+
+<div id="msgPopup" style="
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#fff;
+padding:20px;
+border-radius:16px;
+box-shadow:0 5px 20px rgba(0,0,0,0.3);
+z-index:99999;
+width:90%;
+max-width:400px;
+">
+  <div id="msgContent"></div>
+  <button onclick="closeMsg()" style="
+    margin-top:10px;
+    width:100%;
+    padding:10px;
+    border:none;
+    background:#333;
+    color:#fff;
+    border-radius:10px;
+  ">إغلاق</button>
+</div>
 
 <div id="messagesBox" style="
   display:none;
@@ -245,6 +278,22 @@ window.markRead = async function(id){
   await updateDoc(doc(db,"messages",id),{
     status:"done"
   });
+}
+
+window.openMsg = (id,name,phone,message)=>{
+  document.getElementById("msgPopup").style.display="block";
+  document.getElementById("msgContent").innerHTML = `
+  <b>${name}</b><br><br>
+  📞 ${phone}<br><br>
+  💬 ${message}<br><br>
+  <a href="https://wa.me/2${phone}" target="_blank">رد واتساب</a>
+  `;
+}
+
+document.getElementById("statusFilter").addEventListener("change", render);
+
+window.closeMsg = ()=>{
+  document.getElementById("msgPopup").style.display="none";
 }
 
 window.deleteMsg = async function(id){
@@ -288,6 +337,11 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+window.toggleOrder = (id)=>{
+  let el = document.getElementById("order-"+id);
+  el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
 window.toggleInbox = () => {
   let box = document.getElementById("messagesBox");
   box.style.display = box.style.display === "none" ? "block" : "none";
@@ -300,6 +354,10 @@ const qMessages = query(
   collection(db,"messages"),
   orderBy("createdAt","desc")
 );
+
+let statusFilter = document.getElementById("statusFilter").value;
+
+if(statusFilter && o.status !== statusFilter) return;
 
 let unreadCount = 0;
 
@@ -321,24 +379,10 @@ onSnapshot(qMessages,(snap)=>{
     if(status === "new") unreadCount++;
 
     html += `
-    <div class="card ${status==="new"?"unread":""}">
-
-      <b>👤 ${m.name}</b><br>
-      📞 ${m.phone}<br><br>
-      💬 ${m.message}<br><br>
-
-      <a class="btn whatsapp" target="_blank"
-      href="https://wa.me/2${m.phone}">
-      رد
-      </a>
-
-      <button class="btn doneBtn"
-      onclick="markRead('${id}')">
-      ✔
-      </button>
-
-    </div>
-    `;
+<div class="card" onclick="openMsg('${id}','${m.name}','${m.phone}','${m.message}')">
+  👤 ${m.name}
+</div>
+`;
   });
 
   box.innerHTML = html;
@@ -442,11 +486,12 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 html += `
 <div class="card">
 
-<input type="checkbox" class="selectOrder"
-value='${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}'>
+<div onclick="toggleOrder('${o.id}')" style="cursor:pointer;">
+  <b>🧾 ${o.orderID}</b>
+  <span class="status ${status}">${status}</span>
+</div>
 
-<b>🧾 ${o.orderID}</b>
-<span class="status ${status}">${status}</span><br><br>
+<div id="order-${o.id}" style="display:none; margin-top:10px;">
 
 👤 ${o.customerName || "غير محدد"} <br>
 📞 ${o.phone || "غير محدد"} <br>
@@ -484,11 +529,18 @@ ${(o.orderDetails || []).map((item,i)=>`
   ✅
   </button>
 
+  <button class="action-btn" style="background:#999;color:#fff"
+  onclick="update('${o.id}','new')">
+  🔄
+  </button>
+
 </div>
 
-</div>  // 👈 دي المهمة
+</div>
+
+</div>
 `;
-  });
+});
   document.getElementById("orders").innerHTML=html;
   document.getElementById("count").innerText="📊 "+count;
 }
