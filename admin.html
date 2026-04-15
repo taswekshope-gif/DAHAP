@@ -119,6 +119,26 @@ input{
 .ship{background:#0F7B65;color:#fff;}
 .doneBtn{background:#1976d2;color:#fff;}
 
+.filters{
+  display:flex;
+  gap:5px;
+  width:100%;
+}
+
+.filter-btn{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  background:#eee;
+  cursor:pointer;
+}
+
+.filter-btn.active{
+  background:#0F7B65;
+  color:#fff;
+}
+
 /* الرسائل popup */
 #messagesBox{
   position:fixed;
@@ -185,6 +205,17 @@ transition: all 0.3s ease;
   cursor:pointer;
 }
 
+.status{
+  padding:3px 8px;
+  border-radius:8px;
+  font-size:12px;
+  margin-right:5px;
+}
+
+.status.new{background:#ffc107;}
+.status.shipped{background:#17a2b8;color:#fff;}
+.status.done{background:#28a745;color:#fff;}
+
 </style>
 
 <div class="header">
@@ -202,12 +233,12 @@ transition: all 0.3s ease;
   </div>
 
   <input type="text" id="search" placeholder="🔍">
- <select id="statusFilter">
-  <option value="">الكل</option>
-  <option value="new">جديد</option>
-  <option value="shipped">اتشحن</option>
-  <option value="done">تم</option>
-</select>
+<div class="filters">
+  <button onclick="setFilter('')" class="filter-btn active">الكل</button>
+<button onclick="setFilter(event, 'new')" class="filter-btn">جديد</button>
+  <button onclick="setFilter('shipped')" class="filter-btn">اتشحن</button>
+  <button onclick="setFilter('done')" class="filter-btn">تم</button>
+</div>
 <h3 id="count"></h3>
 
 </div>
@@ -292,6 +323,18 @@ window.openMsg = (id,name,phone,message)=>{
 
 document.getElementById("statusFilter").addEventListener("change", render);
 
+window.setFilter = (e, status)=>{
+  currentFilter = status;
+
+  document.querySelectorAll(".filter-btn").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  e.target.classList.add("active");
+
+  render();
+}
+
 window.closeMsg = ()=>{
   document.getElementById("msgPopup").style.display="none";
 }
@@ -321,6 +364,7 @@ const auth = getAuth(app);
 
 let orders = [];
 let lastCount = 0;
+let currentFilter = "";
 
 // 🔐 login
   
@@ -354,10 +398,6 @@ const qMessages = query(
   collection(db,"messages"),
   orderBy("createdAt","desc")
 );
-
-let statusFilter = document.getElementById("statusFilter").value;
-
-if(statusFilter && o.status !== statusFilter) return;
 
 let unreadCount = 0;
 
@@ -419,7 +459,6 @@ onSnapshot(qMessages,(snap)=>{
 }
 
 document.getElementById("search").addEventListener("input", render);
-document.getElementById("dateFilter").addEventListener("change", render);
 
 // 🔔 صوت
 function sound(){
@@ -438,12 +477,12 @@ Notification.requestPermission();
 function render(){
 
   let search = document.getElementById("search").value.toLowerCase();
-  let date = document.getElementById("dateFilter").value;
 
   let html="";
   let count=0;
 
   orders.forEach(o=>{
+if(currentFilter && o.status !== currentFilter) return;
 
     if(search &&
       !o.customerName?.toLowerCase().includes(search) &&
