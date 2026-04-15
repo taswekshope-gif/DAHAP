@@ -1415,7 +1415,7 @@ onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
 </form>
 
 <!-- 💬 Floating Button -->
-<div id="contactBtn" onclick="openPopup()">
+<div id="contactBtn">
   💬
   <span>إرسال رسالة للمسئول</span>
 </div>
@@ -1429,8 +1429,8 @@ onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
     <input type="tel" id="msgPhone" placeholder="رقم تليفونك">
     <textarea id="msgText" placeholder="اكتب رسالتك"></textarea>
 
-    <button type="button" onclick="sendMessage()">إرسال</button>
-    <button class="closeBtn" onclick="closePopup()">إغلاق</button>
+    <button type="button" id="sendMsgBtn">إرسال</button>
+    <button class="closeBtn" id="closePopupBtn">إغلاق</button>
   </div>
 </div>
 
@@ -1459,11 +1459,15 @@ const firebaseConfig = {
 
 // فتح البوب اب
 window.openPopup = function() {
+
+document.getElementById("contactBtn").addEventListener("click", openPopup);
   document.getElementById("contactPopup").style.display = "flex";
 }
 
 // قفل
 window.closePopup = function() {
+
+document.getElementById("closePopupBtn").addEventListener("click", closePopup);
   document.getElementById("contactPopup").style.display = "none";
 }
 
@@ -1473,6 +1477,8 @@ const db = getFirestore(app);
 // إرسال الرسالة
 window.sendMessage = async function() {
   console.log("BTN CLICKED");
+
+document.getElementById("sendMsgBtn").addEventListener("click", sendMessage);
 
   let name = document.getElementById("msgName").value.trim();
   let phone = document.getElementById("msgPhone").value.trim();
