@@ -43,6 +43,14 @@ input{
   font-size:13px;
 }
 
+#messagesBox .card{
+  background:#fff;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
 .whatsapp{background:#25D366;color:#fff;}
 .copy{background:#333;color:#fff;}
 .print{background:#ff9800;color:#fff;}
@@ -85,6 +93,8 @@ input{
 
 <script type="module">
 
+import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 import { addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -99,6 +109,18 @@ const firebaseConfig = {
   appId: "1:914606801645:web:273f6dab0028a42bef02e4",
   measurementId: "G-ZW99YCTSGY"
 };
+
+window.markRead = async function(id){
+  await updateDoc(doc(db,"messages",id),{
+    status:"done"
+  });
+}
+
+window.deleteMsg = async function(id){
+  if(confirm("حذف الرسالة؟")){
+    await deleteDoc(doc(db,"messages",id));
+  }
+}
 
 window.update = async function(id, status){
 
@@ -154,10 +176,27 @@ function load(){
       ...d.data()
     }));
 
+  let lastMsgCount = 0;
+
+onSnapshot(qMessages,(snap)=>{
+
+  if(lastMsgCount && snap.size > lastMsgCount){
+    new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
+
+    if(Notification.permission==="granted"){
+      new Notification("📩 رسالة جديدة");
+    }
+  }
+
+  lastMsgCount = snap.size;
+
+
+
     render();
   });
 
 }
+
 
 // 🔔 صوت
 function sound(){
@@ -267,24 +306,46 @@ document.getElementById("dateFilter").addEventListener("change", render);
   document.getElementById("count").innerText="📊 "+count;
 }
 
-const qMessages = query(collection(db,"messages"), orderBy("createdAt","desc"));
-
 onSnapshot(qMessages,(snap)=>{
-  let msgs = snap.docs.map(d=>d.data());
-
   let box = document.getElementById("messagesBox");
 
-  if (!box) return;
+  let html = "<h3>📩 Inbox الرسائل</h3>";
 
-  let html = "<h3>📩 الرسائل</h3>";
+  snap.docs.forEach(d=>{
+    let m = d.data();
+    let id = d.id;
 
-  msgs.forEach(m=>{
+    let status = m.status || "new";
+
     html += `
-    <div class="card">
-      👤 ${m.name}<br>
+    <div class="card" style="border-right:5px solid ${status==="new"?"orange":"green"}">
+
+      <div style="display:flex; justify-content:space-between;">
+        <b>👤 ${m.name}</b>
+        <span class="status ${status}">${status}</span>
+      </div>
+
       📞 ${m.phone}<br><br>
+
       💬 ${m.message}<br><br>
-      🕒 ${m.createdAt?.toDate?.().toLocaleString('ar-EG')}
+
+      🕒 ${m.createdAt?.toDate?.().toLocaleString('ar-EG')}<br><br>
+
+      <a class="btn whatsapp" target="_blank"
+      href="https://wa.me/2${m.phone}">
+      رد واتساب
+      </a>
+
+      <button class="btn doneBtn"
+      onclick="markRead('${id}')">
+      تم القراءة
+      </button>
+
+      <button class="btn copy"
+      onclick="deleteMsg('${id}')">
+      حذف
+      </button>
+
     </div>
     `;
   });
