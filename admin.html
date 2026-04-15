@@ -140,11 +140,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const qMessages = query(
-  collection(db,"messages"),
-  orderBy("createdAt","desc")
-);
-
 let orders = [];
 let lastCount = 0;
 
@@ -165,6 +160,71 @@ onAuthStateChanged(auth, (user) => {
   
 // 📦 load orders
 function load(){
+
+const qMessages = query(
+  collection(db,"messages"),
+  orderBy("createdAt","desc")
+);
+
+let lastMsgCount = 0;
+
+onSnapshot(qMessages,(snap)=>{
+
+  if(lastMsgCount && snap.size > lastMsgCount){
+    sound();
+
+    if(Notification.permission==="granted"){
+      new Notification("📩 رسالة جديدة");
+    }
+  }
+
+  lastMsgCount = snap.size;
+
+  let box = document.getElementById("messagesBox");
+
+  let html = "<h3>📩 Inbox الرسائل</h3>";
+
+  snap.docs.forEach(d=>{
+    let m = d.data();
+    let id = d.id;
+
+    let status = m.status || "new";
+
+    html += `
+    <div class="card ${status==="new"?"unread":""}">
+
+      <div style="display:flex; justify-content:space-between;">
+        <b>👤 ${m.name}</b>
+        <span class="status ${status}">${status}</span>
+      </div>
+
+      📞 ${m.phone}<br><br>
+      💬 ${m.message}<br><br>
+
+      🕒 ${m.createdAt?.toDate?.().toLocaleString('ar-EG') || ""}<br><br>
+
+      <a class="btn whatsapp" target="_blank"
+      href="https://wa.me/2${m.phone}">
+      رد واتساب
+      </a>
+
+      <button class="btn doneBtn"
+      onclick="markRead('${id}')">
+      تم القراءة
+      </button>
+
+      <button class="btn copy"
+      onclick="deleteMsg('${id}')">
+      حذف
+      </button>
+
+    </div>
+    `;
+  });
+
+  box.innerHTML = html;
+
+});
 
   const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
 
@@ -294,66 +354,6 @@ href="https://wa.me/2${o.phone}">واتساب</a>
   document.getElementById("orders").innerHTML=html;
   document.getElementById("count").innerText="📊 "+count;
 }
-
-let lastMsgCount = 0;
-
-onSnapshot(qMessages,(snap)=>{
-
-  if(lastMsgCount && snap.size > lastMsgCount){
-    sound();
-
-    if(Notification.permission==="granted"){
-      new Notification("📩 رسالة جديدة");
-    }
-  }
-
-  lastMsgCount = snap.size;
-
-  let box = document.getElementById("messagesBox");
-
-  let html = "<h3>📩 Inbox الرسائل</h3>";
-
-  snap.docs.forEach(d=>{
-    let m = d.data();
-    let id = d.id;
-
-    let status = m.status || "new";
-
-    html += `
-    <div class="card" style="border-right:5px solid ${status==="new"?"orange":"green"}">
-
-      <div style="display:flex; justify-content:space-between;">
-        <b>👤 ${m.name}</b>
-        <span class="status ${status}">${status}</span>
-      </div>
-
-      📞 ${m.phone}<br><br>
-
-      💬 ${m.message}<br><br>
-
-      🕒 ${m.createdAt?.toDate?.().toLocaleString('ar-EG')}<br><br>
-
-      <a class="btn whatsapp" target="_blank"
-      href="https://wa.me/2${m.phone}">
-      رد واتساب
-      </a>
-
-      <button class="btn doneBtn"
-      onclick="markRead('${id}')">
-      تم القراءة
-      </button>
-
-      <button class="btn copy"
-      onclick="deleteMsg('${id}')">
-      حذف
-      </button>
-
-    </div>
-    `;
-  });
-
-  box.innerHTML = html;
-});
 
 // 📋 copy
 window.copyText = (t)=>{
