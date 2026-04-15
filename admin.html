@@ -13,13 +13,38 @@ body{
   margin:0;
 }
 
-/* الهيدر */
 .header{
   position:sticky;
   top:0;
-  background:#f4f6f9;
+  background:#fff;
   z-index:10;
-  padding-bottom:5px;
+  padding:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-radius:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* مجموعة الأيقونات */
+.header-icons{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+/* أيقونة */
+.icon-btn{
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f1f1f1;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+  position:relative;
 }
 
 /* الايقونة */
@@ -37,31 +62,50 @@ input{
 }
 
 /* الكارد */
+#orders{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
 .card{
+  width:100%;
+  max-width:420px;
   background:#fff;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  padding:15px;
+  border-radius:16px;
+  margin-bottom:12px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.08);
   font-size:14px;
+  position:relative;
 }
 
 /* الأزرار */
-.btn{
-  padding:6px 8px;
-  border-radius:6px;
-  border:none;
-  cursor:pointer;
-  margin:2px;
-  font-size:12px;
+.actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+  flex-wrap:wrap;
 }
 
-/* خلي الأزرار تنزل تحت بعض */
-.card .btn{
-  display:block;
-  width:100%;
-  margin-top:6px;
+.action-btn{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-size:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
 }
+
+/* ألوان */
+.whatsapp{background:#25D366;color:#fff;}
+.copy{background:#333;color:#fff;}
+.ship{background:#0F7B65;color:#fff;}
+.doneBtn{background:#1976d2;color:#fff;}
 
 /* الرسائل popup */
 #messagesBox{
@@ -111,8 +155,14 @@ transition: all 0.3s ease;
 
   /* checkbox */
   .selectOrder{
-    transform:scale(1.3);
-  }
+  position:absolute;
+  top:12px;
+  left:12px;
+  width:20px;
+  height:20px;
+  accent-color:#0F7B65;
+  cursor:pointer;
+}
 
 }
 
@@ -121,28 +171,22 @@ transition: all 0.3s ease;
 <h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
 
 <div class="header">
-<div id="msgIcon" onclick="toggleInbox()" style="cursor:pointer; position:relative;">
-  📩
-  <span id="msgBadge" style="
-    position:absolute;
-    top:-5px;
-    right:-10px;
-    background:red;
-    color:#fff;
-    border-radius:50%;
-    font-size:12px;
-    padding:2px 6px;
-    display:none;
-  ">0</span>
-</div>
-  <input type="text" id="search" placeholder="🔍 بحث">
-  <input type="date" id="dateFilter">
-  <h3 id="count"></h3>
-</div>
 
-<button onclick="printSelected()" style="margin-bottom:15px;">
-🖨️ طباعة المحدد
-</button>
+  <div class="header-icons">
+
+    <div class="icon-btn" onclick="toggleInbox()">
+      📩
+      <span id="msgBadge">0</span>
+    </div>
+
+    <div class="icon-btn" onclick="printSelected()">🖨️</div>
+
+  </div>
+
+  <input type="text" id="search" placeholder="🔍">
+  <input type="date" id="dateFilter">
+
+</div>
   
 <div id="orders"></div>
 
@@ -390,14 +434,24 @@ ${(o.orderDetails || []).map((item,i)=>`
 
 🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
 
-<a class="btn whatsapp" target="_blank"
-href="https://wa.me/2${o.phone}">واتساب</a>
+<div class="actions">
 
-<button class="btn copy" onclick='copyText(${JSON.stringify(msg)})'>نسخ</button>
+  <a class="action-btn whatsapp" target="_blank"
+  href="https://wa.me/2${o.phone}">
+  💬
+  </a>
 
-<button class="btn ship" onclick="update('${o.id}','shipped')">شحن</button>
+  <button class="action-btn copy" onclick='copyText(${JSON.stringify(msg)})'>
+  📋
+  </button>
 
-<button class="btn doneBtn" onclick="update('${o.id}','done')">تم</button>
+  <button class="action-btn ship" onclick="update('${o.id}','shipped')">
+  🚚
+  </button>
+
+  <button class="action-btn doneBtn" onclick="update('${o.id}','done')">
+  ✅
+  </button>
 
 </div>
 `;
