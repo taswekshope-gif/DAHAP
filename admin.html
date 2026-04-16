@@ -55,6 +55,14 @@ html, body{
   background:#e0e0e0;
 }
 
+.new-badge{
+  background:red;
+  color:#fff;
+  font-size:10px;
+  padding:3px 6px;
+  border-radius:8px;
+}
+
 /* الايقونة */
 #msgIcon{
   font-size:22px;
@@ -275,6 +283,7 @@ display:none;
 <h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
 
  <div class="header-icons">
+<div class="icon-btn" onclick="selectAll()">☑️</div>
 
   <div class="icon-btn" onclick="toggleInbox()">
     📩
@@ -459,6 +468,34 @@ window.toggleOrder = (id)=>{
   el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
+window.selectAll = () => {
+
+  let checkboxes = document.querySelectorAll(".selectOrder");
+
+  let allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+  checkboxes.forEach(cb => {
+    cb.checked = !allChecked;
+  });
+
+};
+
+window.selectAll = () => {
+
+  let checkboxes = document.querySelectorAll(".selectOrder");
+
+  checkboxes.forEach(cb => {
+    let card = cb.closest(".card");
+
+    if(currentFilter){
+      if(!card.classList.contains(currentFilter)) return;
+    }
+
+    cb.checked = true;
+  });
+
+};
+
 window.closeMsg = () => {
   document.getElementById("msgPopup").style.display = "none";
 };
@@ -529,7 +566,11 @@ onSnapshot(qMessages,(snap)=>{
 <div class="msg-item ${status === 'new' ? 'unread' : ''}" 
 onclick="openMsg('${m.id}')">
 
-<div>👤 ${m.name}</div>
+<div style="display:flex;justify-content:space-between;align-items:center;">
+  <div>👤 ${m.name}</div>
+
+  ${status === 'new' ? `<span class="new-badge">جديد</span>` : ''}
+</div>
 
 <div style="font-size:12px;color:#666;">
 ${m.phone}
@@ -537,7 +578,6 @@ ${m.phone}
 
 </div>
 `;
-  });
 
   document.getElementById("messagesList").innerHTML = html;
 
@@ -634,66 +674,72 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 `;
 
 html += `
-<div class="card" style="
-display:flex;
-align-items:center;
-justify-content:space-between;
-cursor:pointer;
-">
+<div class="card ${status}" style="position:relative;">
 
-</div>
+  <!-- ✅ checkbox -->
+  <input type="checkbox" class="selectOrder" 
+  value="${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}">
 
-<div onclick="toggleOrder('${o.id}')" style="cursor:pointer;">
-  <b>🧾 ${o.orderID}</b>
-  <span class="status ${status}">${status}</span>
-</div>
+  <!-- ✅ الهيدر -->
+  <div onclick="toggleOrder('${o.id}')" style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor:pointer;
+  ">
 
-<div id="order-${o.id}" style="display:none; margin-top:10px;">
+    <b>🧾 ${o.orderID}</b>
+    <span class="status ${status}">${status}</span>
 
-👤 ${o.customerName || "غير محدد"} <br>
-📞 ${o.phone || "غير محدد"} <br>
+  </div>
 
-📍 ${o.gov || "غير محدد"} - ${o.city || "غير محدد"} <br>
-${o.address || ""} <br><br>
+  <!-- ✅ التفاصيل -->
+  <div id="order-${o.id}" style="display:none; margin-top:10px;">
 
-💎 <b>تفاصيل الطلب:</b><br>
+    👤 ${o.customerName || "غير محدد"} <br>
+    📞 ${o.phone || "غير محدد"} <br>
 
-${(o.orderDetails || []).map((item,i)=>`
-🔹 سلسلة ${i+1}<br>
-🏷️ ${item.names}<br>
-🎨 ${item.design}<br>
-🌍 ${item.lang}<br><br>
-`).join("")}
+    📍 ${o.gov || "غير محدد"} - ${o.city || "غير محدد"} <br>
+    ${o.address || ""} <br><br>
 
-🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
+    💎 <b>تفاصيل الطلب:</b><br>
 
-<div class="actions">
+    ${(o.orderDetails || []).map((item,i)=>`
+    🔹 سلسلة ${i+1}<br>
+    🏷️ ${item.names}<br>
+    🎨 ${item.design}<br>
+    🌍 ${item.lang}<br><br>
+    `).join("")}
 
-  <a class="action-btn whatsapp" target="_blank"
-  href="https://wa.me/2${o.phone}">
-  💬
-  </a>
+    🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
 
-  <button class="action-btn copy" onclick='copyText(${JSON.stringify(msg)})'>
-  📋
-  </button>
+    <div class="actions">
 
-  <button class="action-btn ship" onclick="update('${o.id}','shipped')">
-  🚚
-  </button>
+      <a class="action-btn whatsapp" target="_blank"
+      href="https://wa.me/2${o.phone}">
+      💬
+      </a>
 
-  <button class="action-btn doneBtn" onclick="update('${o.id}','done')">
-  ✅
-  </button>
+      <button class="action-btn copy" onclick='copyText(${JSON.stringify(msg)})'>
+      📋
+      </button>
 
-  <button class="action-btn" style="background:#999;color:#fff"
-  onclick="update('${o.id}','new')">
-  🔄
-  </button>
+      <button class="action-btn ship" onclick="update('${o.id}','shipped')">
+      🚚
+      </button>
 
-</div>
+      <button class="action-btn doneBtn" onclick="update('${o.id}','done')">
+      ✅
+      </button>
 
-</div>
+      <button class="action-btn" style="background:#999;color:#fff"
+      onclick="update('${o.id}','new')">
+      🔄
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 `;
@@ -701,6 +747,11 @@ ${(o.orderDetails || []).map((item,i)=>`
   document.getElementById("orders").innerHTML=html;
   document.getElementById("count").innerText="📊 "+count;
 }
+
+setInterval(()=>{
+  let count = document.querySelectorAll(".selectOrder:checked").length;
+  document.getElementById("count").innerText = "📊 "+count;
+},500);
 
 // 📋 copy
 window.copyText = (t)=>{
