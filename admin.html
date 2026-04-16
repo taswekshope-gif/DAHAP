@@ -416,6 +416,20 @@ window.openDatePicker = ()=>{
   d.showPicker(); // 👈 يفتح التقويم مباشرة
 }
 
+window.setFilter = (e, filter) => {
+
+  currentFilter = filter;
+
+  // تغيير شكل الزرار
+  document.querySelectorAll(".filter-btn").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  e.target.classList.add("active");
+
+  render();
+};
+
 window.toggleInbox = () => {
   let box = document.getElementById("messagesBox");
 
@@ -499,6 +513,8 @@ style="cursor:pointer;">
   });
 
 }
+
+document.getElementById("dateFilter").addEventListener("change", render);
 
 document.getElementById("search").addEventListener("input", render);
 
