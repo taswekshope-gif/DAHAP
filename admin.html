@@ -215,17 +215,22 @@ display:none;
   opacity:1;
 }
 
+.msg-icon{
+  position:relative;
+}
+
 #msgBadge{
   position:absolute;
-  top:-6px;
-  right:-6px;
+  top:2px;
+  right:2px;
   background:red;
   color:#fff;
   border-radius:50%;
-  font-size:11px;
+  font-size:10px;
   padding:2px 6px;
-  min-width:18px;
+  min-width:16px;
   text-align:center;
+  line-height:1;
 }
 
 /* 📱 موبايل */
@@ -238,10 +243,6 @@ display:none;
   .header{
     flex-direction:column;
     align-items:stretch;
-  }
-
-  #msgIcon{
-    align-self:flex-end;
   }
 
   input{
@@ -333,10 +334,10 @@ input, textarea{
 
  <div class="header-icons">
 
-  <div class="icon-btn" onclick="toggleInbox()">
-    📩
-    <span id="msgBadge">0</span>
-  </div>
+  <div class="icon-btn msg-icon" onclick="toggleInbox()">
+  📩
+  <span id="msgBadge">0</span>
+</div>
 
   <div class="icon-btn" onclick="printSelected()">🖨️</div>
 
