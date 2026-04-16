@@ -327,7 +327,6 @@ input{
 <h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
 
  <div class="header-icons">
-<div id="selectAllBtn" class="select-all-btn" onclick="selectAll()">✔</div>
 
   <div class="icon-btn" onclick="toggleInbox()">
     📩
@@ -345,12 +344,13 @@ input{
   <input type="text" id="search" placeholder="🔍">
 <div class="filters">
 <button onclick="setFilter(event,'')" class="filter-btn active">الكل</button>
-<button onclick="setFilter(event,'new')" class="filter-btn">جديد</button>
 <button onclick="setFilter(event,'shipped')" class="filter-btn">اتشحن</button>
 <button onclick="setFilter(event,'done')" class="filter-btn">تم</button>
+<button onclick="setFilter(event,'new')" class="filter-btn">جديد</button>
 </div>
 <h3 id="count"></h3>
 <h4 id="selectedCount"></h4>
+<div id="selectAllBtn" class="select-all-btn" onclick="selectAll()">✔</div>
 </div>
   
 <div id="orders"></div>
