@@ -274,20 +274,22 @@ display:none;
 }
 
 .select-all-btn{
-  position:absolute;
-  top:10px;
-  right:10px;
-  width:42px;
-  height:42px;
-  border-radius:12px;
+  position:fixed; /* 👈 بدل absolute */
+  top:15px;
+  right:15px;
+  z-index:2000;
+  
+  width:45px;
+  height:45px;
+  border-radius:14px;
   background:#0F7B65;
   color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  font-size:18px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  font-size:20px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.25);
   transition:0.2s;
 }
 
@@ -314,21 +316,22 @@ display:none;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
-input{
+input, textarea{
   user-select: auto;
 }
 
 </style>
 
 <div class="header">
+
+<div id="selectAllBtn" class="select-all-btn" onclick="selectAll()">✔</div>
+
 <h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
 
  <div class="header-icons">
-
-<div id="selectAllBtn" class="select-all-btn" onclick="selectAll()">✔</div>
 
   <div class="icon-btn" onclick="toggleInbox()">
     📩
@@ -529,13 +532,12 @@ window.selectAll = () => {
     }
 
     cb.checked = allSelected;
-
-    // لون الكارد
     card.style.background = allSelected ? "#e6fff2" : "#fff";
   });
 
-  // تغيير شكل الزرار
   let btn = document.getElementById("selectAllBtn");
+
+  btn.innerText = allSelected ? "✖" : "✔"; // 👈 مهم
   btn.classList.toggle("active", allSelected);
 };
 
@@ -686,9 +688,10 @@ let date = document.getElementById("dateFilter").value;
 if(currentFilter && o.status !== currentFilter) return;
 
     if(search &&
-      !o.customerName?.toLowerCase().includes(search) &&
-      !o.phone?.includes(search)
-    ) return;
+  !o.customerName?.toLowerCase().includes(search) &&
+  !o.phone?.includes(search) &&
+  !o.orderID?.toString().toLowerCase().includes(search)
+) return;
 
     let d = o.createdAt?.toDate?.();
 
@@ -795,6 +798,7 @@ html += `
 `;
 });
 
+document.addEventListener("contextmenu", e => e.preventDefault());
 document.addEventListener("dragstart", e => e.preventDefault());
   document.getElementById("orders").innerHTML=html;
   document.getElementById("count").innerText="📊 "+count;
