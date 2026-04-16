@@ -472,18 +472,6 @@ window.selectAll = () => {
 
   let checkboxes = document.querySelectorAll(".selectOrder");
 
-  let allChecked = Array.from(checkboxes).every(cb => cb.checked);
-
-  checkboxes.forEach(cb => {
-    cb.checked = !allChecked;
-  });
-
-};
-
-window.selectAll = () => {
-
-  let checkboxes = document.querySelectorAll(".selectOrder");
-
   checkboxes.forEach(cb => {
     let card = cb.closest(".card");
 
