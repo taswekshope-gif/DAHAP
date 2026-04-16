@@ -443,31 +443,36 @@ onSnapshot(qMessages,(snap)=>{
 
   let html = "<h3>📩 الرسائل</h3>";
 
-  snap.docs.forEach(d=>{
-    let m = d.data();
-    let id = d.id;
+  messages = snap.docs.map(d=>{
+    return {
+      id: d.id,
+      ...d.data()
+    };
+  });
 
+  messages.forEach(m=>{
     let status = m.status || "new";
 
     if(status === "new") unreadCount++;
 
     html += `
-<div class="card" onclick="openMsg('${id}')">
-  👤 ${m.name}
+<div class="card" onclick="openMsg('${m.id}')"
+style="display:flex;justify-content:space-between;align-items:center;">
+
+<div>👤 ${m.name}</div>
+
+<div style="font-size:12px;color:${status==='new'?'red':'#999'};">
+${status==='new'?'● جديد':''}
+</div>
+
 </div>
 `;
   });
 
   box.innerHTML = html;
 
-  // 🔴 تحديث العداد
-  if(unreadCount > 0){
-    badge.style.display = "inline-block";
-    badge.innerText = unreadCount;
-  } else {
-    badge.style.display = "none";
-  }
-
+  badge.style.display = unreadCount > 0 ? "inline-block" : "none";
+  badge.innerText = unreadCount;
 });
 
   const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
