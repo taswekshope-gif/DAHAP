@@ -122,6 +122,46 @@ input{
 .ship{background:#0F7B65;color:#fff;}
 .doneBtn{background:#1976d2;color:#fff;}
 
+.inbox-container{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.inbox-list{
+  width:40%;
+  max-height:60vh;
+  overflow:auto;
+  border-right:1px solid #eee;
+}
+
+.inbox-view{
+  width:60%;
+  padding:10px;
+}
+
+.msg-item{
+  padding:10px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.msg-item:hover{
+  background:#f5f5f5;
+}
+
+.msg-item.unread{
+  background:#fff3cd;
+  font-weight:bold;
+}
+
+.inbox-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
 .filters{
   display:flex;
   gap:5px;
@@ -292,12 +332,22 @@ max-width:400px;
 
 <div id="messagesBox">
 
-  <div style="display:flex;justify-content:space-between;align-items:center;">
+  <div class="inbox-header">
     <h3>📩 الرسائل</h3>
-    <span onclick="toggleInbox()" style="cursor:pointer;font-size:18px;">✖</span>
+    <span onclick="toggleInbox()">✖</span>
   </div>
 
-  <div id="messagesList"></div>
+  <div class="inbox-container">
+
+    <!-- القائمة -->
+    <div id="messagesList" class="inbox-list"></div>
+
+    <!-- تفاصيل الرسالة -->
+    <div id="messageView" class="inbox-view">
+      <p style="text-align:center;color:#888;">اختر رسالة</p>
+    </div>
+
+  </div>
 
 </div>
 
@@ -327,48 +377,45 @@ window.markRead = async function(id){
 window.openMsg = async (id)=>{
 
   let m = messages.find(x=>x.id === id);
-
   if(!m) return;
 
-  await markRead(id); // 👈 يخليها مقروءة
+  await markRead(id);
 
-  document.getElementById("msgPopup").style.display="block";
-  document.getElementById("msgContent").innerHTML = `
+  document.getElementById("messageView").innerHTML = `
   
   <div style="text-align:right">
 
-  <div style="font-size:18px;font-weight:bold;">
-  👤 ${m.name}
-  </div>
+    <div style="font-size:18px;font-weight:bold;">
+      👤 ${m.name}
+    </div>
 
-  <div style="color:#666;margin-top:5px;">
-  📞 ${m.phone}
-  </div>
+    <div style="color:#666;margin-top:5px;">
+      📞 ${m.phone}
+    </div>
 
-  <hr style="margin:10px 0;">
+    <hr>
 
-  <div style="line-height:1.6;">
-  💬 ${m.message}
-  </div>
+    <div style="line-height:1.7;">
+      💬 ${m.message}
+    </div>
 
-  <div style="margin-top:15px;">
     <a href="https://wa.me/2${m.phone}" target="_blank"
     style="
-    display:block;
-    text-align:center;
-    background:#25D366;
-    color:#fff;
-    padding:10px;
-    border-radius:10px;
-    text-decoration:none;
+      display:block;
+      margin-top:15px;
+      text-align:center;
+      background:#25D366;
+      color:#fff;
+      padding:10px;
+      border-radius:10px;
+      text-decoration:none;
     ">
-    💬 رد واتساب
+      💬 رد واتساب
     </a>
-  </div>
 
   </div>
   `;
-}
+};
 
 window.update = async function(id, status){
 
@@ -479,13 +526,13 @@ onSnapshot(qMessages,(snap)=>{
     if(status === "new") unreadCount++;
 
     html += `
-<div class="card ${status}" onclick="openMsg('${m.id}')"
-style="cursor:pointer;">
+<div class="msg-item ${status === 'new' ? 'unread' : ''}" 
+onclick="openMsg('${m.id}')">
 
-<div style="font-weight:bold;">👤 ${m.name}</div>
+<div>👤 ${m.name}</div>
 
-<div style="font-size:12px;color:#666;margin-top:5px;">
-📞 ${m.phone}
+<div style="font-size:12px;color:#666;">
+${m.phone}
 </div>
 
 </div>
