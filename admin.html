@@ -88,6 +88,9 @@ input{
   position:relative;
 }
 
+.card.new { border-right:4px solid red; }
+.card.done { border-right:4px solid #28a745; }
+
 /* الأزرار */
 .actions{
   display:flex;
@@ -324,8 +327,13 @@ window.markRead = async function(id){
   });
 }
 
-window.openMsg = (id)=>{
+window.openMsg = async (id)=>{
+
   let m = messages.find(x=>x.id === id);
+
+  if(!m) return;
+
+  await markRead(id); // 👈 يخليها مقروءة
 
   document.getElementById("msgPopup").style.display="block";
   document.getElementById("msgContent").innerHTML = `
@@ -520,7 +528,6 @@ Notification.requestPermission();
 function render(){
 
 let date = document.getElementById("dateFilter").value;
-
   let search = document.getElementById("search").value.toLowerCase();
 
   let html="";
@@ -570,10 +577,6 @@ align-items:center;
 justify-content:space-between;
 cursor:pointer;
 ">
-
-<div>
-  👤 ${m.name}
-</div>
 
 <div style="font-size:12px;color:${status==='new'?'red':'#999'};">
   ${status==='new'?'● جديد':''}
