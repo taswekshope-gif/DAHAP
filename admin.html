@@ -145,7 +145,7 @@ input{
 /* الرسائل popup */
 #messagesBox{
   position:fixed;
-  top:60px;
+  top:90px;
   right:10px;
   left:10px;   /* 👈 مهم للموبايل */
   width:auto;
@@ -155,9 +155,10 @@ input{
   border-radius:12px;
   box-shadow:0 5px 20px rgba(0,0,0,0.2);
   padding:10px;
-  z-index:999;
+  z-index:2000;
 transition: all 0.3s ease;
 transform:translateY(-20px);
+display:none;
   opacity:0;
 }
 
@@ -410,6 +411,10 @@ window.toggleOrder = (id)=>{
   let el = document.getElementById("order-"+id);
   el.style.display = el.style.display === "none" ? "block" : "none";
 }
+
+window.closeMsg = () => {
+  document.getElementById("msgPopup").style.display = "none";
+};
 
 window.openDatePicker = ()=>{
   let d = document.getElementById("dateFilter");
