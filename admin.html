@@ -154,6 +154,13 @@ input{
   padding:10px;
   z-index:999;
 transition: all 0.3s ease;
+transform:translateY(-20px);
+  opacity:0;
+}
+
+#messagesBox.show{
+  transform:translateY(0);
+  opacity:1;
 }
 
 /* 📱 موبايل */
@@ -231,6 +238,12 @@ transition: all 0.3s ease;
     <div class="icon-btn" onclick="printSelected()">🖨️</div>
 
   </div>
+
+<div class="icon-btn" onclick="toggleDate()">
+  📅
+</div>
+
+<input type="date" id="dateFilter" style="display:none;">
 
   <input type="text" id="search" placeholder="🔍">
 <div class="filters">
@@ -311,36 +324,45 @@ window.markRead = async function(id){
   });
 }
 
-window.openMsg = (id,name,phone,message)=>{
+window.openMsg = (id)=>{
+  let m = messages.find(x=>x.id === id);
+
   document.getElementById("msgPopup").style.display="block";
   document.getElementById("msgContent").innerHTML = `
-  <b>${name}</b><br><br>
-  📞 ${phone}<br><br>
-  💬 ${message}<br><br>
-  <a href="https://wa.me/2${phone}" target="_blank">رد واتساب</a>
+  
+  <div style="text-align:right">
+
+  <div style="font-size:18px;font-weight:bold;">
+  👤 ${m.name}
+  </div>
+
+  <div style="color:#666;margin-top:5px;">
+  📞 ${m.phone}
+  </div>
+
+  <hr style="margin:10px 0;">
+
+  <div style="line-height:1.6;">
+  💬 ${m.message}
+  </div>
+
+  <div style="margin-top:15px;">
+    <a href="https://wa.me/2${m.phone}" target="_blank"
+    style="
+    display:block;
+    text-align:center;
+    background:#25D366;
+    color:#fff;
+    padding:10px;
+    border-radius:10px;
+    text-decoration:none;
+    ">
+    💬 رد واتساب
+    </a>
+  </div>
+
+  </div>
   `;
-}
-
-window.setFilter = (e, status)=>{
-  currentFilter = status;
-
-  document.querySelectorAll(".filter-btn").forEach(btn=>{
-    btn.classList.remove("active");
-  });
-
-  e.target.classList.add("active");
-
-  render();
-}
-
-window.closeMsg = ()=>{
-  document.getElementById("msgPopup").style.display="none";
-}
-
-window.deleteMsg = async function(id){
-  if(confirm("حذف الرسالة؟")){
-    await deleteDoc(doc(db,"messages",id));
-  }
 }
 
 window.update = async function(id, status){
@@ -363,6 +385,7 @@ const auth = getAuth(app);
 let orders = [];
 let lastCount = 0;
 let currentFilter = "";
+let messages = [];
 
 // 🔐 login
   
@@ -384,9 +407,21 @@ window.toggleOrder = (id)=>{
   el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
+window.toggleDate = ()=>{
+  let d = document.getElementById("dateFilter");
+  d.style.display = d.style.display === "none" ? "block" : "none";
+}
+
 window.toggleInbox = () => {
   let box = document.getElementById("messagesBox");
-  box.style.display = box.style.display === "none" ? "block" : "none";
+
+  if(box.style.display === "none"){
+    box.style.display = "block";
+    setTimeout(()=>box.classList.add("show"),10);
+  }else{
+    box.classList.remove("show");
+    setTimeout(()=>box.style.display="none",200);
+  }
 }
   
 // 📦 load orders
@@ -417,7 +452,7 @@ onSnapshot(qMessages,(snap)=>{
     if(status === "new") unreadCount++;
 
     html += `
-<div class="card" onclick="openMsg('${id}','${m.name}','${m.phone}','${m.message}')">
+<div class="card" onclick="openMsg('${id}')">
   👤 ${m.name}
 </div>
 `;
@@ -443,6 +478,11 @@ onSnapshot(qMessages,(snap)=>{
       notify();
       sound();
     }
+
+messages = snap.docs.map(d=>({
+  id:d.id,
+  ...d.data()
+}));
 
     lastCount = snap.size;
 
@@ -473,6 +513,8 @@ Notification.requestPermission();
 
 // 🎯 render
 function render(){
+
+let date = document.getElementById("dateFilter").value;
 
   let search = document.getElementById("search").value.toLowerCase();
 
@@ -517,7 +559,22 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 `;
 
 html += `
-<div class="card">
+<div class="card" style="
+display:flex;
+align-items:center;
+justify-content:space-between;
+cursor:pointer;
+">
+
+<div>
+  👤 ${m.name}
+</div>
+
+<div style="font-size:12px;color:${status==='new'?'red':'#999'};">
+  ${status==='new'?'● جديد':''}
+</div>
+
+</div>
 
 <div onclick="toggleOrder('${o.id}')" style="cursor:pointer;">
   <b>🧾 ${o.orderID}</b>
@@ -592,6 +649,12 @@ window.printSelected = () => {
     alert("اختار أوردرات الأول");
     return;
   }
+
+let d = o.createdAt?.toDate?.();
+
+if(date && d){
+  if(d.toDateString() !== new Date(date).toDateString()) return;
+}
 
   let win = window.open('', '', 'width=900,height=700');
 
