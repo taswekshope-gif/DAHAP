@@ -266,6 +266,13 @@ display:none;
   cursor:pointer;
 }
 
+.selectOrder{
+  width:22px;
+  height:22px;
+  accent-color:#0F7B65;
+  box-shadow:0 0 5px rgba(0,0,0,0.2);
+}
+
 .status{
   padding:3px 8px;
   border-radius:8px;
@@ -306,7 +313,7 @@ display:none;
 <button onclick="setFilter(event,'done')" class="filter-btn">تم</button>
 </div>
 <h3 id="count"></h3>
-
+<h4 id="selectedCount"></h4>
 </div>
   
 <div id="orders"></div>
@@ -732,13 +739,20 @@ html += `
 </div>
 `;
 });
+
+document.addEventListener("change", (e)=>{
+  if(e.target.classList.contains("selectOrder")){
+    let card = e.target.closest(".card");
+    card.style.background = e.target.checked ? "#e6fff2" : "#fff";
+  }
+});
   document.getElementById("orders").innerHTML=html;
   document.getElementById("count").innerText="📊 "+count;
 }
 
 setInterval(()=>{
   let count = document.querySelectorAll(".selectOrder:checked").length;
-  document.getElementById("count").innerText = "📊 "+count;
+  document.getElementById("selectedCount").innerText = "✅ المحدد: " + count;
 },500);
 
 // 📋 copy
