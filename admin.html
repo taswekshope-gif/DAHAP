@@ -302,6 +302,17 @@ max-width:400px;
   z-index:9999;
 "></div>
 
+<div id="messagesBox">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <h3>📩 الرسائل</h3>
+    <span onclick="toggleInbox()" style="cursor:pointer;font-size:18px;">✖</span>
+  </div>
+
+  <div id="messagesList"></div>
+
+</div>
+
 <script type="module">
 
 import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -447,7 +458,7 @@ onSnapshot(qMessages,(snap)=>{
   let box = document.getElementById("messagesBox");
   let badge = document.getElementById("msgBadge");
 
-  let html = "<h3>📩 الرسائل</h3>";
+  let html = "";
 
   messages = snap.docs.map(d=>{
     return {
@@ -462,16 +473,20 @@ onSnapshot(qMessages,(snap)=>{
     if(status === "new") unreadCount++;
 
     html += `
-<div class="card" onclick="openMsg('${m.id}')"
-style="display:flex;justify-content:space-between;align-items:center;">
+<div class="card ${status}" onclick="openMsg('${m.id}')"
+style="cursor:pointer;">
 
-<div>👤 ${m.name}</div>
+<div style="font-weight:bold;">👤 ${m.name}</div>
+
+<div style="font-size:12px;color:#666;margin-top:5px;">
+📞 ${m.phone}
+</div>
 
 </div>
 `;
   });
 
-  box.innerHTML = html;
+  document.getElementById("messagesList").innerHTML = html;
 
   badge.style.display = unreadCount > 0 ? "inline-block" : "none";
   badge.innerText = unreadCount;
@@ -531,6 +546,10 @@ if(currentFilter && o.status !== currentFilter) return;
     ) return;
 
     let d = o.createdAt?.toDate?.();
+
+if(date && d){
+  if(d.toDateString() !== new Date(date).toDateString()) return;
+}
 
     count++;
 
