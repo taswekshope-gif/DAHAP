@@ -273,6 +273,32 @@ display:none;
   box-shadow:0 0 5px rgba(0,0,0,0.2);
 }
 
+.select-all-btn{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:#0F7B65;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  transition:0.2s;
+}
+
+.select-all-btn:hover{
+  transform:scale(1.05);
+}
+
+.select-all-btn.active{
+  background:#1976d2;
+}
+
 .status{
   padding:3px 8px;
   border-radius:8px;
@@ -284,13 +310,24 @@ display:none;
 .status.shipped{background:#17a2b8;color:#fff;}
 .status.done{background:#28a745;color:#fff;}
 
+*{
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input{
+  user-select: auto;
+}
+
 </style>
 
 <div class="header">
 <h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
 
  <div class="header-icons">
-<div class="icon-btn" onclick="selectAll()">☑️</div>
+<div id="selectAllBtn" class="select-all-btn" onclick="selectAll()">✔</div>
 
   <div class="icon-btn" onclick="toggleInbox()">
     📩
@@ -475,9 +512,13 @@ window.toggleOrder = (id)=>{
   el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
+let allSelected = false;
+
 window.selectAll = () => {
 
   let checkboxes = document.querySelectorAll(".selectOrder");
+
+  allSelected = !allSelected;
 
   checkboxes.forEach(cb => {
     let card = cb.closest(".card");
@@ -486,9 +527,15 @@ window.selectAll = () => {
       if(!card.classList.contains(currentFilter)) return;
     }
 
-    cb.checked = true;
+    cb.checked = allSelected;
+
+    // لون الكارد
+    card.style.background = allSelected ? "#e6fff2" : "#fff";
   });
 
+  // تغيير شكل الزرار
+  let btn = document.getElementById("selectAllBtn");
+  btn.classList.toggle("active", allSelected);
 };
 
 window.closeMsg = () => {
@@ -604,6 +651,13 @@ ${m.phone}
 document.getElementById("dateFilter").addEventListener("change", render);
 
 document.getElementById("search").addEventListener("input", render);
+
+document.addEventListener("change", (e)=>{
+  if(e.target.classList.contains("selectOrder")){
+    let card = e.target.closest(".card");
+    card.style.background = e.target.checked ? "#e6fff2" : "#fff";
+  }
+});
 
 // 🔔 صوت
 function sound(){
@@ -740,12 +794,7 @@ html += `
 `;
 });
 
-document.addEventListener("change", (e)=>{
-  if(e.target.classList.contains("selectOrder")){
-    let card = e.target.closest(".card");
-    card.style.background = e.target.checked ? "#e6fff2" : "#fff";
-  }
-});
+document.addEventListener("dragstart", e => e.preventDefault());
   document.getElementById("orders").innerHTML=html;
   document.getElementById("count").innerText="📊 "+count;
 }
