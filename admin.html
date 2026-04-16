@@ -231,19 +231,17 @@ transform:translateY(-20px);
 <div class="header">
 <h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
 
-  <div class="header-icons">
+ <div class="header-icons">
 
-    <div class="icon-btn" onclick="toggleInbox()">
-      📩
-      <span id="msgBadge">0</span>
-    </div>
-
-    <div class="icon-btn" onclick="printSelected()">🖨️</div>
-
+  <div class="icon-btn" onclick="toggleInbox()">
+    📩
+    <span id="msgBadge">0</span>
   </div>
 
-<div class="icon-btn" onclick="toggleDate()">
-  📅
+  <div class="icon-btn" onclick="printSelected()">🖨️</div>
+
+  <div class="icon-btn" onclick="openDatePicker()">📅</div>
+
 </div>
 
 <input type="date" id="dateFilter" style="display:none;">
@@ -415,9 +413,9 @@ window.toggleOrder = (id)=>{
   el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
-window.toggleDate = ()=>{
+window.openDatePicker = ()=>{
   let d = document.getElementById("dateFilter");
-  d.style.display = d.style.display === "none" ? "block" : "none";
+  d.showPicker(); // 👈 يفتح التقويم مباشرة
 }
 
 window.toggleInbox = () => {
@@ -469,10 +467,6 @@ style="display:flex;justify-content:space-between;align-items:center;">
 
 <div>👤 ${m.name}</div>
 
-<div style="font-size:12px;color:${status==='new'?'red':'#999'};">
-${status==='new'?'● جديد':''}
-</div>
-
 </div>
 `;
   });
@@ -491,11 +485,6 @@ ${status==='new'?'● جديد':''}
       notify();
       sound();
     }
-
-messages = snap.docs.map(d=>({
-  id:d.id,
-  ...d.data()
-}));
 
     lastCount = snap.size;
 
