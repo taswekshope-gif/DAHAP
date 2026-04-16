@@ -756,12 +756,6 @@ window.printSelected = () => {
     return;
   }
 
-let d = o.createdAt?.toDate?.();
-
-if(date && d){
-  if(d.toDateString() !== new Date(date).toDateString()) return;
-}
-
   let win = window.open('', '', 'width=900,height=700');
 
   let html = `
