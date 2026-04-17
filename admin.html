@@ -634,22 +634,40 @@ ${m.phone}
 
   const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
 
-  onSnapshot(q,(snap)=>{
+ onSnapshot(q,(snap)=>{
 
-    if(lastCount && snap.size > lastCount){
-      notify();
+  snap.docChanges().forEach(change => {
+
+    if(change.type === "added" && lastCount !== 0){
+
+      let o = change.doc.data();
+
+      // 🔊 صوت
       sound();
+
+      // 🔔 Notification
+      if(Notification.permission==="granted"){
+        new Notification("طلب جديد 🛒",{
+          body: `${o.customerName || "عميل جديد"} - ${o.phone || ""}`
+        });
+      }
+
+      // 💥 Popup
+      showPopup(o);
+
     }
 
-    lastCount = snap.size;
-
-    orders = snap.docs.map(d=>({
-      id:d.id,
-      ...d.data()
-    }));
-
-    render();
   });
+
+  lastCount = snap.size;
+
+  orders = snap.docs.map(d=>({
+    id:d.id,
+    ...d.data()
+  }));
+
+  render();
+});
 
 }
 
@@ -694,6 +712,15 @@ if(currentFilter && o.status !== currentFilter) return;
   !o.phone?.includes(search) &&
   !o.orderID?.toString().toLowerCase().includes(search)
 ) return;
+
+if(status === "new"){
+  setTimeout(()=>{
+    let el = document.querySelector(`#order-${o.id}`)?.parentElement;
+    if(el){
+      el.style.boxShadow = "0 0 20px #0F7B65";
+    }
+  },100);
+}
 
     let d = o.createdAt?.toDate?.();
 
@@ -810,6 +837,49 @@ setInterval(()=>{
   let count = document.querySelectorAll(".selectOrder:checked").length;
   document.getElementById("selectedCount").innerText = "✅ المحدد: " + count;
 },500);
+
+// ⚠️✅ popup
+window.showPopup = (o)=>{
+
+  let box = document.getElementById("msgPopup");
+  let content = document.getElementById("msgContent");
+
+  content.innerHTML = `
+    <div style="text-align:center">
+
+      <h3 style="margin-bottom:10px;">🛒 أوردر جديد</h3>
+
+      <div style="font-size:18px;font-weight:bold;">
+        👤 ${o.customerName || "غير معروف"}
+      </div>
+
+      <div style="margin-top:5px;color:#666;">
+        📞 ${o.phone || "-"}
+      </div>
+
+      <a href="https://wa.me/2${o.phone}" target="_blank"
+      style="
+        display:block;
+        margin-top:15px;
+        background:#25D366;
+        color:#fff;
+        padding:10px;
+        border-radius:10px;
+        text-decoration:none;
+      ">
+        💬 فتح واتساب
+      </a>
+
+    </div>
+  `;
+
+  box.style.display = "block";
+
+  // يقفل لوحده بعد 5 ثواني
+  setTimeout(()=>{
+    box.style.display = "none";
+  },5000);
+};
 
 // 📋 copy
 window.copyText = (t)=>{
