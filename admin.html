@@ -695,6 +695,9 @@ function notify(){
 }
 Notification.requestPermission();
 
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("dragstart", e => e.preventDefault());
+
 // 🎯 render
 function render(){
 
@@ -713,6 +716,8 @@ if(currentFilter && o.status !== currentFilter) return;
   !o.orderID?.toString().toLowerCase().includes(search)
 ) return;
 
+let status = o.status || "new";
+
 if(status === "new"){
   setTimeout(()=>{
     let el = document.querySelector(`#order-${o.id}`)?.parentElement;
@@ -720,6 +725,13 @@ if(status === "new"){
       el.style.boxShadow = "0 0 20px #0F7B65";
     }
   },100);
+}
+
+let audio = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3");
+
+function sound(){
+  audio.currentTime = 0;
+  audio.play().catch(()=>{});
 }
 
     let d = o.createdAt?.toDate?.();
@@ -826,9 +838,6 @@ html += `
 </div>
 `;
 });
-
-document.addEventListener("contextmenu", e => e.preventDefault());
-document.addEventListener("dragstart", e => e.preventDefault());
   document.getElementById("orders").innerHTML=html;
   document.getElementById("count").innerText="📊 "+count;
 }
