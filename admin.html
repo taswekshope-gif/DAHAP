@@ -688,8 +688,11 @@ document.addEventListener("change", (e)=>{
 });
 
 // 🔔 صوت
+const audio = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-bell-notification-933.mp3");
+
 function sound(){
-  new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
+  audio.currentTime = 0;
+  audio.play().catch(()=>{});
 }
 
 // 🔔 إشعار
