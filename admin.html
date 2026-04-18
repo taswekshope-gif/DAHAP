@@ -848,6 +848,11 @@ ${(o.orderDetails || []).map((item,i)=>`
 🌍 ${item.lang}
 `).join("\n")}
 
+📦: ${o.quantity}<br>
+💰: ${o.price}<br>
+🚚: ${o.shipping}<br>
+💵: ${o.finalTotal}<br>
+
 🕒 وقت الطلب:
 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 `;
