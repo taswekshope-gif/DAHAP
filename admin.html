@@ -274,6 +274,23 @@ display:none;
   box-shadow:0 0 5px rgba(0,0,0,0.2);
 }
 
+.top-stats{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+  font-weight:bold;
+  font-size:14px;
+}
+
+#count{
+  color:#333;
+}
+
+#selectedCount{
+  color:#0F7B65;
+}
+
 .select-all-btn{
   position:fixed; /* 👈 بدل absolute */
   top:15px;
@@ -358,8 +375,10 @@ input, textarea{
 <button onclick="setFilter(event,'new')" class="filter-btn">جديد</button>
 
 </div>
-<h3 id="count"></h3>
-<h4 id="selectedCount"></h4>
+
+<div class="top-stats">
+  <span id="count"></span>
+  <span id="selectedCount"></span>
 </div>
   
 <div id="orders"></div>
