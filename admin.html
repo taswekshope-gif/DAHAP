@@ -34,6 +34,28 @@ html, body{
   box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
 
+.header-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.search-box{
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  font-size:14px;
+  outline:none;
+  transition:0.2s;
+}
+
+.search-box:focus{
+  border-color:#0F7B65;
+  box-shadow:0 0 0 3px rgba(15,123,101,0.15);
+}
+
 /* مجموعة الأيقونات */
 .header-icons{
   display:flex;
@@ -246,12 +268,13 @@ input{
 
 .filters{
   display:flex;
-  gap:5px;
-  width:100%;
+  gap:6px;
+  flex-wrap:wrap;
 }
 
 .filter-btn{
   flex:1;
+  min-width:70px;
   padding:8px;
   border:none;
   border-radius:10px;
@@ -470,31 +493,37 @@ input, textarea{
 
 <div class="header">
 
-<div id="selectAllBtn" class="select-all-btn" onclick="selectAll()">✔</div>
+  <div class="header-top">
 
-<h2 style="text-align:center;">📦 DAHAP Dashboard</h2>
+    <div id="selectAllBtn" class="select-all-btn" onclick="selectAll()">✔</div>
 
- <div class="header-icons">
+    <h2 style="margin:0;">📦 DAHAP Dashboard</h2>
 
-  <div class="icon-btn msg-icon" onclick="toggleInbox()">
-  📩
-  <span id="msgBadge">0</span>
-</div>
+    <div class="header-icons">
 
-  <div class="icon-btn" onclick="printSelected()">🖨️</div>
+      <div class="icon-btn msg-icon" onclick="toggleInbox()">
+        📩
+        <span id="msgBadge">0</span>
+      </div>
 
-  <div class="icon-btn" onclick="openDatePicker()">📅</div>
+      <div class="icon-btn" onclick="printSelected()">🖨️</div>
 
-</div>
+      <div class="icon-btn" onclick="openDatePicker()">📅</div>
 
-<input type="date" id="dateFilter" style="display:none;">
+    </div>
 
+  </div>
+
+  <!-- 🔍 search هنا لوحده -->
   <input type="text" id="search" class="search-box" placeholder="🔍 بحث">
-<div class="filters">
-<button onclick="setFilter(event,'')" class="filter-btn active">الكل</button>
-<button onclick="setFilter(event,'shipped')" class="filter-btn">اتشحن</button>
-<button onclick="setFilter(event,'done')" class="filter-btn">تم</button>
-<button onclick="setFilter(event,'new')" class="filter-btn">جديد</button>
+
+  <!-- filters -->
+  <div class="filters">
+    <button onclick="setFilter(event,'')" class="filter-btn active">الكل</button>
+    <button onclick="setFilter(event,'shipped')" class="filter-btn">اتشحن</button>
+    <button onclick="setFilter(event,'done')" class="filter-btn">تم</button>
+    <button onclick="setFilter(event,'new')" class="filter-btn">جديد</button>
+  </div>
 
 </div>
 
