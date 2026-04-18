@@ -895,7 +895,12 @@ html += `
     🌍 ${item.lang}<br><br>
     `).join("")}
 
-    🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
+    📦: ${o.quantity}<br>
+    💰: ${o.price}<br>
+    🚚: ${o.shipping}<br>
+    💵: ${o.finalTotal}<br>
+
+    🕒 ${o.createdAt?.toDate?.().toLocaleString('en-EG') || ""} <br><br>
 
     <div class="actions">
 
