@@ -645,23 +645,6 @@ ${m.phone}
 
       let o = change.doc.data();
 
-      // 🔊 صوت
-      sound();
-
-      // 🔔 Notification
-      if(Notification.permission==="granted"){
-        new Notification("طلب جديد 🛒",{
-          body: `${o.customerName || "عميل جديد"} - ${o.phone || ""}`
-        });
-      }
-
-      // 💥 Popup
-      showPopup(o);
-
-    }
-
-  });
-
   lastCount = snap.size;
 
   orders = snap.docs.map(d=>({
@@ -687,7 +670,7 @@ document.addEventListener("change", (e)=>{
 
 // 🔔 صوت
 function sound(){
-  new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3").play();
+  new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
 }
 
 // 🔔 إشعار
