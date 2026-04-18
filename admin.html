@@ -23,14 +23,11 @@ html, body{
   background:#fff;
   z-index:1000;
   padding:10px 12px;
-
   display:flex;
   flex-direction:column;
   gap:10px;
-
   align-items:center;
-  justify-content:space-between;
-  flex-wrap:wrap; /* 👈 مهم */
+  justify-content:center;
   box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
 
@@ -39,17 +36,21 @@ html, body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:10px;
 }
 
 .search-box{
   width:100%;
+  max-width:420px;
+  margin:0 auto;
+  display:block;
+
   padding:12px 14px;
   border-radius:12px;
   border:1px solid #ddd;
   font-size:14px;
   outline:none;
   transition:0.2s;
+  text-align:right;
 }
 
 .search-box:focus{
@@ -195,12 +196,16 @@ input{
 .card.done { border-right:4px solid #28a745; }
 
 /* الأزرار */
-.actions{
-  display:none; /* 👈 مخفية افتراضياً */
+..actions{
+  display:none;
   gap:8px;
   margin-top:12px;
+
   width:100%;
-  flex-wrap:nowrap;
+  display:flex;
+  justify-content:space-between;
+
+  flex-wrap:wrap;
 }
 
 .action-btn{
@@ -383,6 +388,19 @@ display:none;
 
   h2{
     font-size:18px;
+  }
+
+ .actions{
+    flex-direction:row;
+  }
+
+  .action-btn{
+    flex:1;
+    font-size:14px;
+  }
+
+  .search-box{
+    max-width:100%;
   }
 
   .header{
