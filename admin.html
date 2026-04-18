@@ -125,8 +125,15 @@ input{
   background:#f8f9fa;
   border-radius:12px;
   padding:10px;
-  font-size:12px;
+
+  font-size:14px; /* 👈 كبرناه */
+  font-weight:bold; /* 👈 يخليه أوضح */
+
   text-align:right;
+}
+.order-summary b{
+  font-size:16px;
+  color:#0F7B65;
 }
 
 .card.new { border-right:4px solid red; }
@@ -134,12 +141,11 @@ input{
 
 /* الأزرار */
 .actions{
-  display:flex;
+  display:none; /* 👈 مخفية افتراضياً */
   gap:8px;
   margin-top:12px;
   width:100%;
-  justify-content:space-between;
-  flex-wrap:nowrap; /* ❌ ممنوع تلف */
+  flex-wrap:nowrap;
 }
 
 .action-btn{
@@ -639,11 +645,20 @@ onAuthStateChanged(auth, (user) => {
 });
 
 window.toggleOrder = (id)=>{
+
   let el = document.getElementById("order-"+id);
+  let actions = el.parentElement.querySelector(".actions");
 
   if(!el) return;
 
-  el.style.display = (el.style.display === "flex") ? "none" : "flex";
+  let isOpen = el.style.display === "flex";
+
+  el.style.display = isOpen ? "none" : "flex";
+
+  if(actions){
+    actions.style.display = isOpen ? "none" : "flex";
+  }
+
 }
 
 let allSelected = false;
@@ -887,10 +902,10 @@ ${(o.orderDetails || []).map((item,i)=>`
 🌍 ${item.lang}
 `).join("\n")}
 
-📦: ${o.quantity}<br>
-💰: ${o.price}<br>
-🚚: ${o.shipping}<br>
-💵: ${o.finalTotal}<br>
+📦 الكمية: ${o.quantity}<br>
+💰 السعر: ${o.price}<br>
+🚚 الشحن: ${o.shipping}<br>
+💵 الإجمالي: <b>${o.finalTotal}</b>
 
 🕒 وقت الطلب:
 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
@@ -933,10 +948,10 @@ html += `
 
   <div class="order-summary">
 
-  📦 ${o.quantity}<br>
-  💰 ${o.price}<br>
-  🚚 ${o.shipping}<br>
-  💵 <b>${o.finalTotal}</b>
+  📦 الكمية: ${o.quantity}<br>
+💰 السعر: ${o.price}<br>
+🚚 الشحن: ${o.shipping}<br>
+💵 الإجمالي: <b>${o.finalTotal}</b>
 
   <div style="display:flex; gap:6px; margin-top:10px;">
 
@@ -1042,7 +1057,7 @@ window.showPopup = (o)=>{
 
   box.style.display = "block";
 
-  // يقفل لوحده بعد 5 ثواني
+// يقفل لوحده بعد 5 ثواني
   setTimeout(()=>{
     box.style.display = "none";
   },5000);
