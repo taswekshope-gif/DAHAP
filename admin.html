@@ -511,6 +511,73 @@ window.update = async function(id, status){
 
 }
 
+window.deleteOrder = async function(id){
+
+  let confirmDelete = confirm("متأكد إنك عايز تحذف الأوردر؟");
+
+  if(!confirmDelete) return;
+
+  try{
+    await deleteDoc(doc(db,"orders",id));
+  }catch(e){
+    alert("حصل خطأ أثناء الحذف");
+    console.error(e);
+  }
+
+}
+
+window.editOrder = (id)=>{
+
+  let o = orders.find(x=>x.id === id);
+  if(!o) return;
+
+  let box = document.getElementById("msgPopup");
+  let content = document.getElementById("msgContent");
+
+  content.innerHTML = `
+    <h3>✏️ تعديل الأوردر</h3>
+
+    <input id="editName" value="${o.customerName || ''}" placeholder="اسم العميل"><br><br>
+    <input id="editPhone" value="${o.phone || ''}" placeholder="رقم الهاتف"><br><br>
+    <input id="editAddress" value="${o.address || ''}" placeholder="العنوان"><br><br>
+
+    <button onclick="saveEdit('${id}')" style="
+      width:100%;
+      padding:10px;
+      background:#0F7B65;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+    ">
+      حفظ
+    </button>
+  `;
+
+  box.style.display = "block";
+};
+
+window.saveEdit = async function(id){
+
+  let name = document.getElementById("editName").value;
+  let phone = document.getElementById("editPhone").value;
+  let address = document.getElementById("editAddress").value;
+
+  try{
+    await updateDoc(doc(db,"orders",id),{
+      customerName: name,
+      phone: phone,
+      address: address
+    });
+
+    closeMsg();
+
+  }catch(e){
+    alert("حصل خطأ");
+    console.error(e);
+  }
+
+}
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -826,6 +893,16 @@ html += `
     🕒 ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || ""} <br><br>
 
     <div class="actions">
+
+<button class="action-btn" style="background:#dc3545;color:#fff"
+onclick="deleteOrder('${o.id}')">
+🗑️
+</button>
+
+<button class="action-btn" style="background:#ffc107"
+onclick="editOrder('${o.id}')">
+✏️
+</button>
 
       <a class="action-btn whatsapp" target="_blank"
       href="https://wa.me/2${o.phone}">
