@@ -99,10 +99,11 @@ input{
 }
 
 .order-body{
-  display:flex;
+  display:none; /* 👈 مهم يرجع زي الأول */
   justify-content:space-between;
   gap:12px;
   align-items:flex-start;
+  margin-top:10px;
 }
 
 .order-info{
@@ -626,7 +627,10 @@ onAuthStateChanged(auth, (user) => {
 
 window.toggleOrder = (id)=>{
   let el = document.getElementById("order-"+id);
-  el.style.display = el.style.display === "none" ? "block" : "none";
+
+  if(!el) return;
+
+  el.style.display = (el.style.display === "flex") ? "none" : "flex";
 }
 
 let allSelected = false;
@@ -900,7 +904,7 @@ html += `
   </div>
 
   <!-- ✅ التفاصيل -->
-  <div class="order-body">
+  <div id="order-${o.id}" class="order-body">
 
   <div class="order-info">
     👤 ${o.customerName} <br>
