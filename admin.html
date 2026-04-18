@@ -82,11 +82,14 @@ input{
   display:flex;
   flex-direction:column;
   align-items:center;
+  width:100%;
 }
 
 .card{
+  .card{
   width:100%;
   max-width:420px;
+  margin:0 auto 12px auto;
   background:#fff;
   padding:15px;
   border-radius:16px;
@@ -94,6 +97,25 @@ input{
   box-shadow:0 5px 20px rgba(0,0,0,0.08);
   font-size:14px;
   position:relative;
+}
+
+.order-body{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.order-info{
+  flex:1;
+}
+
+.order-summary{
+  width:140px;
+  background:#f8f9fa;
+  border-radius:12px;
+  padding:8px;
+  font-size:12px;
+  text-align:right;
 }
 
 .card.new { border-right:4px solid red; }
@@ -860,6 +882,27 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 html += `
 <div class="card ${status}" style="position:relative;">
 
+<div style="position:absolute; left:10px; top:10px; display:flex; gap:6px;">
+
+  <button onclick="editOrder('${o.id}')" style="
+    background:#ffc107;
+    border:none;
+    padding:6px 8px;
+    border-radius:8px;
+    cursor:pointer;
+  ">✏️</button>
+
+  <button onclick="deleteOrder('${o.id}')" style="
+    background:#dc3545;
+    color:#fff;
+    border:none;
+    padding:6px 8px;
+    border-radius:8px;
+    cursor:pointer;
+  ">🗑️</button>
+
+</div>
+
   <!-- ✅ checkbox -->
   <input type="checkbox" class="selectOrder" 
   value="${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}">
@@ -878,29 +921,34 @@ html += `
   </div>
 
   <!-- ✅ التفاصيل -->
-  <div id="order-${o.id}" style="display:none; margin-top:10px;">
+  <div class="order-body">
+
+  <!-- الشمال -->
+  <div class="order-info">
 
     👤 ${o.customerName || "غير محدد"} <br>
     📞 ${o.phone || "غير محدد"} <br>
 
-    📍 ${o.gov || "غير محدد"} - ${o.city || "غير محدد"} <br>
+    📍 ${o.gov || ""} - ${o.city || ""} <br>
     ${o.address || ""} <br><br>
 
     💎 <b>تفاصيل الطلب:</b><br>
 
     ${(o.orderDetails || []).map((item,i)=>`
-    🔹 سلسلة ${i+1}<br>
-    🏷️ ${item.names}<br>
-    🎨 ${item.design}<br>
-    🌍 ${item.lang}<br><br>
+      🔹 ${item.names} - ${item.design} - ${item.lang}<br>
     `).join("")}
 
-    📦: ${o.quantity}<br>
-    💰: ${o.price}<br>
-    🚚: ${o.shipping}<br>
-    💵: ${o.finalTotal}<br>
+  </div>
 
-    🕒 ${o.createdAt?.toDate?.().toLocaleString('en-EG') || ""} <br><br>
+  <!-- اليمين (الحساب) -->
+  <div class="order-summary">
+    📦 ${o.quantity || 0}<br>
+    💰 ${o.price || 0}<br>
+    🚚 ${o.shipping || 0}<br>
+    💵 <b>${o.finalTotal || 0}</b>
+  </div>
+
+</div>
 
     <div class="actions">
 
