@@ -136,6 +136,41 @@ input{
   color:#0F7B65;
 }
 
+.nice-textarea{
+  width:100%;
+  min-height:140px;
+  padding:12px;
+
+  border-radius:12px;
+  border:1px solid #ddd;
+
+  font-size:14px;
+  line-height:1.6;
+
+  resize:vertical;
+
+  background:#fafafa;
+
+  transition:0.2s;
+}
+
+.nice-textarea:focus{
+  outline:none;
+  border-color:#0F7B65;
+  background:#fff;
+  box-shadow:0 0 0 2px rgba(15,123,101,0.1);
+}
+
+/* تحسين السكرول */
+.nice-textarea::-webkit-scrollbar{
+  width:6px;
+}
+
+.nice-textarea::-webkit-scrollbar-thumb{
+  background:#ccc;
+  border-radius:10px;
+}
+
 .card.new { border-right:4px solid red; }
 .card.done { border-right:4px solid #28a745; }
 
@@ -374,13 +409,13 @@ display:none;
 
 *{
   -webkit-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -webkit-touch-callout: none;
 }
 
 input, textarea{
-  user-select: auto;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
 }
 
 </style>
@@ -589,11 +624,15 @@ window.editOrder = (id)=>{
 
     <hr>
 
-    <textarea id="editDetails" style="width:100%;height:120px;">
+<label style="font-weight:bold;margin-bottom:5px;display:block;">
+💎 تفاصيل الطلب (كل سطر = اسم | تصميم | لغة)
+</label>
+
+    <textarea id="editDetails" class="nice-textarea">
 ${(o.orderDetails || []).map(i=>`
-${i.names || ""}|${i.design || ""}|${i.lang || ""}
+${i.names || ""} | ${i.design || ""} | ${i.lang || ""}
 `.trim()).join("\n")}
-    </textarea>
+</textarea>
     <small>كل سطر = name | design | lang</small>
 
     <hr>
