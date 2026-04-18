@@ -882,27 +882,6 @@ ${o.createdAt?.toDate?.().toLocaleString('ar-EG') || "-"}
 html += `
 <div class="card ${status}" style="position:relative;">
 
-<div style="position:absolute; left:10px; top:10px; display:flex; gap:6px;">
-
-  <button onclick="editOrder('${o.id}')" style="
-    background:#ffc107;
-    border:none;
-    padding:6px 8px;
-    border-radius:8px;
-    cursor:pointer;
-  ">✏️</button>
-
-  <button onclick="deleteOrder('${o.id}')" style="
-    background:#dc3545;
-    color:#fff;
-    border:none;
-    padding:6px 8px;
-    border-radius:8px;
-    cursor:pointer;
-  ">🗑️</button>
-
-</div>
-
   <!-- ✅ checkbox -->
   <input type="checkbox" class="selectOrder" 
   value="${btoa(unescape(encodeURIComponent(JSON.stringify(o))))}">
@@ -936,10 +915,33 @@ html += `
   </div>
 
   <div class="order-summary">
-    📦 ${o.quantity}<br>
-    💰 ${o.price}<br>
-    🚚 ${o.shipping}<br>
-    💵 <b>${o.finalTotal}</b>
+
+  📦 ${o.quantity}<br>
+  💰 ${o.price}<br>
+  🚚 ${o.shipping}<br>
+  💵 <b>${o.finalTotal}</b>
+
+  <div style="display:flex; gap:6px; margin-top:10px;">
+
+    <button onclick="editOrder('${o.id}')" style="
+      flex:1;
+      background:#ffc107;
+      border:none;
+      padding:6px;
+      border-radius:8px;
+      cursor:pointer;
+    ">✏️</button>
+
+    <button onclick="deleteOrder('${o.id}')" style="
+      flex:1;
+      background:#dc3545;
+      color:#fff;
+      border:none;
+      padding:6px;
+      border-radius:8px;
+      cursor:pointer;
+    ">🗑️</button>
+
   </div>
 
 </div>
