@@ -503,20 +503,7 @@ input, textarea{
 
 <hr>
 
-<div id="msgPopup" style="
-display:none;
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:#fff;
-padding:20px;
-border-radius:16px;
-box-shadow:0 5px 20px rgba(0,0,0,0.3);
-z-index:99999;
-width:90%;
-max-width:400px;
-">
+<div id="msgPopup">
   <div id="msgContent"></div>
   <button onclick="closeMsg()" style="
     margin-top:10px;
@@ -650,52 +637,80 @@ window.editOrder = (id)=>{
   if(!o) return;
 
   let box = document.getElementById("msgPopup");
-  let content = document.getElementById("msgContent");
 
-  content.innerHTML = `
-    <h3>✏️ تعديل الأوردر</h3>
+  box.innerHTML = `
+    <div class="popup-box">
 
-    <input id="editName" value="${o.customerName || ''}" placeholder="اسم العميل"><br><br>
-    <input id="editPhone" value="${o.phone || ''}" placeholder="رقم الهاتف"><br><br>
+      <!-- 🔝 header -->
+      <div class="popup-header">
+        <span>✏️ تعديل الأوردر</span>
+        <span onclick="closeMsg()" style="cursor:pointer;">✖</span>
+      </div>
 
-    <input id="editGov" value="${o.gov || ''}" placeholder="المحافظة"><br><br>
-    <input id="editCity" value="${o.city || ''}" placeholder="المدينة"><br><br>
+      <!-- 📄 body -->
+      <div class="popup-body">
 
-    <input id="editAddress" value="${o.address || ''}" placeholder="العنوان"><br><br>
+        <input id="editName" value="${o.customerName || ''}" placeholder="اسم العميل"><br><br>
+        <input id="editPhone" value="${o.phone || ''}" placeholder="رقم الهاتف"><br><br>
 
-    <hr>
+        <input id="editGov" value="${o.gov || ''}" placeholder="المحافظة"><br><br>
+        <input id="editCity" value="${o.city || ''}" placeholder="المدينة"><br><br>
 
-<label style="font-weight:bold;margin-bottom:5px;display:block;">
-💎 تفاصيل الطلب (كل سطر = اسم | تصميم | لغة)
-</label>
+        <input id="editAddress" value="${o.address || ''}" placeholder="العنوان"><br><br>
 
-    <textarea id="editDetails" class="nice-textarea">
+        <hr>
+
+        <label style="font-weight:bold;">
+        💎 تفاصيل الطلب
+        </label>
+
+        <textarea id="editDetails" class="nice-textarea">
 ${(o.orderDetails || []).map(i=>`
 ${i.names || ""} | ${i.design || ""} | ${i.lang || ""}
 `.trim()).join("\n")}
-</textarea>
-    <small>كل سطر = name | design | lang</small>
+        </textarea>
 
-    <hr>
+        <hr>
 
-    <input id="editQuantity" value="${o.quantity || ''}" placeholder="الكمية"><br><br>
-    <input id="editPrice" value="${o.price || ''}" placeholder="السعر"><br><br>
-    <input id="editShipping" value="${o.shipping || ''}" placeholder="الشحن"><br><br>
-    <input id="editTotal" value="${o.finalTotal || ''}" placeholder="الإجمالي"><br><br>
+        <input id="editQuantity" value="${o.quantity || ''}" placeholder="الكمية"><br><br>
+        <input id="editPrice" value="${o.price || ''}" placeholder="السعر"><br><br>
+        <input id="editShipping" value="${o.shipping || ''}" placeholder="الشحن"><br><br>
+        <input id="editTotal" value="${o.finalTotal || ''}" placeholder="الإجمالي">
 
-    <button onclick="saveEdit('${id}')" style="
-      width:100%;
-      padding:10px;
-      background:#0F7B65;
-      color:#fff;
-      border:none;
-      border-radius:10px;
-    ">
-      حفظ التعديلات
-    </button>
+      </div>
+
+      <!-- 🔻 footer -->
+      <div class="popup-footer">
+
+        <button onclick="saveEdit('${id}')" style="
+          width:100%;
+          padding:10px;
+          background:#0F7B65;
+          color:#fff;
+          border:none;
+          border-radius:10px;
+          margin-bottom:8px;
+        ">
+          حفظ التعديلات
+        </button>
+
+        <button onclick="closeMsg()" style="
+          width:100%;
+          padding:10px;
+          background:#333;
+          color:#fff;
+          border:none;
+          border-radius:10px;
+        ">
+          إغلاق
+        </button>
+
+      </div>
+
+    </div>
   `;
 
-  box.style.display = "block";
+  box.style.display = "flex"; // 👈 مهم عشان السنتر
 };
 
 window.saveEdit = async function(id){
