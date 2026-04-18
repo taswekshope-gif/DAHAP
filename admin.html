@@ -101,7 +101,8 @@ input{
 .order-body{
   display:flex;
   justify-content:space-between;
-  gap:10px;
+  gap:12px;
+  align-items:flex-start;
 }
 
 .order-info{
@@ -112,7 +113,7 @@ input{
   width:140px;
   background:#f8f9fa;
   border-radius:12px;
-  padding:8px;
+  padding:10px;
   font-size:12px;
   text-align:right;
 }
@@ -922,44 +923,28 @@ html += `
   <!-- ✅ التفاصيل -->
   <div class="order-body">
 
-  <!-- الشمال -->
   <div class="order-info">
+    👤 ${o.customerName} <br>
+    📞 ${o.phone} <br>
+    📍 ${o.gov} - ${o.city} <br>
+    ${o.address} <br><br>
 
-    👤 ${o.customerName || "غير محدد"} <br>
-    📞 ${o.phone || "غير محدد"} <br>
-
-    📍 ${o.gov || ""} - ${o.city || ""} <br>
-    ${o.address || ""} <br><br>
-
-    💎 <b>تفاصيل الطلب:</b><br>
-
+    💎 التفاصيل:<br>
     ${(o.orderDetails || []).map((item,i)=>`
       🔹 ${item.names} - ${item.design} - ${item.lang}<br>
     `).join("")}
-
   </div>
 
-  <!-- اليمين (الحساب) -->
   <div class="order-summary">
-    📦 ${o.quantity || 0}<br>
-    💰 ${o.price || 0}<br>
-    🚚 ${o.shipping || 0}<br>
-    💵 <b>${o.finalTotal || 0}</b>
+    📦 ${o.quantity}<br>
+    💰 ${o.price}<br>
+    🚚 ${o.shipping}<br>
+    💵 <b>${o.finalTotal}</b>
   </div>
 
 </div>
 
     <div class="actions">
-
-<button class="action-btn" style="background:#dc3545;color:#fff"
-onclick="deleteOrder('${o.id}')">
-🗑️
-</button>
-
-<button class="action-btn" style="background:#ffc107"
-onclick="editOrder('${o.id}')">
-✏️
-</button>
 
       <a class="action-btn whatsapp" target="_blank"
       href="https://wa.me/2${o.phone}">
