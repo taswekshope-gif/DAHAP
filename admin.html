@@ -637,12 +637,40 @@ ${m.phone}
 
   const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
 
- const audio = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-bell-notification-933.mp3");
+ onSnapshot(q,(snap)=>{
 
-function sound(){
-  audio.currentTime = 0;
-  audio.play().catch(()=>{});
-}
+  snap.docChanges().forEach(change => {
+
+    if(change.type === "added" && lastCount !== 0){
+
+      let o = change.doc.data();
+
+      // 🔊 صوت
+      sound();
+
+      // 🔔 Notification
+      if(Notification.permission==="granted"){
+        new Notification("طلب جديد 🛒",{
+          body: `${o.customerName || "عميل جديد"} - ${o.phone || ""}`
+        });
+      }
+
+      // 💥 Popup
+      showPopup(o);
+
+    }
+
+  });
+
+  lastCount = snap.size;
+
+  orders = snap.docs.map(d=>({
+    id:d.id,
+    ...d.data()
+  }));
+
+  render();
+});
 
 document.getElementById("dateFilter").addEventListener("change", render);
 
