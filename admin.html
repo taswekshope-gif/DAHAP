@@ -637,24 +637,11 @@ ${m.phone}
 
   const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
 
- onSnapshot(q,(snap)=>{
+ const audio = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-bell-notification-933.mp3");
 
-  snap.docChanges().forEach(change => {
-
-    if(change.type === "added" && lastCount !== 0){
-
-      let o = change.doc.data();
-
-  lastCount = snap.size;
-
-  orders = snap.docs.map(d=>({
-    id:d.id,
-    ...d.data()
-  }));
-
-  render();
-});
-
+function sound(){
+  audio.currentTime = 0;
+  audio.play().catch(()=>{});
 }
 
 document.getElementById("dateFilter").addEventListener("change", render);
@@ -669,8 +656,11 @@ document.addEventListener("change", (e)=>{
 });
 
 // 🔔 صوت
+const audio = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-bell-notification-933.mp3");
+
 function sound(){
-  new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3").play();
+  audio.currentTime = 0;
+  audio.play().catch(()=>{});
 }
 
 // 🔔 إشعار
@@ -683,23 +673,6 @@ Notification.requestPermission();
 
 document.addEventListener("contextmenu", e => e.preventDefault());
 document.addEventListener("dragstart", e => e.preventDefault());
-
-// 🔊 صوت
-      sound();
-
-      // 🔔 Notification
-      if(Notification.permission==="granted"){
-        new Notification("طلب جديد 🛒",{
-          body: `${o.customerName || "عميل جديد"} - ${o.phone || ""}`
-        });
-      }
-
-      // 💥 Popup
-      showPopup(o);
-
-    }
-
-  });
 
 // 🎯 render
 function render(){
