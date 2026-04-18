@@ -584,41 +584,47 @@ window.toggleInbox = () => {
 // 📦 load orders
 function load(){
 
-const qMessages = query(
-  collection(db,"messages"),
-  orderBy("createdAt","desc")
-);
+  // 📩 messages
+  const qMessages = query(
+    collection(db,"messages"),
+    orderBy("createdAt","desc")
+  );
 
-let unreadCount = 0;
+  // 📦 orders (لازم يكون بره)
+  const qOrders = query(
+    collection(db,"orders"),
+    orderBy("createdAt","desc")
+  );
 
-onSnapshot(qMessages,(snap)=>{
+  let unreadCount = 0;
 
-  unreadCount = 0;
+  // 📩 load messages
+  onSnapshot(qMessages,(snap)=>{
 
-  let box = document.getElementById("messagesBox");
-  let badge = document.getElementById("msgBadge");
+    unreadCount = 0;
 
-  let html = "";
+    let badge = document.getElementById("msgBadge");
 
-  messages = snap.docs.map(d=>{
-    return {
-      id: d.id,
-      ...d.data()
-    };
-  });
+    let html = "";
 
-  messages.forEach(m=>{
-    let status = m.status || "new";
+    messages = snap.docs.map(d=>{
+      return {
+        id: d.id,
+        ...d.data()
+      };
+    });
 
-    if(status === "new") unreadCount++;
+    messages.forEach(m=>{
+      let status = m.status || "new";
 
-    html += `
+      if(status === "new") unreadCount++;
+
+      html += `
 <div class="msg-item ${status === 'new' ? 'unread' : ''}" 
 onclick="openMsg('${m.id}')">
 
 <div style="display:flex;justify-content:space-between;align-items:center;">
   <div>👤 ${m.name}</div>
-
   ${status === 'new' ? `<span class="new-badge">جديد</span>` : ''}
 </div>
 
@@ -628,52 +634,45 @@ ${m.phone}
 
 </div>
 `;
-});
+    });
 
-const q = query(
-  collection(db,"orders"),
-  orderBy("createdAt","desc")
-);
- document.getElementById("messagesList").innerHTML = html;
+    document.getElementById("messagesList").innerHTML = html;
 
-  badge.style.display = unreadCount > 0 ? "inline-block" : "none";
-  badge.innerText = unreadCount;
-});
-  
- onSnapshot(q,(snap)=>{
-
-  snap.docChanges().forEach(change => {
-
-    if(change.type === "added" && lastCount !== 0){
-
-      let o = change.doc.data();
-
-      // 🔊 صوت
-      sound();
-
-      // 🔔 Notification
-      if(Notification.permission==="granted"){
-        new Notification("طلب جديد 🛒",{
-          body: `${o.customerName || "عميل جديد"} - ${o.phone || ""}`
-        });
-      }
-
-      // 💥 Popup
-      showPopup(o);
-
-    }
-
+    badge.style.display = unreadCount > 0 ? "inline-block" : "none";
+    badge.innerText = unreadCount;
   });
 
-  lastCount = snap.size;
+  // 📦 load orders
+  onSnapshot(qOrders,(snap)=>{
 
-  orders = snap.docs.map(d=>({
-    id:d.id,
-    ...d.data()
-  }));
+    snap.docChanges().forEach(change => {
 
-  render();
-});
+      if(change.type === "added" && lastCount !== 0){
+
+        let o = change.doc.data();
+
+        sound();
+
+        if(Notification.permission==="granted"){
+          new Notification("طلب جديد 🛒",{
+            body: `${o.customerName || "عميل جديد"} - ${o.phone || ""}`
+          });
+        }
+
+        showPopup(o);
+      }
+
+    });
+
+    lastCount = snap.size;
+
+    orders = snap.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    render();
+  });
 
 }
 
