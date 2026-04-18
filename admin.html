@@ -634,9 +634,7 @@ ${m.phone}
   badge.style.display = unreadCount > 0 ? "inline-block" : "none";
   badge.innerText = unreadCount;
 });
-
-  const q = query(collection(db,"orders"), orderBy("createdAt","desc"));
-
+  
  onSnapshot(q,(snap)=>{
 
   snap.docChanges().forEach(change => {
