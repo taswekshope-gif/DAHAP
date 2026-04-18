@@ -684,6 +684,23 @@ Notification.requestPermission();
 document.addEventListener("contextmenu", e => e.preventDefault());
 document.addEventListener("dragstart", e => e.preventDefault());
 
+// 🔊 صوت
+      sound();
+
+      // 🔔 Notification
+      if(Notification.permission==="granted"){
+        new Notification("طلب جديد 🛒",{
+          body: `${o.customerName || "عميل جديد"} - ${o.phone || ""}`
+        });
+      }
+
+      // 💥 Popup
+      showPopup(o);
+
+    }
+
+  });
+
 // 🎯 render
 function render(){
 
