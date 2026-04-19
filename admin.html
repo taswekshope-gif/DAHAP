@@ -447,19 +447,25 @@ display:none;
 }
 
 .select-all-btn{
-  position:absolute;
-   top:15px;
+  position:fixed;
+  top:15px;
   right:15px;
+  z-index:2000;
 
-  width:40px;
-  height:40px;
-  border-radius:12px;
+  width:45px;
+  height:45px;
+  border-radius:14px;
   background:#0F7B65;
   color:#fff;
 
-  display:flex;
+  display:none; /* 👈 مهم */
+
   align-items:center;
   justify-content:center;
+  cursor:pointer;
+  font-size:20px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.25);
+  transition:0.2s;
 }
 
 .select-all-btn:hover{
@@ -862,6 +868,7 @@ window.selectAll = () => {
 
   btn.innerText = allSelected ? "✖" : "✔"; // 👈 مهم
   btn.classList.toggle("active", allSelected);
+updateSelectionUI(); // 👈 ضيفها في آخر الفنكشن
 };
 
 window.closeMsg = () => {
@@ -1001,7 +1008,10 @@ document.getElementById("search").addEventListener("input", render);
 document.addEventListener("change", (e)=>{
   if(e.target.classList.contains("selectOrder")){
     let card = e.target.closest(".card");
+
     card.style.background = e.target.checked ? "#e6fff2" : "#fff";
+
+    updateSelectionUI(); // 👈 مهم
   }
 });
 
@@ -1197,10 +1207,22 @@ html += `
   document.getElementById("count").innerText="📊 "+count;
 }
 
-setInterval(()=>{
-  let count = document.querySelectorAll(".selectOrder:checked").length;
-  document.getElementById("selectedCount").innerText = "✅ المحدد: " + count;
-},500);
+function updateSelectionUI(){
+
+  let selected = document.querySelectorAll(".selectOrder:checked").length;
+
+  // عداد
+  document.getElementById("selectedCount").innerText = "✅ المحدد: " + selected;
+
+  // زرار select all
+  let btn = document.getElementById("selectAllBtn");
+
+  if(selected > 0){
+    btn.style.display = "flex";  // 👈 يظهر
+  }else{
+    btn.style.display = "none";  // 👈 يختفي
+  }
+}
 
 // ⚠️✅ popup
 window.showPopup = (o)=>{
