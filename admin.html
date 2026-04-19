@@ -40,14 +40,15 @@ html, body{
 }
 
 .search-box{
-  display:block;
   width:100%;
-  max-width:420px;   /* 👈 يحدد العرض */
-  margin:0 auto;     /* 👈 يخليه في النص */
+  max-width:420px;
+  margin:0 auto;
 
   padding:12px;
   border-radius:12px;
   border:1px solid #ddd;
+
+  box-sizing: border-box; /* 👈 الحل */
 }
 
 /* مجموعة الأيقونات */
