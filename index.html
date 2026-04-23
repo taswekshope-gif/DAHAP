@@ -2165,7 +2165,8 @@ localStorage.setItem("orderID", orderID);
 }, 800);
     
   } catch (error) {
-    alert("حصل خطأ حاول تاني");
+    alert(error.message);
+console.error(error);
     submitBtn.disabled = false;
     submitBtn.innerText = "تأكيد الطلب";
   }
