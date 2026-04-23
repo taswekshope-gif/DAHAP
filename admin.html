@@ -585,6 +585,7 @@ input, textarea{
 
 <script type="module">
 
+import { serverTimestamp } from "firebase/firestore";
 import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -785,10 +786,10 @@ window.saveEdit = async function(id){
 
       orderDetails: orderDetails,
 
-      quantity: document.getElementById("editQuantity").value,
-      price: document.getElementById("editPrice").value,
-      shipping: document.getElementById("editShipping").value,
-      finalTotal: document.getElementById("editTotal").value
+quantity: Number(document.getElementById("editQuantity").value),
+price: Number(document.getElementById("editPrice").value),
+shipping: Number(document.getElementById("editShipping").value),
+finalTotal: Number(document.getElementById("editTotal").value)
     });
 
     closeMsg();
@@ -996,6 +997,8 @@ ${m.phone}
   });
 
 }
+
+createdAt: serverTimestamp(),
 
 document.getElementById("dateFilter").addEventListener("change", render);
 
