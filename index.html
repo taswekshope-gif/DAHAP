@@ -2108,30 +2108,67 @@ ${orderDetails.map((item, i) => `
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
 `;
 
-  // نجاح
-  submitBtn.innerText = "✅ تم إرسال الطلب";
-  submitBtn.style.background = "#0F7B65";
+    // نجاح
+    submitBtn.innerText = "✅ تم إرسال الطلب";
+submitBtn.style.background = "#0F7B65";
 
-  let msgBox = document.getElementById("successMessage");
-  msgBox.style.display = "block";
+let msgBox = document.getElementById("successMessage");
+msgBox.style.display = "block";
 
-  msgBox.innerHTML = `
-    ✅ تم إرسال طلبك بنجاح!<br><br>
-    🧾 كود طلبك:<br>
-    <strong style="font-size:18px;">${orderID}</strong>
-  `;
+msgBox.innerHTML = `
+  ✅ تم إرسال طلبك بنجاح!<br><br>
+  🧾 كود طلبك:<br>
+  <strong style="font-size:18px;">${orderID}</strong><br><br>
+  📞 سيتم التواصل معك على واتساب
+`;
 
-  localStorage.setItem("ordered", "true");
-  localStorage.setItem("orderID", orderID);
+localStorage.setItem("ordered", "true");
+localStorage.setItem("orderID", orderID);
+    
+  setTimeout(() => {
 
-} catch (error) {
+  let messageEncoded = encodeURIComponent(message);
 
-  console.error(error);
-  alert("حصل خطأ حاول تاني");
+  let appUrl = "whatsapp://send?phone=201106018685&text=" + messageEncoded;
+  let webUrl = "https://wa.me/201106018685?text=" + messageEncoded;
 
-  submitBtn.disabled = false;
-  submitBtn.innerText = "تأكيد الطلب";
-}
+  let openedApp = false;
+
+  // نحاول نفتح التطبيق
+  const start = Date.now();
+  window.location.href = appUrl;
+
+  // نراقب لو خرج من الصفحة (مؤشر إنه فتح التطبيق)
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      openedApp = true;
+    }
+  });
+
+  // بعد وقت قصير
+  setTimeout(() => {
+
+    // لو غالباً فتح التطبيق → نعمل refresh
+    if (openedApp) {
+      location.reload();
+    } else {
+      // لو ما فتحش التطبيق → افتح ويب
+      window.location.href = webUrl;
+
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
+    }
+
+  }, 2500);
+
+}, 800);
+    
+  } catch (error) {
+    alert("حصل خطأ حاول تاني");
+    submitBtn.disabled = false;
+    submitBtn.innerText = "تأكيد الطلب";
+  }
 });
   
 </script>
