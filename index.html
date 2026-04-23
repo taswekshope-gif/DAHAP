@@ -2062,7 +2062,7 @@ orderDetails.push({
   
 await addDoc(collection(db, "orders"), {
   orderID: orderID,
-  customerName: name,
+  customerName: customerName, // ✔ تصحيح مهم
   phone: phone,
   gov: gov,
   city: city,
