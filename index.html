@@ -2060,28 +2060,28 @@ orderDetails.push({
  });
 });
   
-await addDoc(collection(db, "orders"), {
-  orderID: orderID,
-  customerName: customerName, // ✔ تصحيح مهم
-  phone: phone,
-  gov: gov,
-  city: city,
-  address: address,
+// حفظ في Firebase
+  await addDoc(collection(db, "orders"), {
+    orderID,
+    customerName,
+    phone,
+    gov,
+    city,
+    address,
 
-  orderDetails: orderDetails,
+    orderDetails,
 
-  quantity: quantity,
-  price: price,
-  shipping: shipping,
-  finalTotal: finalTotal,
+    quantity,
+    price,
+    shipping,
+    finalTotal,
 
-  status: "new",
+    status: "new",
+    createdAt: serverTimestamp()
+  });
 
-  createdAt: serverTimestamp()
-});
-
-    // ✅ واتساب
-let message = `DAHAP
+  // ✅ الرسالة (FIXED)
+  let message = `DAHAP
 كود الطلب: ${orderID}
 --------------------
 👤 اسم العميل: ${customerName}
@@ -2094,7 +2094,7 @@ ${address}
 💎 الطلب:
 ${orderDetails.map((item, i) => `
 سلسلة ${i + 1}:
-🏷️ الأسم: ${item.names}
+🏷️ الاسم: ${item.names}
 🎨 التصميم: ${item.design}
 🌍 اللغة: ${item.lang}
 `).join("\n")}
@@ -2105,66 +2105,29 @@ ${orderDetails.map((item, i) => `
 💵 الإجمالي: ${finalTotal}
 
 🕒 Order Time: ${new Date().toLocaleString('en-EG')}
-  
-    // نجاح
-    submitBtn.innerText = "✅ تم إرسال الطلب";
-submitBtn.style.background = "#0F7B65";
-
-let msgBox = document.getElementById("successMessage");
-msgBox.style.display = "block";
-
-msgBox.innerHTML = `
-  ✅ تم إرسال طلبك بنجاح!<br><br>
-  🧾 كود طلبك:<br>
-  <strong style="font-size:18px;">${orderID}</strong><br><br>
-  📞 سيتم التواصل معك على واتساب
 `;
 
-localStorage.setItem("ordered", "true");
-localStorage.setItem("orderID", orderID);
-    
-  setTimeout(() => {
+  // نجاح
+  submitBtn.innerText = "✅ تم إرسال الطلب";
+  submitBtn.style.background = "#0F7B65";
 
-  let messageEncoded = encodeURIComponent(message);
+  let msgBox = document.getElementById("successMessage");
+  msgBox.style.display = "block";
 
-  let appUrl = "whatsapp://send?phone=201106018685&text=" + messageEncoded;
-  let webUrl = "https://wa.me/201106018685?text=" + messageEncoded;
+  msgBox.innerHTML = `
+    ✅ تم إرسال طلبك بنجاح!<br><br>
+    🧾 كود طلبك:<br>
+    <strong style="font-size:18px;">${orderID}</strong>
+  `;
 
-  let openedApp = false;
+  localStorage.setItem("ordered", "true");
+  localStorage.setItem("orderID", orderID);
 
-  // نحاول نفتح التطبيق
-  const start = Date.now();
-  window.location.href = appUrl;
+} catch (error) {
 
-  // نراقب لو خرج من الصفحة (مؤشر إنه فتح التطبيق)
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      openedApp = true;
-    }
-  });
+  console.error(error);
+  alert("حصل خطأ حاول تاني");
 
-  // بعد وقت قصير
-  setTimeout(() => {
-
-    // لو غالباً فتح التطبيق → نعمل refresh
-    if (openedApp) {
-      location.reload();
-    } else {
-      // لو ما فتحش التطبيق → افتح ويب
-      window.location.href = webUrl;
-
-      setTimeout(() => {
-        location.reload();
-      }, 2000);
-    }
-
-  }, 2500);
-
-}, 800);
-    
- catch (error) {
-  console.error("ERROR:", error);
-  alert(error.message);
   submitBtn.disabled = false;
   submitBtn.innerText = "تأكيد الطلب";
 }
