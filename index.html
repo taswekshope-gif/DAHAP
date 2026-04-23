@@ -2059,22 +2059,25 @@ orderDetails.push({
   lang
  });
 });
+  
+await addDoc(collection(db, "orders"), {
+  orderID: orderID,
+  customerName: name,
+  phone: phone,
+  gov: gov,
+  city: city,
+  address: address,
 
- await addDoc(collection(db, "orders"), {
-  orderID,
-  customerName,
-  phone,
-  gov,
-  city,
-  address,
-  orderDetails,
-  quantity,
-  price,
-  total: price,
-  shipping,
-  finalTotal,
-  createdAt: new Date(),
-  status: "new"
+  orderDetails: orderDetails,
+
+  quantity: quantity,
+  price: price,
+  shipping: shipping,
+  finalTotal: finalTotal,
+
+  status: "new",
+
+  createdAt: serverTimestamp()
 });
 
     // ✅ واتساب
@@ -2101,7 +2104,7 @@ ${orderDetails.map((item, i) => `
 🚚 الشحن: ${shipping}
 💵 الإجمالي: ${finalTotal}
 
-🕒 Order Time: ${new Date().toLocaleString('en-EG')}
+🕒 Order Time: ${serverTimestamp().toLocaleString('en-EG')}
 `;
   
     // نجاح
