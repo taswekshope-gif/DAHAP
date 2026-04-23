@@ -2104,8 +2104,7 @@ ${orderDetails.map((item, i) => `
 🚚 الشحن: ${shipping}
 💵 الإجمالي: ${finalTotal}
 
-🕒 Order Time: ${serverTimestamp().toLocaleString('en-EG')}
-`;
+🕒 Order Time: ${new Date().toLocaleString('en-EG')}
   
     // نجاح
     submitBtn.innerText = "✅ تم إرسال الطلب";
@@ -2162,12 +2161,14 @@ localStorage.setItem("orderID", orderID);
   }, 2500);
 
 }, 800);
+}
     
-  } catch (error) {
-    alert("حصل خطأ حاول تاني");
-    submitBtn.disabled = false;
-    submitBtn.innerText = "تأكيد الطلب";
-  }
+ catch (error) {
+  console.error("ERROR:", error);
+  alert(error.message);
+  submitBtn.disabled = false;
+  submitBtn.innerText = "تأكيد الطلب";
+}
 });
   
 </script>
