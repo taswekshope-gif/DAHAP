@@ -585,7 +585,7 @@ input, textarea{
 
 <script type="module">
 
-import { serverTimestamp } from "firebase/firestore";
+import { serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, query, orderBy, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -827,10 +827,10 @@ onAuthStateChanged(auth, (user) => {
 
 window.toggleOrder = (id)=>{
 
-  let el = document.getElementById("order-"+id);
-  let actions = el.parentElement.querySelector(".actions");
+let el = document.getElementById("order-"+id);
+if(!el) return;
 
-  if(!el) return;
+let actions = el.parentElement.querySelector(".actions");
 
   let isOpen = el.style.display === "flex";
 
@@ -997,8 +997,6 @@ ${m.phone}
   });
 
 }
-
-createdAt: serverTimestamp(),
 
 document.getElementById("dateFilter").addEventListener("change", render);
 
